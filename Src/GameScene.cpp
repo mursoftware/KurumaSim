@@ -261,9 +261,8 @@ void GameScene::DrawUI()
 	ImGui::Text("RStickUp or RT : Throttle");
 	ImGui::Text("RStickDown or LT : Brake");
 	ImGui::Text("LStick : Steering");
-	ImGui::Text("RB or A : ShitUp");
-	ImGui::Text("LB or B : ShitDown");
-	ImGui::Text("LB or B : ShitDown");
+	ImGui::Text("RB or A : ShiftUp");
+	ImGui::Text("LB or B : ShiftDown");
 	ImGui::Text("D-Pad Up/Down : ChangeCamera");
 
 	ImGui::Separator();
@@ -272,8 +271,8 @@ void GameScene::DrawUI()
 	ImGui::Text("ArrawUp : Throttle");
 	ImGui::Text("ArrawDown : Brake");
 	ImGui::Text("ArrawLeftRight : Steering");
-	ImGui::Text("X : ShitUp");
-	ImGui::Text("Z : ShitDown");
+	ImGui::Text("X : ShiftUp");
+	ImGui::Text("Z : ShiftDown");
 	ImGui::Text("W/S : ChangeCamera");
 
 	ImGui::Separator();
