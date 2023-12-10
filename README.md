@@ -15,6 +15,8 @@ KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/do
 | --- | --- |
 | Enter | Next Sceen |
 | F3 | Replay |
+| F11 | Toggle Full Screen |
+| F1 | Toggle Debug Window |
 
 ### GamePad
 | Input | Action |
