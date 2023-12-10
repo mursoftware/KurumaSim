@@ -24,8 +24,8 @@ KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/do
 | RStickUp or RT | Throttle |
 | RStickDown or LT | Brake |
 | LStick | Steering |
-| RB or A | ShitUp |
-| LB or B | ShitDown |
+| RB or A | ShiftUp |
+| LB or B | ShiftDown |
 | D-Pad Up/Down | ChangeCamera |
 
 ### Keyboard
