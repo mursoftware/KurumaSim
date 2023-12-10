@@ -11,7 +11,14 @@ KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/do
 2. Run KurumaSimulator.exe
 
 ## Controls
+| Input | Action |
+| --- | --- |
+| Enter | Next Sceen |
+| F3 | Replay |
+
 ### GamePad
+| Input | Action |
+| --- | --- |
 | RStickUp or RT | Throttle |
 | RStickDown or LT | Brake |
 | LStick | Steering |
@@ -20,6 +27,8 @@ KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/do
 | D-Pad Up/Down | ChangeCamera |
 
 ### Keyboard
+| Input | Action |
+| --- | --- |
 | ArrawUp | Throttle |
 | ArrawDown | Brake |
 | ArrawLeft/Right | Steering |
@@ -27,8 +36,6 @@ KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/do
 | Z | ShitDown |
 | W/S | ChangeCamera |
 
-| Enter | Next Sceen |
-| F3 | Replay |
 
 ## License
 KurumaSim is licensed under the MIT License, see [LICENSE](LICENSE) for more information.
