@@ -34,8 +34,8 @@ KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/do
 | ArrawUp | Throttle |
 | ArrawDown | Brake |
 | ArrawLeft/Right | Steering |
-| X | ShitUp |
-| Z | ShitDown |
+| X | ShiftUp |
+| Z | ShiftDown |
 | W/S | ChangeCamera |
 
 
