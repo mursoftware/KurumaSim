@@ -35,4 +35,4 @@
 *.pdb
 /LogitechSteeringWheelLib.h
 /.vs
-*.sco
+*.cso
