@@ -122,6 +122,8 @@
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <LanguageStandard>Default</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForcedIncludeFiles>Pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +141,10 @@
       <LanguageStandard>Default</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>Pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>Src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,23 +154,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BodyRB.h" />
-    <ClInclude Include="Brake.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Car.h" />
-    <ClInclude Include="CarCamera.h" />
-    <ClInclude Include="CarSelectScene.h" />
-    <ClInclude Include="Clutch.h" />
-    <ClInclude Include="d3dx12.h" />
-    <ClInclude Include="DDSTextureLoader12.h" />
-    <ClInclude Include="Differential.h" />
-    <ClInclude Include="DriveTrain.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="EnvCamera.h" />
-    <ClInclude Include="Field.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GameScene.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
     <ClInclude Include="ImGUI\imgui_impl_dx12.h" />
@@ -173,40 +162,42 @@
     <ClInclude Include="ImGUI\imstb_rectpack.h" />
     <ClInclude Include="ImGUI\imstb_textedit.h" />
     <ClInclude Include="ImGUI\imstb_truetype.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Main.h" />
-    <ClInclude Include="MatrixVector.h" />
-    <ClInclude Include="Meter.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Pch.h" />
-    <ClInclude Include="RenderManager.h" />
-    <ClInclude Include="RigidBody.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="Setting.h" />
-    <ClInclude Include="ShadowCamera.h" />
-    <ClInclude Include="Sky.h" />
-    <ClInclude Include="SmokeManager.h" />
-    <ClInclude Include="SoundManager.h" />
-    <ClInclude Include="Suspension.h" />
-    <ClInclude Include="TireRB.h" />
-    <ClInclude Include="Transmission.h" />
+    <ClInclude Include="Src\BodyRB.h" />
+    <ClInclude Include="Src\Brake.h" />
+    <ClInclude Include="Src\Camera.h" />
+    <ClInclude Include="Src\Car.h" />
+    <ClInclude Include="Src\CarCamera.h" />
+    <ClInclude Include="Src\CarSelectScene.h" />
+    <ClInclude Include="Src\Clutch.h" />
+    <ClInclude Include="Src\d3dx12.h" />
+    <ClInclude Include="Src\DDSTextureLoader12.h" />
+    <ClInclude Include="Src\Differential.h" />
+    <ClInclude Include="Src\DriveTrain.h" />
+    <ClInclude Include="Src\Engine.h" />
+    <ClInclude Include="Src\EnvCamera.h" />
+    <ClInclude Include="Src\Field.h" />
+    <ClInclude Include="Src\GameManager.h" />
+    <ClInclude Include="Src\GameObject.h" />
+    <ClInclude Include="Src\GameScene.h" />
+    <ClInclude Include="Src\InputManager.h" />
+    <ClInclude Include="Src\Main.h" />
+    <ClInclude Include="Src\MatrixVector.h" />
+    <ClInclude Include="Src\Meter.h" />
+    <ClInclude Include="Src\Model.h" />
+    <ClInclude Include="Src\Pch.h" />
+    <ClInclude Include="Src\RenderManager.h" />
+    <ClInclude Include="Src\RigidBody.h" />
+    <ClInclude Include="Src\Scene.h" />
+    <ClInclude Include="Src\Setting.h" />
+    <ClInclude Include="Src\ShadowCamera.h" />
+    <ClInclude Include="Src\Sky.h" />
+    <ClInclude Include="Src\SmokeManager.h" />
+    <ClInclude Include="Src\SoundManager.h" />
+    <ClInclude Include="Src\Suspension.h" />
+    <ClInclude Include="Src\TireRB.h" />
+    <ClInclude Include="Src\Transmission.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BodyRB.cpp" />
-    <ClCompile Include="Brake.cpp" />
-    <ClCompile Include="Car.cpp" />
-    <ClCompile Include="CarCamera.cpp" />
-    <ClCompile Include="CarSelectScene.cpp" />
-    <ClCompile Include="Clutch.cpp" />
-    <ClCompile Include="DDSTextureLoader12.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Differential.cpp" />
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="EnvCamera.cpp" />
-    <ClCompile Include="Field.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -225,25 +216,39 @@
     <ClCompile Include="ImGUI\imgui_widgets.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MatrixVector.cpp" />
-    <ClCompile Include="Meter.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Pch.cpp">
+    <ClCompile Include="Src\BodyRB.cpp" />
+    <ClCompile Include="Src\Brake.cpp" />
+    <ClCompile Include="Src\Car.cpp" />
+    <ClCompile Include="Src\CarCamera.cpp" />
+    <ClCompile Include="Src\CarSelectScene.cpp" />
+    <ClCompile Include="Src\Clutch.cpp" />
+    <ClCompile Include="Src\DDSTextureLoader12.cpp" />
+    <ClCompile Include="Src\Differential.cpp" />
+    <ClCompile Include="Src\Engine.cpp" />
+    <ClCompile Include="Src\EnvCamera.cpp" />
+    <ClCompile Include="Src\Field.cpp" />
+    <ClCompile Include="Src\GameManager.cpp" />
+    <ClCompile Include="Src\GameScene.cpp" />
+    <ClCompile Include="Src\InputManager.cpp" />
+    <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\MatrixVector.cpp" />
+    <ClCompile Include="Src\Meter.cpp" />
+    <ClCompile Include="Src\Model.cpp" />
+    <ClCompile Include="Src\Pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RenderManager.cpp" />
-    <ClCompile Include="RigidBody.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Setting.cpp" />
-    <ClCompile Include="ShadowCamera.cpp" />
-    <ClCompile Include="Sky.cpp" />
-    <ClCompile Include="SmokeManager.cpp" />
-    <ClCompile Include="SoundManager.cpp" />
-    <ClCompile Include="Suspension.cpp" />
-    <ClCompile Include="TireRB.cpp" />
-    <ClCompile Include="Transmission.cpp" />
+    <ClCompile Include="Src\RenderManager.cpp" />
+    <ClCompile Include="Src\RigidBody.cpp" />
+    <ClCompile Include="Src\Scene.cpp" />
+    <ClCompile Include="Src\Setting.cpp" />
+    <ClCompile Include="Src\ShadowCamera.cpp" />
+    <ClCompile Include="Src\Sky.cpp" />
+    <ClCompile Include="Src\SmokeManager.cpp" />
+    <ClCompile Include="Src\SoundManager.cpp" />
+    <ClCompile Include="Src\Suspension.cpp" />
+    <ClCompile Include="Src\TireRB.cpp" />
+    <ClCompile Include="Src\Transmission.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\CarPS.hlsl">

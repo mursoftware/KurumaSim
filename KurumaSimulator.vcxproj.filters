@@ -25,21 +25,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Main.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Pch.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderManager.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="ImGUI\imgui_impl_win32.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
@@ -64,110 +49,110 @@
     <ClInclude Include="ImGUI\imgui_impl_dx12.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="d3dx12.h">
-      <Filter>System</Filter>
+    <ClInclude Include="Src\Suspension.h">
+      <Filter>Car</Filter>
     </ClInclude>
-    <ClInclude Include="DDSTextureLoader12.h">
-      <Filter>System</Filter>
+    <ClInclude Include="Src\TireRB.h">
+      <Filter>Car</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Scene</Filter>
+    <ClInclude Include="Src\Transmission.h">
+      <Filter>Car</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene.h">
-      <Filter>Scene</Filter>
+    <ClInclude Include="Src\BodyRB.h">
+      <Filter>Car</Filter>
     </ClInclude>
-    <ClInclude Include="Sky.h">
+    <ClInclude Include="Src\Brake.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Car.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Clutch.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Differential.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DriveTrain.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Engine.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Meter.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RigidBody.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Setting.h">
+      <Filter>Car</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ShadowCamera.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
+    <ClInclude Include="Src\Sky.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SmokeManager.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CarCamera.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\EnvCamera.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Field.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CarSelectScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SoundManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\d3dx12.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\DDSTextureLoader12.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GameManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\InputManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Main.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\MatrixVector.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Pch.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\RenderManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model.h">
       <Filter>Resouce</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Setting.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="TireRB.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Transmission.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="BodyRB.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Brake.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Car.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Clutch.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Differential.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="DriveTrain.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="MatrixVector.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Suspension.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="Field.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundManager.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="EnvCamera.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="CarCamera.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowCamera.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Meter.h">
-      <Filter>Car</Filter>
-    </ClInclude>
-    <ClInclude Include="CarSelectScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="SmokeManager.h">
-      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Pch.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderManager.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
     <ClCompile Include="ImGUI\imgui_impl_win32.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>
@@ -186,80 +171,95 @@
     <ClCompile Include="ImGUI\imgui_impl_dx12.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="DDSTextureLoader12.cpp">
-      <Filter>System</Filter>
+    <ClCompile Include="Src\BodyRB.cpp">
+      <Filter>Car</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene.cpp">
-      <Filter>Scene</Filter>
+    <ClCompile Include="Src\Suspension.cpp">
+      <Filter>Car</Filter>
     </ClCompile>
-    <ClCompile Include="Sky.cpp">
+    <ClCompile Include="Src\TireRB.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Transmission.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Brake.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Car.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Clutch.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Engine.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Differential.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Meter.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RigidBody.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Setting.cpp">
+      <Filter>Car</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ShadowCamera.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="Src\Sky.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SmokeManager.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\CarCamera.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EnvCamera.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Field.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\CarSelectScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SoundManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\DDSTextureLoader12.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GameManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\InputManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Main.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\MatrixVector.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Pch.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\RenderManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model.cpp">
       <Filter>Resouce</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBody.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Setting.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="TireRB.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Transmission.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="BodyRB.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Brake.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Car.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Clutch.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Differential.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="MatrixVector.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="Suspension.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundManager.cpp">
-      <Filter>System</Filter>
-    </ClCompile>
-    <ClCompile Include="EnvCamera.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="CarCamera.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowCamera.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Meter.cpp">
-      <Filter>Car</Filter>
-    </ClCompile>
-    <ClCompile Include="CarSelectScene.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="SmokeManager.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

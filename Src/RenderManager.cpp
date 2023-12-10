@@ -1240,7 +1240,7 @@ void RenderManager::PreDraw()
 		GetClientRect(GetWindow(), &rect);
 
 		ImGui_ImplDX12_NewFrame();
-		ImGui_ImplWin32_NewFrame((float)(rect.right - rect.left) / m_BackBufferWidth, (float)(rect.bottom - rect.top) / m_BackBufferHeight, m_BackBufferWidth, m_BackBufferHeight);
+		ImGui_ImplWin32_NewFrame((float)(rect.right - rect.left) / m_BackBufferWidth, (float)(rect.bottom - rect.top) / m_BackBufferHeight, (float)m_BackBufferWidth, (float)m_BackBufferHeight);
 		ImGui::NewFrame();
 
 		//ImGui::ShowDemoWindow();
@@ -3018,7 +3018,7 @@ void RenderManager::StartCommandTime(const char* Name)
 
 	if (index == -1)
 	{
-		index = m_CommandTime.size();
+		index = (int)m_CommandTime.size();
 
 		CommandTime commandTime{};
 		commandTime.Name = Name;

@@ -123,11 +123,11 @@ void Field::Draw(Camera* DrawCamera)
 		wavelength4inv.Z = 1.0f / powf(wavelength.Z, 4);
 		wavelength4inv.Y = 1.0f / powf(wavelength.Y, 4);
 
-		float atomDensityLight = 1.0 + pow(1.0 - constant.LightDirection.Y, 10) * 10.0;
+		float atomDensityLight = 1.0f + pow(1.0f - constant.LightDirection.Y, 10.0f) * 10.0f;
 
-		constant.ScatteringLight.X = constant.LightColor.X * exp(-atomDensityLight * atomDensityLight * wavelength4inv.X * 0.01);
-		constant.ScatteringLight.Z = constant.LightColor.Z * exp(-atomDensityLight * atomDensityLight * wavelength4inv.Z * 0.01);
-		constant.ScatteringLight.Y = constant.LightColor.Y * exp(-atomDensityLight * atomDensityLight * wavelength4inv.Y * 0.01);
+		constant.ScatteringLight.X = constant.LightColor.X * exp(-atomDensityLight * atomDensityLight * wavelength4inv.X * 0.01f);
+		constant.ScatteringLight.Z = constant.LightColor.Z * exp(-atomDensityLight * atomDensityLight * wavelength4inv.Z * 0.01f);
+		constant.ScatteringLight.Y = constant.LightColor.Y * exp(-atomDensityLight * atomDensityLight * wavelength4inv.Y * 0.01f);
 
 
 
