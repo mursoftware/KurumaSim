@@ -71,14 +71,14 @@ void Field::DrawDepth(Camera* DrawCamera)
 	//m_Camera = GameManager::GetInstance()->GetScene()->GetCurrentCamera();
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 projection = DrawCamera->GetProjectionMatrix();
 	Matrix44 world = Matrix44::Identity();
 
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(world * view * projection);
 	constant.OldWVP = Matrix44::Transpose(world * oldView * projection);
@@ -87,7 +87,7 @@ void Field::DrawDepth(Camera* DrawCamera)
 	render->SetConstant(2, &constant, sizeof(constant));
 
 
-	//描画
+
 	m_Model.Draw();
 
 }
@@ -97,7 +97,7 @@ void Field::DrawDepth(Camera* DrawCamera)
 void Field::Draw(Camera* DrawCamera)
 {	
 
-	//定数バッファ設定
+
 	{
 		ENV_CONSTANT constant;
 
@@ -116,7 +116,7 @@ void Field::Draw(Camera* DrawCamera)
 
 
 
-		//大気散乱
+		//atmospheric dispersion
 		Vector3 wavelength = Vector3(0.650f, 0.570f, 0.475f);
 		Vector3 wavelength4inv;
 		wavelength4inv.X = 1.0f / powf(wavelength.X, 4);
@@ -136,7 +136,7 @@ void Field::Draw(Camera* DrawCamera)
 
 
 
-	//描画
+
 	{
 		RenderManager* render = RenderManager::GetInstance();
 		render->SetPipelineState("Field");
@@ -147,7 +147,7 @@ void Field::Draw(Camera* DrawCamera)
 			ShadowCamera** shadowCamera = GameManager::GetInstance()->GetScene()->GetCurrentShadowCamera();
 
 
-			//マトリクス設定
+
 			Matrix44 world = Matrix44::Identity();
 
 			Matrix44 view = DrawCamera->GetViewMatrix();
@@ -167,7 +167,7 @@ void Field::Draw(Camera* DrawCamera)
 			Matrix44 shadowProjection2 = shadowCamera[2]->GetProjectionMatrix();
 
 
-			//定数バッファ設定
+
 			OBJECT_CONSTANT constant;
 			constant.WVP = Matrix44::Transpose(world * view * projection);
 			constant.OldWVP = Matrix44::Transpose(world * oldView * oldProjection);
@@ -195,7 +195,7 @@ void Field::Draw(Camera* DrawCamera)
 
 		}
 
-		//描画
+
 		m_Model.Draw();
 	}
 

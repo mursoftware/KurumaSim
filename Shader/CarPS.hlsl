@@ -45,7 +45,7 @@ PS_OUTPUT main(PS_INPUT input)
     ao = saturate(ao);
 
 
-    //マテリアルパラメータ
+
     float metallic = Material.Metallic * arm.z;
     float spec = Material.Specular;
     float roughness = Material.Roughness * arm.y;
@@ -71,7 +71,6 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //シャドウ
     float shadow = 1.0;
     {
         float2 shadowTexCoord;
@@ -88,7 +87,6 @@ PS_OUTPUT main(PS_INPUT input)
     }
 
 
-    //フレネル反射率
     float3 fresnel;
     {
         float3 f0 = lerp(0.08 * spec, baseColor.rgb, metallic);
@@ -99,21 +97,21 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //拡散反射光
+
     float3 diffuse;
     {
 
-        //環境光
+
         float3 envLight = 0.0;
         {
             float2 iblTexCoord;
             iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
             iblTexCoord.y = acos(normal.y) / PI;
 
-			envLight = textureIBL.Sample(sampler2, iblTexCoord).rgb * pow(ao, 2.2); //IBLテクスチャ生成時に正規化済
+			envLight = textureIBL.Sample(sampler2, iblTexCoord).rgb * pow(ao, 2.2); //Normalized during IBL texture generation
 		}
 
-        //太陽光
+
         float3 dirLight;
         {
 			dirLight = saturate(dot(LightDirection, normal)) * ScatteringLight * shadow / PI;
@@ -127,13 +125,13 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //鏡面反射光
+
     float3 specular;
     {
 
 
 
-        //環境光
+
         float3 envSpec = 0.0;
         {
             envSpec += textureEnv.SampleLevel(sampler1, eyeRefVector, roughness * 10.0).rgb;
@@ -149,7 +147,7 @@ PS_OUTPUT main(PS_INPUT input)
           
 			//envSpec /= 9.0;
 
-            //曲率が高い面のスペキュラを弱く
+            //Weaken specularity on surfaces with high curvature.
 			float r = (length(ddx(normal) + ddy(normal))) * 5.0 + 1.0;
 			envSpec /= r;
 		}
@@ -158,7 +156,7 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-        //太陽光
+
         float3 dirSpec;
         {
             float NdotH = saturate(dot(halfVector, normal.xyz));
@@ -184,11 +182,11 @@ PS_OUTPUT main(PS_INPUT input)
             }
 
 
-            //GGX
+
 			dirSpec = (d * g) / (4.0 * NdotV * NdotL + 0.000001);
 
             
-            //曲率が高い面のスペキュラを弱く
+            //Weaken specularity on surfaces with high curvature
 			float r = (length(ddx(normal) + ddy(normal))) * 5.0 + 1.0;
 			dirSpec /= r;
             
@@ -220,14 +218,14 @@ PS_OUTPUT main(PS_INPUT input)
 
 
     
-    //フォグ
+    //fog
     {
 		output.Color.rgb = output.Color.rgb * input.Fog.a + input.Fog.rgb * (1.0 - input.Fog.a) * saturate(output.Color.g + 0.1);
 	}
 
 
 
-    //速度ベクトル
+    //velocity vector
     {
         float2 oldPosition = input.OldPosition.xy;
         oldPosition /= input.OldPosition.w;

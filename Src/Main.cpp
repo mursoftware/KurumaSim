@@ -45,7 +45,6 @@ int APIENTRY wWinMain(  _In_ HINSTANCE hInstance,
     g_FullWindow = false;
 
 
-    //パラメータ読み込み
     int windowWidth{}, windowHeight{};
     {
         std::string path;
@@ -94,17 +93,10 @@ int APIENTRY wWinMain(  _In_ HINSTANCE hInstance,
 
         GameManager gameManager;
 
-
         ShowWindow(g_Window, SW_SHOW);
 
 
 
-        //フレームカウント初期化
-        //DWORD dwExecLastTime{};
-        //DWORD dwCurrentTime{};
-        //timeBeginPeriod(1);
-        //dwExecLastTime = timeGetTime();
-        //dwCurrentTime = 0;
 
         LARGE_INTEGER qpf;
         QueryPerformanceFrequency(&qpf);
@@ -133,20 +125,6 @@ int APIENTRY wWinMain(  _In_ HINSTANCE hInstance,
             }
             else
             {
-                //dwCurrentTime = timeGetTime();
-
-                //if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60 / 5))
-                //{
-                //    gameManager.Update();
-
-                //    dwExecLastTime = dwCurrentTime;
-                //}
-                //else
-                //{
-                //    //Sleep(1);
-                //}
-
-
 
                 QueryPerformanceCounter(&qpc);
                 LONGLONG time = qpc.QuadPart;

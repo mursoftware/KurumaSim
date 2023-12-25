@@ -94,50 +94,9 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
     //color.rgb = textureColor.SampleLevel(sampler1, texcoord, offset).rgb;
 
-/*
-    //モーションブラー
-    {
-        int count = 0;
-        float speed = length(velocity.xy);
-        int sample = 1 + speed * 100.0;
-        sample = min(sample, 5);
-
-        for (int i = 0; i < sample; i++)
-        {
-            float vz = textureVelocity.SampleLevel(sampler1, texcoord - velocity * i * MotionBlur / sample, 0).z;
-            if (vz >= velocity.z)
-            {
-                color.rgb += textureColor.SampleLevel(sampler1, texcoord - velocity * i * MotionBlur / sample, offset).rgb;
-                count++;
-            }
-        }
-
-        color.rgb /= count;
-    }
-*/
-
-
-/*
-    //モーションブラー
-    {
-        float4 velocity = textureVelocity.Sample(sampler1, texcoord).xyzw;
-        float count = 0.0;
-        for (int i = 0; i < 5; i++)
-        {
-            float vz = textureVelocity.SampleLevel(sampler1, texcoord - velocity.xy * i * MotionBlur / 5, 0).z;
-            //if (vz >= velocity.z)
-            {
-				color.rgb += textureColor.SampleLevel(sampler1, texcoord - velocity.xy * i * MotionBlur / 5, offset).rgb * saturate(1.0 - (velocity.z - vz) * 100.0);
-				count += saturate(1.0 - (velocity.z - vz) * 100.0);
-			}
-        }
-
-        color.rgb /= count;
-    }
-*/
     
   
-    //回転対応モーションブラー
+    //Motion blur for rotation
     {
 		float count = 0.0;
 		float2 blurPos = texcoord;
@@ -163,7 +122,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
     
     
 
-    //フレア
+    //flare
     {
         float r = LensFlare * 2.0;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 0 + offset).rgb * 1.0;
@@ -181,7 +140,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
     
 
 
-    //スモーク縮小バッファ合成
+    //Smoke Reduction Buffer Composition
     {
 		float4 shrinkColor = textureShrink.SampleLevel(sampler1, texcoord, 0);
         
@@ -194,26 +153,14 @@ float4 main(PS_INPUT input) : SV_TARGET0
 		//	shrinkAlpah += textureShrink.SampleLevel(sampler1, texcoord + offset, 0).a;
 		//}
 		color.rgb = lerp(color.rgb, shrinkColor.rgb, shrinkColor.a);
-		//color.rgb = lerp(color.rgb, shrinkColor.rgb, saturate(shrinkColor.r)); //DXGI_FORMAT_R11G11B10_FLOATでアルファ利用不可
+		//color.rgb = lerp(color.rgb, shrinkColor.rgb, saturate(shrinkColor.r)); //Alpha not available in DXGI_FORMAT_R11G11B10_FLOAT
 	}
 
-
-
-    ////フォグ
-    //{
-    //    //if (z < 400)
-    //    {
-    //        float3 lightColor = float3(1.3, 1.2, 1.0);
-    //        float fog = saturate(z * z * Fog / 40000.0);
-    //        color.rgb = color.rgb * (1.0 - fog) + lightColor * fog * saturate(color.g + 0.5);
-    //    }
-    //}
-
-
+    
 
     
     
-    //ビネット
+    //vignette
     {
 		float2 pos;
 		pos.x = texcoord.x * 2.0f - 1.0f;
@@ -232,7 +179,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
 
 
-    //露出補正
+    //Exposure 
 	if (AutoExposure)
 	{
 		float4 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.75), 0);
@@ -247,7 +194,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
 
 
-    //トーンマッピング
+    //tone mapping
     {
         //if (ACESFilmEnable)
 			color.rgb = ACESFilm(color.rgb);
@@ -257,14 +204,14 @@ float4 main(PS_INPUT input) : SV_TARGET0
     
 
 
-    //ホワイトバランス
+    //white balance
     {
 		color.rgb *= ColorTemperatureToRGB(WhiteBalance);// / ColorTemperatureToRGB(IBLWhiteBalance);
 	}
   
 
 
-    //ガンマ補正
+    //gamma correction
     {
 		color.rgb = gammacorrect(color.rgb, Gamma);
 	}

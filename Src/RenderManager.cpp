@@ -63,7 +63,7 @@ void RenderManager::Initialize()
 {
 
 
-	//パラメータ読み込み
+
 	{
 		std::string path;
 		path = ".\\Setting.ini";
@@ -146,7 +146,6 @@ void RenderManager::Initialize()
 
 
 #if defined(_DEBUG)
-	//デバッグレイヤー有効
 	{
 		ComPtr<ID3D12Debug1>	debugController;
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
@@ -171,7 +170,7 @@ void RenderManager::Initialize()
 
 
 
-	//CPU名取得
+
 	{
 		int data[4] = { 0 };
 		char cpu_name[49] = { 0 };
@@ -191,7 +190,7 @@ void RenderManager::Initialize()
 
 
 
-	//デバイス生成
+
 	{
 		UINT flag{};
 		hr = CreateDXGIFactory2(flag, IID_PPV_ARGS(&m_Factory));
@@ -214,7 +213,7 @@ void RenderManager::Initialize()
 
 
 
-	//コマンドキュー生成
+
 	{
 		D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 
@@ -235,7 +234,7 @@ void RenderManager::Initialize()
 
 
 
-	//コマンドアロケータ・リスト生成
+
 	{
 		hr = m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_GraphicsCommandAllocator[0]));
 		assert(SUCCEEDED(hr));
@@ -256,7 +255,7 @@ void RenderManager::Initialize()
 
 
 
-	//リソース用コマンドアロケータ・リスト生成
+
 	{
 		hr = m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_ResourceCommandAllocator[0]));
 		assert(SUCCEEDED(hr));
@@ -281,7 +280,7 @@ void RenderManager::Initialize()
 
 
 
-	//クエリ生成
+
 	{
 		D3D12_QUERY_HEAP_DESC queryHeapDesc{};
 		queryHeapDesc.Type = D3D12_QUERY_HEAP_TYPE_TIMESTAMP;
@@ -317,7 +316,7 @@ void RenderManager::Initialize()
 
 
 
-	//スワップチェーン生成
+
 	{
 		DXGI_SWAP_CHAIN_DESC swapChainDesc{};
 		ComPtr<IDXGISwapChain> swapChain{};
@@ -352,7 +351,7 @@ void RenderManager::Initialize()
 
 
 
-	//レンダーターゲット生成
+
 	{
 		D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 		heapDesc.NumDescriptors = 2;
@@ -382,7 +381,6 @@ void RenderManager::Initialize()
 
 
 
-	//デプスバッファ用デスクリプタヒープ
 	{
 		D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
 		descriptorHeapDesc.NumDescriptors = 5;///////////////////////////////////
@@ -397,7 +395,6 @@ void RenderManager::Initialize()
 
 
 
-	//デプスバッファ生成
 	{
 		D3D12_HEAP_PROPERTIES heapProperties{};
 		D3D12_RESOURCE_DESC resourceDesc{};
@@ -452,7 +449,6 @@ void RenderManager::Initialize()
 
 
 
-	//影用デプスバッファ生成
 	for(int i = 0; i < 3; i++)
 	{
 		D3D12_HEAP_PROPERTIES heapProperties{};
@@ -503,7 +499,6 @@ void RenderManager::Initialize()
 
 
 
-	//汎用デスクリプタヒープ
 	{
 		D3D12_DESCRIPTOR_HEAP_DESC desc;
 		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -534,7 +529,6 @@ void RenderManager::Initialize()
 
 
 
-	//ImGUI
 	{
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -577,18 +571,15 @@ void RenderManager::Initialize()
 	m_WhiteTexture = LoadTexture("asset/white.dds");
 
 
-	//環境マップ
 	//m_EnvTexture = LoadTexture("asset/snow_field_2k_EXR_BC6H_1.DDS");
 	//m_EnvTexture = LoadTexture("asset/CubeMap.DDS");
 
-	//IBLマップ
 	//m_IBLTexture = LoadTexture("asset/snow_field_256_ibl_DDS_BC6H_1.DDS");
 
 
 
 
 
-	//汎用定数バッファ
 	for (int i = 0; i < 2; i++)
 	{
 		m_ConstantBuffer[i] = CreateConstantResource(512 * CONSTANT_BUFFER_SIZE);
@@ -610,7 +601,6 @@ void RenderManager::Initialize()
 
 
 
-	////デプスダミーバッファ生成
 	////for (int i = 0; i < 2; i++)
 	//{
 	//	m_DepthDummyBuffer.Resource = CreateTextureResource(m_ShadowDepthBufferSize, m_ShadowDepthBufferSize,
@@ -627,7 +617,6 @@ void RenderManager::Initialize()
 
 
 
-	//環境キューブマップバッファ生成
 	//for (int i = 0; i < 2; i++)
 	{
 		m_EnvBuffer.Resource = CreateTextureResource(m_EnvBufferSize, m_EnvBufferSize,
@@ -649,7 +638,6 @@ void RenderManager::Initialize()
 	}
 
 
-	//IBLバッファ生成
 	//for (int i = 0; i < 2; i++)
 	{
 		m_IBLBuffer.Resource = CreateTextureResource(m_IBLBufferWidth, m_IBLBufferHeight,
@@ -662,7 +650,6 @@ void RenderManager::Initialize()
 		m_IBLBuffer.RTVHandle = CreateRenderTargetView(m_IBLBuffer.Resource.Get());
 	}
 
-	//IBLバッファ生成
 	//for (int i = 0; i < 2; i++)
 	{
 		m_IBLStaticBuffer.Resource = CreateTextureResource(m_IBLBufferWidth, m_IBLBufferHeight,
@@ -676,7 +663,6 @@ void RenderManager::Initialize()
 	}
 
 
-	//HDRバッファ生成
 	//for (int i = 0; i < 2; i++)
 	{
 		int width = (int)(m_SSBufferWidth);
@@ -694,7 +680,6 @@ void RenderManager::Initialize()
 	}
 
 
-	//TAAバッファ生成
 	for (int i = 0; i < 2; i++)
 	{
 		int width = (int)(m_BackBufferWidth);
@@ -719,7 +704,6 @@ void RenderManager::Initialize()
 
 
 
-	//縮小バッファ生成
 	//for (int i = 0; i < 2; i++)
 	{
 		int width = m_SSBufferWidth / 4;
@@ -739,7 +723,6 @@ void RenderManager::Initialize()
 
 
 
-	//ベロシティマップバッファ生成
 	//for (int i = 0; i < 2; i++)
 	{
 		int width = (int)(m_SSBufferWidth);
@@ -759,7 +742,6 @@ void RenderManager::Initialize()
 
 
 
-	//露出補正バッファ生成
 	{
 
 		m_ExposureBuffer.Resource = CreateTextureResource(4, 4,
@@ -776,7 +758,6 @@ void RenderManager::Initialize()
 
 
 
-	//ルートシグネチャ生成
 	{
 
 		D3D12_ROOT_PARAMETER		rootParameters[CBV_REGISTER_MAX + SRV_REGISTER_MAX]{};
@@ -812,14 +793,13 @@ void RenderManager::Initialize()
 		}
 
 
-		//サンプラー
 		D3D12_STATIC_SAMPLER_DESC	samplerDesc[4]{};
 		//samplerDesc[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 		samplerDesc[0].Filter = D3D12_FILTER_ANISOTROPIC;
 		samplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDesc[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		samplerDesc[0].MipLODBias = -1.0f;//TSRのためのバイアス////////////////////////////////////////////////////////////////////////
+		samplerDesc[0].MipLODBias = 0.0f;//-0.1f Bias for TSR ////////////////////////////////////////////////////////////////////////
 		samplerDesc[0].MaxAnisotropy = 2;
 		samplerDesc[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 		samplerDesc[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
@@ -891,7 +871,6 @@ void RenderManager::Initialize()
 
 
 
-	//デプスパス生成
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
@@ -915,7 +894,6 @@ void RenderManager::Initialize()
 
 
 
-	//ライティングパス生成
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
@@ -942,7 +920,6 @@ void RenderManager::Initialize()
 	}
 
 
-	//AntiAliasing生成
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
@@ -965,7 +942,6 @@ void RenderManager::Initialize()
 	}
 
 
-	//縮小バッファパス生成
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
@@ -989,7 +965,6 @@ void RenderManager::Initialize()
 
 
 
-	//縮小ブラー・IBLパス生成
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
@@ -1015,7 +990,6 @@ void RenderManager::Initialize()
 	}
 
 
-	//ポストプロセスパス生成
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
@@ -1046,7 +1020,6 @@ void RenderManager::Initialize()
 
 
 
-	//スプライトポリゴン
 	{
 		D3D12_HEAP_PROPERTIES heapProperties{};
 		D3D12_RESOURCE_DESC   resourceDesc{};
@@ -1066,7 +1039,6 @@ void RenderManager::Initialize()
 		resourceDesc.SampleDesc.Count = 1;
 		resourceDesc.SampleDesc.Quality = 0;
 
-		//頂点バッファの作成
 		resourceDesc.Width = sizeof(VERTEX_3D) * 4;
 		hr = m_Device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
 			&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
@@ -1074,7 +1046,6 @@ void RenderManager::Initialize()
 		assert(SUCCEEDED(hr));
 
 
-		//頂点データの書き込み
 		VERTEX_3D* buffer{};
 		hr = m_SpriteVertexBuffer->Map(0, nullptr, (void**)&buffer);
 		assert(SUCCEEDED(hr));
@@ -1103,115 +1074,10 @@ void RenderManager::Initialize()
 
 
 
-/*
-void RenderManager::GraphicsCommandBegin()
-{
-	HRESULT hr;
-
-
-	hr = m_GraphicsCommandAllocator[m_RTIndex]->Reset();
-	assert(SUCCEEDED(hr));
-
-	hr = m_GraphicsCommandList->Reset(m_GraphicsCommandAllocator[m_RTIndex].Get(), nullptr);
-	assert(SUCCEEDED(hr));
-
-}
-
-
-
-
-void RenderManager::GraphicsCommandEnd()
-{
-	HRESULT hr;
-
-
-
-	hr = m_GraphicsCommandList->Close();
-	assert(SUCCEEDED(hr));
-
-
-
-	//コマンドリスト実行
-	ID3D12CommandList* const command_lists = m_GraphicsCommandList.Get();
-	m_CommandQueue->ExecuteCommandLists(1, &command_lists);
-
-
-
-	//WaitGPU();
-
-
-	m_CommandQueue->Signal(m_Fence.Get(), m_Frame[m_RTIndex]);
-
-	m_Fence->SetEventOnCompletion(m_Frame[m_RTIndex], m_FenceEvent);
-	WaitForSingleObjectEx(m_FenceEvent, INFINITE, FALSE);
-
-	m_Frame[m_RTIndex]++;
-
-}
-
-
-
-
-
-void RenderManager::ResourceCommandBegin()
-{
-	//m_ResourceCommandMutex.lock();
-
-
-	HRESULT hr;
-
-
-	hr = m_ResourceCommandAllocator->Reset();
-	assert(SUCCEEDED(hr));
-
-	hr = m_ResourceCommandList->Reset(m_ResourceCommandAllocator[m_RTIndex].Get(), nullptr);
-	assert(SUCCEEDED(hr));
-
-}
-
-
-
-
-void RenderManager::ResourceCommandEnd()
-{
-	HRESULT hr;
-
-
-
-	hr = m_ResourceCommandList->Close();
-	assert(SUCCEEDED(hr));
-
-
-
-	//コマンドリスト実行
-	ID3D12CommandList* const command_lists = m_ResourceCommandList.Get();
-	m_CommandQueue->ExecuteCommandLists(1, &command_lists);
-
-
-
-	//WaitGPU();
-
-
-	m_CommandQueue->Signal(m_Fence.Get(), m_Frame[m_RTIndex]);
-
-	m_Fence->SetEventOnCompletion(m_Frame[m_RTIndex], m_FenceEvent);
-	WaitForSingleObjectEx(m_FenceEvent, INFINITE, FALSE);
-
-	m_Frame[m_RTIndex]++;
-
-
-	//m_ResourceCommandMutex.unlock();
-
-}
-
-*/
-
-
 
 void RenderManager::WaitGPU()
 {
 
-	//実行したコマンドの終了待ち
 	m_CommandQueue->Signal(m_Fence.Get(), m_Frame[m_RTIndex]);
 
 	m_Fence->SetEventOnCompletion(m_Frame[m_RTIndex], m_FenceEvent);
@@ -1233,7 +1099,6 @@ void RenderManager::PreDraw()
 
 
 
-	//ImGUI
 	//if (false)
 	{
 		RECT rect;
@@ -1247,14 +1112,12 @@ void RenderManager::PreDraw()
 	}
 
 
-	//汎用デスクリプタヒープ
 	{
 		ID3D12DescriptorHeap* dh[] = { m_SRVDescriptorHeap.Get() };
 		m_GraphicsCommandList->SetDescriptorHeaps(_countof(dh), dh);
 	}
 
 
-	//ルートシグネチャの設定
 	m_GraphicsCommandList->SetGraphicsRootSignature(m_RootSignature.Get());
 
 
@@ -1277,7 +1140,6 @@ void RenderManager::DrawDepthBegin(int Index)
 {
 
 
-	//シャドウデプスパス
 	{
 		D3D12_VIEWPORT viewport = m_SSViewport;
 		D3D12_RECT scissorRect = m_SSScissorRect;
@@ -1289,7 +1151,6 @@ void RenderManager::DrawDepthBegin(int Index)
 		scissorRect.bottom = m_ShadowDepthBufferSize;
 
 
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
@@ -1299,11 +1160,9 @@ void RenderManager::DrawDepthBegin(int Index)
 
 		m_GraphicsCommandList->OMSetRenderTargets(0, nullptr, false, &m_ShadowDepthBufferHandle[Index]);
 
-		//デプスバッファ・レンダーターゲットのクリア
 		m_GraphicsCommandList->ClearDepthStencilView(m_ShadowDepthBufferHandle[Index], D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Depth"].Get());
 
 	}
@@ -1330,7 +1189,6 @@ void RenderManager::DrawEnvBegin(int Index)
 {
 
 
-	//環境キューブマップ生成
 	{
 		D3D12_VIEWPORT viewport = m_Viewport;
 		D3D12_RECT scissorRect = m_ScissorRect;
@@ -1341,22 +1199,18 @@ void RenderManager::DrawEnvBegin(int Index)
 		scissorRect.right = m_EnvBufferSize;
 		scissorRect.bottom = m_EnvBufferSize;
 
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-		//レンダーターゲット用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_EnvBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, Index * m_EnvBufferMipLevel);
 
 
-		//デプスバッファ・レンダーターゲットのクリア
 		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle[m_RTIndex], D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		m_GraphicsCommandList->ClearRenderTargetView(m_EnvBuffer.RTVHandleArray[Index][0], clearColor, 0, nullptr);
 
 
-		//レンダーターゲットの設定
 		D3D12_CPU_DESCRIPTOR_HANDLE rt[1] =
 		{
 			m_EnvBuffer.RTVHandleArray[Index][0],
@@ -1365,7 +1219,6 @@ void RenderManager::DrawEnvBegin(int Index)
 
 
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_IBLBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_IBLStaticBuffer.SRVIndex);
@@ -1385,15 +1238,12 @@ void RenderManager::DrawEnvEnd(int Index)
 
 	{
 
-		//シェーダーリソース用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_EnvBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, Index * m_EnvBufferMipLevel);
 	}
 
 
-	//縮小バッファ
 	//if(false)
 	{
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Shrink"].Get());
 
 
@@ -1417,29 +1267,23 @@ void RenderManager::DrawEnvEnd(int Index)
 			scissorRect.bottom /= 2;
 
 
-			//ビューポートとシザー矩形の設定
 			m_GraphicsCommandList->RSSetViewports(1, &viewport);
 			m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-			//レンダーターゲット用リソースバリア
 			SetResourceBarrier(m_GraphicsCommandList.Get(), m_EnvBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, Index * m_EnvBufferMipLevel + i);
 
 
-			//レンダーターゲットの設定
 			m_GraphicsCommandList->OMSetRenderTargets(1, &m_EnvBuffer.RTVHandleArray[Index][i], false, nullptr);
 
 
-			//テクスチャ設定
 			SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndexArray[Index][i - 1]);
 
 
 
-			//2Dポリゴン描画
 			DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
 
 
-			//シェーダーリソース用リソースバリア
 			SetResourceBarrier(m_GraphicsCommandList.Get(), m_EnvBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, Index * m_EnvBufferMipLevel + i);
 
 		}
@@ -1452,7 +1296,6 @@ void RenderManager::DrawEnvEnd(int Index)
 void RenderManager::DrawIBL()
 {
 
-	//IBLパス
 	{
 		D3D12_VIEWPORT viewport = m_Viewport;
 		D3D12_RECT scissorRect = m_ScissorRect;
@@ -1463,34 +1306,27 @@ void RenderManager::DrawIBL()
 		scissorRect.right = m_IBLBufferWidth;
 		scissorRect.bottom = m_IBLBufferHeight;
 
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["IBL"].Get());
 
 
-		//レンダーターゲット用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_IBLBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		//レンダーターゲットの設定
 		m_GraphicsCommandList->OMSetRenderTargets(1, &m_IBLBuffer.RTVHandle, false, nullptr);
 
 
 
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
 
 
-		//2Dポリゴン描画
 		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
 
 
 
-		//プレゼント用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_IBLBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	}
 
@@ -1501,7 +1337,6 @@ void RenderManager::DrawIBL()
 void RenderManager::DrawIBLStatic()
 {
 
-	//IBLStaticパス
 	{
 		D3D12_VIEWPORT viewport = m_Viewport;
 		D3D12_RECT scissorRect = m_ScissorRect;
@@ -1512,34 +1347,27 @@ void RenderManager::DrawIBLStatic()
 		scissorRect.right = m_IBLBufferWidth;
 		scissorRect.bottom = m_IBLBufferHeight;
 
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Shrink"].Get());
 
 
-		//レンダーターゲット用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_IBLStaticBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		//レンダーターゲットの設定
 		m_GraphicsCommandList->OMSetRenderTargets(1, &m_IBLStaticBuffer.RTVHandle, false, nullptr);
 
 
 
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_IBLBuffer.SRVIndex);
 
 
-		//2Dポリゴン描画
 		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
 
 
 
-		//プレゼント用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_IBLStaticBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	}
 
@@ -1553,19 +1381,15 @@ void RenderManager::DrawIBLStatic()
 void RenderManager::DrawZPrePassBegin()
 {
 
-	//ZPrePass
 	{
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &m_SSViewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &m_SSScissorRect);
 
 
-		//レンダーターゲット用リソースバリア
 		//SetResourceBarrier(m_HDRBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, 0);
 		//SetResourceBarrier(m_VelocityBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 /*
-		//レンダーターゲットの設定
 		D3D12_CPU_DESCRIPTOR_HANDLE rt[2] =
 		{
 			m_HDRBuffer.RTVHandleArray[0][0],
@@ -1575,18 +1399,15 @@ void RenderManager::DrawZPrePassBegin()
 		m_GraphicsCommandList->OMSetRenderTargets(0, nullptr, false, &m_DepthBufferHandle[m_RTIndex]);
 
 
-		//デプスバッファ・レンダーターゲットのクリア
 		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle[m_RTIndex], D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		//m_GraphicsCommandList->ClearRenderTargetView(m_HDRBuffer.RTVHandleArray[0][0], clearColor, 0, nullptr);
 		//m_GraphicsCommandList->ClearRenderTargetView(m_VelocityBuffer.RTVHandle, clearColor, 0, nullptr);
 
 
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Depth"].Get());
 
 /*
-		//テクスチャ設定
 		//SetGraphicsRootDescriptorTable(4, m_EnvTexture.SRVIndex);
 		SetGraphicsRootDescriptorTable(4, m_EnvBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(5, m_IBLBuffer.SRVIndex);
@@ -1614,19 +1435,15 @@ void RenderManager::DrawBegin()
 	m_TemporalFrameIndex = (m_TemporalFrameIndex + 1) % 2;
 
 
-	//ライティングパス
 	{
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &m_SSViewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &m_SSScissorRect);
 
 
-		//レンダーターゲット用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_HDRBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_VelocityBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 
-		//レンダーターゲットの設定
 		D3D12_CPU_DESCRIPTOR_HANDLE rt[2] =
 		{
 			m_HDRBuffer.RTVHandle,
@@ -1635,7 +1452,6 @@ void RenderManager::DrawBegin()
 		m_GraphicsCommandList->OMSetRenderTargets(2, rt, false, &m_DepthBufferHandle[m_RTIndex]);
 
 
-		//デプスバッファ・レンダーターゲットのクリア
 		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		//m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		m_GraphicsCommandList->ClearRenderTargetView(m_HDRBuffer.RTVHandle, clearColor, 0, nullptr);
@@ -1643,7 +1459,6 @@ void RenderManager::DrawBegin()
 
 
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_IBLBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 3, m_IBLStaticBuffer.SRVIndex);
@@ -1666,7 +1481,6 @@ void RenderManager::DrawEnd()
 
 	{
 
-		//シェーダーリソース用リソースバリア
 		//SetResourceBarrier(m_GraphicsCommandList.Get(), m_DepthDummyBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_HDRBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 0);
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_VelocityBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
@@ -1684,7 +1498,6 @@ void RenderManager::DrawAntiAliasing()
 {
 
 	{
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &m_Viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &m_ScissorRect);
 
@@ -1692,10 +1505,8 @@ void RenderManager::DrawAntiAliasing()
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_TemporalBuffer[m_TemporalFrameIndex].Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, 0);
 
 
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["AntiAliasing"].Get());
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_HDRBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_TemporalBuffer[(m_TemporalFrameIndex + 1) % 2].SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_VelocityBuffer.SRVIndex);
@@ -1703,7 +1514,6 @@ void RenderManager::DrawAntiAliasing()
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 4, m_DepthBufferSRVIndex[(m_RTIndex + 1) % 2]);
 
 
-		//レンダーターゲットの設定
 		D3D12_CPU_DESCRIPTOR_HANDLE rt[1] =
 		{
 			m_TemporalBuffer[m_TemporalFrameIndex].RTVHandleArray[0][0],
@@ -1713,7 +1523,6 @@ void RenderManager::DrawAntiAliasing()
 
 
 
-		//2Dポリゴン描画
 		DrawScreen((unsigned int)m_Viewport.Width, (unsigned int)m_Viewport.Height);
 
 
@@ -1733,7 +1542,6 @@ void RenderManager::DrawShrinkBlur()
 
 	{
 
-		//シェーダーリソース用リソースバリア
 		//SetResourceBarrier(m_GraphicsCommandList.Get(), m_HDRBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 0);
 
 	}
@@ -1741,10 +1549,8 @@ void RenderManager::DrawShrinkBlur()
 
 
 
-	//縮小ブラー
 	//if(false)
 	{
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["ShrinkBlur"].Get());
 
 
@@ -1762,34 +1568,27 @@ void RenderManager::DrawShrinkBlur()
 			scissorRect.bottom /= 2;
 
 
-			//ビューポートとシザー矩形の設定
 			m_GraphicsCommandList->RSSetViewports(1, &viewport);
 			m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-			//レンダーターゲット用リソースバリア
 			SetResourceBarrier(m_GraphicsCommandList.Get(), m_TemporalBuffer[m_TemporalFrameIndex].Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, i);
 
 
-			//レンダーターゲットの設定
 			m_GraphicsCommandList->OMSetRenderTargets(1, &m_TemporalBuffer[m_TemporalFrameIndex].RTVHandleArray[0][i], false, nullptr);
 
 
-			//デプスバッファ・レンダーターゲットのクリア
 			FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 			//m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 			//m_GraphicsCommandList->ClearRenderTargetView(handle, clearColor, 0, nullptr);
 
-			//テクスチャ設定
 			SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_TemporalBuffer[m_TemporalFrameIndex].SRVIndexArray[0][i - 1]);
 
 
 
-			//2Dポリゴン描画
 			DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
 
 
-			//シェーダーリソース用リソースバリア
 			SetResourceBarrier(m_GraphicsCommandList.Get(), m_TemporalBuffer[m_TemporalFrameIndex].Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, i);
 
 
@@ -1801,7 +1600,6 @@ void RenderManager::DrawShrinkBlur()
 
 
 
-	//露出補正バッファ
 	{
 
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Shrink"].Get());
@@ -1816,85 +1614,33 @@ void RenderManager::DrawShrinkBlur()
 			scissorRect.right = 4;
 			scissorRect.bottom = 4;
 
-			//ビューポートとシザー矩形の設定
 			m_GraphicsCommandList->RSSetViewports(1, &viewport);
 			m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-			//レンダーターゲット用リソースバリア
 			SetResourceBarrier(m_GraphicsCommandList.Get(), m_ExposureBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 
-			//レンダーターゲットの設定
 			m_GraphicsCommandList->OMSetRenderTargets(1, &m_ExposureBuffer.RTVHandle, false, nullptr);
 
 
-			//デプスバッファ・レンダーターゲットのクリア
 			FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 			//m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 			//m_GraphicsCommandList->ClearRenderTargetView(handle, clearColor, 0, nullptr);
 
-			//テクスチャ設定
 			SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_TemporalBuffer[m_TemporalFrameIndex].SRVIndexArray[0][9]);
 
 
 
-			//2Dポリゴン描画
 			DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height, 0.05f);
 
 
-			//シェーダーリソース用リソースバリア
 			SetResourceBarrier(m_GraphicsCommandList.Get(), m_ExposureBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 		}
 	}
 
 
-
-/*
-	//スーパーサンプリングパス
-	{
-		//PSOの設定
-		m_GraphicsCommandList->SetPipelineState(m_PipelineState["TSS"].Get());
-
-
-		//ビューポートとシザー矩形の設定
-		m_GraphicsCommandList->RSSetViewports(1, &m_Viewport);
-		m_GraphicsCommandList->RSSetScissorRects(1, &m_ScissorRect);
-
-
-		//レンダーターゲット用リソースバリア
-		SetResourceBarrier(m_TSSBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-		//レンダーターゲットの設定
-		m_GraphicsCommandList->OMSetRenderTargets(1, &m_TSSBuffer.RTVHandle, false, nullptr);
-
-
-		//デプスバッファ・レンダーターゲットのクリア
-		//FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		//m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-		//m_GraphicsCommandList->ClearRenderTargetView(m_RenderTargetHandle[m_RTIndex], clearColor, 0, nullptr);
-
-
-
-		//テクスチャ設定
-		//SetGraphicsRootDescriptorTable(4, m_VelocityBuffer[m_RTIndex].SRVIndex);
-		SetGraphicsRootDescriptorTable(4, m_HDRBuffer.SRVIndex);
-		SetGraphicsRootDescriptorTable(5, m_VelocityBuffer.SRVIndex);
-		//SetGraphicsRootDescriptorTable(10, m_HDRBuffer[m_RTIndex][6].SRVIndex);
-		//SetGraphicsRootDescriptorTable(11, m_HDRBuffer[m_RTIndex][7].SRVIndex);
-		//SetGraphicsRootDescriptorTable(9, m_BloomTexture.ViewIndex);
-
-
-		//2Dポリゴン描画
-		DrawScreen(viewport.Width, viewport.Height);
-
-
-
-		//シェーダーリソース用リソースバリア
-		SetResourceBarrier(m_TSSBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	}
-*/
 }
 
 
@@ -1907,7 +1653,6 @@ void RenderManager::DrawShrinkBegin()
 {
 
 
-	//ライティングパス
 	{
 		D3D12_VIEWPORT viewport = m_SSViewport;
 		D3D12_RECT scissorRect = m_SSScissorRect;
@@ -1919,16 +1664,13 @@ void RenderManager::DrawShrinkBegin()
 		scissorRect.bottom /= 4;
 
 
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-		//レンダーターゲット用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_ShrinkBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 
-		//レンダーターゲットの設定
 		D3D12_CPU_DESCRIPTOR_HANDLE rt[2] =
 		{
 			m_ShrinkBuffer.RTVHandle,
@@ -1936,14 +1678,12 @@ void RenderManager::DrawShrinkBegin()
 		m_GraphicsCommandList->OMSetRenderTargets(1, rt, false, nullptr);
 
 
-		//デプスバッファ・レンダーターゲットのクリア
 		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		m_GraphicsCommandList->ClearRenderTargetView(m_ShrinkBuffer.RTVHandle, clearColor, 0, nullptr);
 
 
 
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
 		//SetGraphicsRootDescriptorTable(5, m_HDRBuffer.SRVIndex);
 		//SetGraphicsRootDescriptorTable(5, m_IBLBuffer.SRVIndex);
@@ -1968,7 +1708,6 @@ void RenderManager::DrawShrinkEnd()
 
 	{
 
-		//シェーダーリソース用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_ShrinkBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	}
@@ -1985,35 +1724,28 @@ void RenderManager::DrawPost()
 {
 
 
-	//ポストプロセスパス
 	{
 		D3D12_VIEWPORT viewport = m_Viewport;
 		D3D12_RECT scissorRect = m_ScissorRect;
 
 
-		//ビューポートとシザー矩形の設定
 		m_GraphicsCommandList->RSSetViewports(1, &viewport);
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
 
-		//レンダーターゲット用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_RenderTarget[m_RTIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		//レンダーターゲットの設定
 		m_GraphicsCommandList->OMSetRenderTargets(1, &m_RenderTargetHandle[m_RTIndex], TRUE, nullptr);
 
 
-		//デプスバッファ・レンダーターゲットのクリア
 		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		//m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		//m_GraphicsCommandList->ClearRenderTargetView(m_RenderTargetHandle[m_RTIndex], clearColor, 0, nullptr);
 
-		//PSOの設定
 		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Post"].Get());
 
 
-		//テクスチャ設定
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_TemporalBuffer[m_TemporalFrameIndex].SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_VelocityBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_DepthBufferSRVIndex[m_RTIndex]);
@@ -2021,7 +1753,6 @@ void RenderManager::DrawPost()
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 4, m_ExposureBuffer.SRVIndex);
 
 
-		//2Dポリゴン描画
 		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
 
 	}
@@ -2038,7 +1769,6 @@ void RenderManager::DrawUI(bool Debug)
 
 
 	{
-		//ImGUI
 		if (Debug)
 		{
 			//ImGui::ShowDemoWindow();
@@ -2186,7 +1916,6 @@ void RenderManager::DrawUI(bool Debug)
 		}
 
 
-		//プレゼント用リソースバリア
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_RenderTarget[m_RTIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	}
 
@@ -2244,7 +1973,6 @@ void RenderManager::DrawUI(bool Debug)
 
 
 
-	//クエリでパフォーマンス計測
 	{
 		void* ptr{};
 		m_QueryBuffer->Map(0, nullptr, &ptr);
@@ -2329,7 +2057,6 @@ ComPtr<ID3D12Resource> RenderManager::CreateConstantResource(unsigned int Size)
 
 	ComPtr<ID3D12Resource> resource;
 
-	//定数バッファの作成
 	HRESULT hr = m_Device->CreateCommittedResource(&properties,
 		D3D12_HEAP_FLAG_NONE,
 		&desc,
@@ -2522,7 +2249,6 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 	std::vector<char> pixelShader;
 
 
-	//頂点シェーダー読み込み
 	{
 		std::ifstream file(VertexShaderFile, std::ios_base::in | std::ios_base::binary);
 		assert(file);
@@ -2542,7 +2268,6 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 	}
 
 
-	//ピクセルシェーダー読み込み
 	{
 		std::ifstream file(PixelShaderFile, std::ios_base::in | std::ios_base::binary);
 		assert(file);
@@ -2562,7 +2287,6 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 	}
 
 
-	//インプットレイアウト
 	D3D12_INPUT_ELEMENT_DESC InputElementDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0,  0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -2603,7 +2327,6 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 	pipelineStateDesc.pRootSignature = m_RootSignature.Get();
 
 
-	//ラスタライザステート
 	if(CullEnable)
 		pipelineStateDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
 	else
@@ -2620,7 +2343,7 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 	pipelineStateDesc.RasterizerState.MultisampleEnable = FALSE;
 
 
-	//ブレンドステート
+
 	for (int i = 0; i < _countof(pipelineStateDesc.BlendState.RenderTarget); ++i)
 	{
 		pipelineStateDesc.BlendState.RenderTarget[i] = BlendDesc;
@@ -2641,7 +2364,7 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 	pipelineStateDesc.BlendState.IndependentBlendEnable = FALSE;
 
 
-	//デプス・ステンシルステート
+
 	pipelineStateDesc.DepthStencilState.DepthEnable = DepthEnable;
 	pipelineStateDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 	pipelineStateDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
@@ -2902,10 +2625,8 @@ void RenderManager::SetConstant(unsigned int RootParameterIndex, void* Constant,
 void RenderManager::DrawScreen(unsigned int Width, unsigned int Height, float Alpha)
 {
 
-	//マトリクス設定
 	Matrix44 world = Matrix44::Identity();
 
-	//定数バッファ設定
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(world);
 	constant.World = Matrix44::Transpose(world);
@@ -2913,7 +2634,6 @@ void RenderManager::DrawScreen(unsigned int Width, unsigned int Height, float Al
 	SetConstant(2, &constant, sizeof(constant));
 
 
-	//頂点バッファ設定
 	D3D12_VERTEX_BUFFER_VIEW vertexView{};
 	vertexView.BufferLocation = m_SpriteVertexBuffer->GetGPUVirtualAddress();
 	vertexView.StrideInBytes = sizeof(VERTEX_3D);
@@ -2921,11 +2641,8 @@ void RenderManager::DrawScreen(unsigned int Width, unsigned int Height, float Al
 	m_GraphicsCommandList->IASetVertexBuffers(0, 1, &vertexView);
 
 
-	//トポロジ設定
 	m_GraphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-
-	//描画
 	m_GraphicsCommandList->DrawInstanced(4, 1, 0, 0);
 }
 
@@ -2960,7 +2677,6 @@ ID3D12PipelineState* RenderManager::GetPipelineState()
 void RenderManager::DrawSprite(Vector3 Position, Vector3 Size, Vector3 Rotation, Vector4 Color, Vector2 TexPosition, Vector2 TexSize)
 {
 
-	//マトリクス設定
 	Matrix44 world = Matrix44::Identity();
 	world *= Matrix44::Scale(Size.X, Size.Y, Size.Z);
 	world *= Matrix44::RotationXYZ(Rotation.X, Rotation.Y, Rotation.Z);
@@ -2969,7 +2685,6 @@ void RenderManager::DrawSprite(Vector3 Position, Vector3 Size, Vector3 Rotation,
 	Matrix44 projection = Matrix44::OrthoCenter(1920.0f, 1080.0f, 1.0f);
 
 
-	//定数バッファ設定
 	OBJECT_CONSTANT constant{};
 	constant.WVP = Matrix44::Transpose(world * projection);
 	constant.World = Matrix44::Transpose(world);
@@ -2977,7 +2692,6 @@ void RenderManager::DrawSprite(Vector3 Position, Vector3 Size, Vector3 Rotation,
 	SetConstant(2, &constant, sizeof(constant));
 
 
-	//頂点バッファ設定
 	D3D12_VERTEX_BUFFER_VIEW vertexView{};
 	vertexView.BufferLocation = m_SpriteVertexBuffer->GetGPUVirtualAddress();
 	vertexView.StrideInBytes = sizeof(VERTEX_3D);
@@ -2985,17 +2699,14 @@ void RenderManager::DrawSprite(Vector3 Position, Vector3 Size, Vector3 Rotation,
 	m_GraphicsCommandList->IASetVertexBuffers(0, 1, &vertexView);
 
 
-	//マテリアル設定
 	MATERIAL material{};
 	material.BaseColor = Color;
 	SetConstant(3, &material, sizeof(material));
 
 
-	//トポロジ設定
 	m_GraphicsCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 
-	//描画
 	m_GraphicsCommandList->DrawInstanced(4, 1, 0, 0);
 
 }

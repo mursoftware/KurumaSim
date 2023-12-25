@@ -61,7 +61,7 @@ void EnvCamera::PreDraw()
 
 void EnvCamera::Draw()
 {
-	//定数バッファ設定
+
 	CAMERA_CONSTANT constant{};
 	constant.CameraPosition = { m_DrawPosition.X, m_DrawPosition.Y, m_DrawPosition.Z, 0.0f };
 	RenderManager::GetInstance()->SetConstant(1, &constant, sizeof(constant));

@@ -54,66 +54,6 @@ void TireRB::Load(const char* FileName, const char* PartName, float ScaleX)
 	InitBursh();
 
 
-	//{
-	//	RenderManager* render = RenderManager::GetInstance();
-
-
-
-	//	std::string fileName;
-	//	fileName = path;
-	//	fileName += GetPrivateProfileStdString(PartName, "SHADOW", FileName);
-	//	m_ShadowTexture = render->LoadTexture(fileName.c_str());
-
-
-	//	HRESULT hr{};
-	//	D3D12_HEAP_PROPERTIES heapProperties{};
-	//	D3D12_RESOURCE_DESC   resourceDesc{};
-
-	//	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-	//	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-	//	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-	//	heapProperties.CreationNodeMask = 0;
-	//	heapProperties.VisibleNodeMask = 0;
-
-	//	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	//	resourceDesc.Height = 1;
-	//	resourceDesc.DepthOrArraySize = 1;
-	//	resourceDesc.MipLevels = 1;
-	//	resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	//	resourceDesc.SampleDesc.Count = 1;
-	//	resourceDesc.SampleDesc.Quality = 0;
-
-	//	//頂点バッファの作成
-	//	resourceDesc.Width = sizeof(VERTEX_3D) * 4;
-	//	hr = render->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
-	//		&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-	//		IID_PPV_ARGS(&m_ShadowVertexBuffer));
-	//	assert(SUCCEEDED(hr));
-
-
-	//	//頂点データの書き込み
-	//	VERTEX_3D* buffer{};
-	//	hr = m_ShadowVertexBuffer->Map(0, nullptr, (void**)&buffer);
-	//	assert(SUCCEEDED(hr));
-
-	//	buffer[0].Position = Vector3{ -0.5f,  0.0f,  0.5f };
-	//	buffer[1].Position = Vector3{ 0.5f,  0.0f,  0.5f };
-	//	buffer[2].Position = Vector3{ -0.5f,  0.0f, -0.5f };
-	//	buffer[3].Position = Vector3{ 0.5f,  0.0f, -0.5f };
-	//	buffer[0].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-	//	buffer[1].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-	//	buffer[2].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-	//	buffer[3].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-	//	buffer[0].TexCoord = { 0.0f, 1.0f };
-	//	buffer[1].TexCoord = { 1.0f, 1.0f };
-	//	buffer[2].TexCoord = { 0.0f, 0.0f };
-	//	buffer[3].TexCoord = { 1.0f, 0.0f };
-
-	//	m_ShadowVertexBuffer->Unmap(0, nullptr);
-	//}
-
-
 
 
 }
@@ -378,7 +318,7 @@ void TireRB::Draw(Camera* DrawCamera, int LodLevel)
 	ShadowCamera** shadowCamera = GameManager::GetInstance()->GetScene()->GetCurrentShadowCamera();
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
 
@@ -415,7 +355,7 @@ void TireRB::Draw(Camera* DrawCamera, int LodLevel)
 
 
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(m_WorldMatrix * view * projection);
 	constant.OldWVP = Matrix44::Transpose(oldWorldMatrix * oldView * oldProjection);
@@ -426,7 +366,7 @@ void TireRB::Draw(Camera* DrawCamera, int LodLevel)
 	constant.Param = { 0.0f, 0.0f, 0.2f, 1.0f };
 	render->SetConstant(2, &constant, sizeof(constant));
 
-	//描画
+
 	for (int level = LodLevel; level < 5; level++)
 	{
 		if (m_Model[level].IsLoaded())
@@ -440,74 +380,3 @@ void TireRB::Draw(Camera* DrawCamera, int LodLevel)
 
 }
 
-
-//
-//void TireRB::DrawShadow(Camera* DrawCamera)
-//{
-//
-//	RenderManager* render = RenderManager::GetInstance();
-//
-//
-//	Matrix44 rot;
-//	Vector3 right, up, front;
-//
-//	up = Vector3(0.0f, 1.0f, 0.0f);
-//	right = GetMatrix().Right();
-//	front = Vector3::Cross(right, up);
-//	front.Normalize();
-//	up = Vector3::Cross(front, right);
-//
-//	rot = Matrix44::Identity();
-//	rot.M[0][0] = right.X;
-//	rot.M[0][1] = right.Y;
-//	rot.M[0][2] = right.Z;
-//
-//	rot.M[1][0] = up.X;
-//	rot.M[1][1] = up.Y;
-//	rot.M[1][2] = up.Z;
-//
-//	rot.M[2][0] = front.X;
-//	rot.M[2][1] = front.Y;
-//	rot.M[2][2] = front.Z;
-//
-//
-//
-//	//マトリクス設定
-//	Matrix44 view = DrawCamera->GetViewMatrix();
-//	Matrix44 projection = DrawCamera->GetProjectionMatrix();
-//	Matrix44 world = Matrix44::Identity();
-//	world *= Matrix44::Scale(1.5f, 1.5f, 1.5f);
-//	world *= Matrix44::TranslateXYZ(0.0f, -m_Radius, 0.0f);
-//	world *= rot;
-//	world *= Matrix44::TranslateXYZ(m_WorldMatrix.M[3][0], m_WorldMatrix.M[3][1], m_WorldMatrix.M[3][2]);
-//
-//
-//	//定数バッファ設定
-//	OBJECT_CONSTANT constant;
-//	constant.WVP = Matrix44::Transpose(world * view * projection);
-//	constant.World = Matrix44::Transpose(world);
-//	constant.Param = { 0.0f, 0.0f, 0.0f, 0.0f };
-//	render->SetConstant(2, &constant, sizeof(constant));
-//
-//
-//	//頂点バッファ設定
-//	D3D12_VERTEX_BUFFER_VIEW vertexView{};
-//	vertexView.BufferLocation = m_ShadowVertexBuffer->GetGPUVirtualAddress();
-//	vertexView.StrideInBytes = sizeof(VERTEX_3D);
-//	vertexView.SizeInBytes = sizeof(VERTEX_3D) * 4;
-//	render->GetGraphicsCommandList()->IASetVertexBuffers(0, 1, &vertexView);
-//
-//
-//
-//	//トポロジ設定
-//	render->GetGraphicsCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-//
-//
-//
-//	//テクスチャ設定
-//	render->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_ShadowTexture->ShaderResourceView.Index);
-//
-//
-//	//描画
-//	render->GetGraphicsCommandList()->DrawInstanced(4, 1, 0, 0);
-//}

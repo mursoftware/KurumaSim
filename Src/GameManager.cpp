@@ -70,7 +70,6 @@ void GameManager::WaitDraw()
 
 void GameManager::UpdateFade()
 {
-	//フェード更新
 
 	float dt = 1.0f / 60.0f / 10.0f;
 

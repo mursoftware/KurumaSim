@@ -46,7 +46,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
             srcVec.y = cos(srcPos.y * PI);
 
 
-            float weight = dot(destVec, srcVec) / PI * dh * dw;//³‹K‰»ƒ‰ƒ“ƒo[ƒg
+			float weight = dot(destVec, srcVec) / PI * dh * dw; //Normalized Lambert
 
             if (weight > 0.0f)
             {

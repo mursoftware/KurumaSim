@@ -24,7 +24,7 @@ Car::Car()
 
 
 
-	//パラメータ読み込み
+
 	{
 		std::string carname = "DB06";
 		std::string path;
@@ -300,11 +300,11 @@ void Car::Update( bool Control, bool Input, float dt )
 	}
 
 
-	//入力
+
 
 	if( Input )
 	{
-		//アクセル・ブレーキ
+		//Accelerator/Brake
 		m_Throttle = inputState.Accel;
 		m_Brake = inputState.Brake;
 
@@ -319,12 +319,12 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-		//ステアリング
+		//steering
 		m_SteeringAngle = -inputState.Steering * 450.0f / 360.0f * 2.0f * PI / m_SteeringGearRatio;
 
 
 
-		//シフト
+		//shift
 		int gear = m_Transmission.GetGear();
 		int gearCount = m_Transmission.GetGearCount();
 
@@ -357,7 +357,7 @@ void Car::Update( bool Control, bool Input, float dt )
 	}
 
 
-	//自動クラッチ
+	//automatic clutch
 	{
 		if (inputState.ShiftDown && m_Transmission.GetGear() > 1)
 		{
@@ -405,7 +405,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//ドライブトレイン
+	//drive train
 	{
 
 		m_Engine.SetThrottle(m_Throttle);
@@ -426,7 +426,7 @@ void Car::Update( bool Control, bool Input, float dt )
 	}
 
 
-	//重力
+	//gravity
 	{
 		Vector3 g = Vector3(0.0f, -9.80665f, 0.0f);
 		m_BodyRB.AddForceWorld(g*m_BodyRB.GetMass(), dt);
@@ -443,7 +443,7 @@ void Car::Update( bool Control, bool Input, float dt )
 	}
 
 
-	//ブレーキ
+	//brake
 	{
 		m_BrakeFL.SetRatio(m_Brake);
 		m_BrakeFR.SetRatio(m_Brake);
@@ -460,7 +460,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//サスペンション
+	//suspension
 	{
 		m_SuspensionFL.Update(dt);
 		m_SuspensionFR.Update(dt);
@@ -472,7 +472,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//タイヤ接地・更新
+	//Tire grounding/update
 	{
 		m_TireFLRB.Update(dt);
 		m_TireFRRB.Update(dt);
@@ -483,10 +483,8 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//ボディ更新
+	//body update
 	{
-
-		//ジャッキアップ
 		if (m_JackUp || m_Frame < 60)
 		{
 
@@ -501,7 +499,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//サスペンションジオメトリ
+	//Suspension Geometry
 	{
 
 		m_SuspensionFL.SetSteeringAngle(m_SteeringAngle);
@@ -519,7 +517,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//変位→速度→力・トルク・ステアリングトルク算出
+	//Displacement, Velocity, Force, torque, steering torque calculation
 	{
 		Vector3 force, torque, torqueUp;
 		float steeringTorqueL, steeringTorqueR;
@@ -565,7 +563,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-	//タイヤスモーク
+	//Tire Smoke
 	m_SmokeInterval++;
 	if(m_SmokeInterval == 10)
 	{

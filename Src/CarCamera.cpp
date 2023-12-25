@@ -35,7 +35,7 @@ CarCamera::CarCamera()
 	m_MotionBlur = 0.5f;
 
 
-	//パラメータ読み込み
+
 	{
 		std::string path;
 		path = ".\\Setting.ini";
@@ -114,7 +114,7 @@ void CarCamera::Update()
 
 	if (m_ViewMode == 0)
 	{
-		//サードパーソンビュー
+		//Third Person View
 
 
 		m_Up = Vector3(0.0f, 1.0f, 0.0f);
@@ -158,7 +158,7 @@ void CarCamera::Update()
 	}
 	else if (m_ViewMode == 1)
 	{
-		//ファーストパーソンビュー
+		//First Person View
 
 		m_Up = car->GetUp();
 
@@ -179,7 +179,7 @@ void CarCamera::Update()
 	}
 	else if (m_ViewMode == 2)
 	{
-		//アラウンドビュー
+		//around view
 
 		if (InputManager::GetInstance()->GetKeyPress(VK_RBUTTON))
 		{
@@ -215,7 +215,7 @@ void CarCamera::Update()
 	}
 	else if (m_ViewMode == 3)
 	{
-		//タイヤビュー
+		//Tire View
 
 		m_Up = car->GetUp();
 
@@ -225,7 +225,7 @@ void CarCamera::Update()
 	}
 	else if (m_ViewMode == 4)
 	{
-		//リプレイカメラ
+		//replay camera
 
 
 		m_Up = Vector3(0.0f, 1.0f, 0.0f);
@@ -256,7 +256,8 @@ void CarCamera::Update()
 	}
 	else if (m_ViewMode == 5)
 	{
-		//ドローンビュー
+		//drone view
+
 		m_Up = Vector3(0.0f, 1.0f, 0.0f);
 
 		m_DroneRotationSpeed.Y += inputManager->GetAxisRight().X * 0.00005f;
@@ -430,7 +431,7 @@ void CarCamera::Draw()
 
 
 
-	//定数バッファ設定
+
 	CAMERA_CONSTANT constant{};
 	constant.CameraPosition = { m_DrawPosition.X, m_DrawPosition.Y, m_DrawPosition.Z, 0.0f };
 	constant.Exposure = std::powf(10.0f, m_Exposure);

@@ -54,7 +54,7 @@ void Sky::Draw(Camera* DrawCamera)
 	render->SetPipelineState("Sky");
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 projection = DrawCamera->GetProjectionMatrix();
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
@@ -64,7 +64,7 @@ void Sky::Draw(Camera* DrawCamera)
 	Matrix44 trans = Matrix44::TranslateXYZ(cameraPosition.X, cameraPosition.Y, cameraPosition.Z);
 
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(m_WorldMatrix * trans * view * projection);
 	constant.OldWVP = Matrix44::Transpose(m_OldWorldMatrix * trans * oldView * projection);
@@ -76,7 +76,7 @@ void Sky::Draw(Camera* DrawCamera)
 	//RenderManager::GetInstance()->SetGraphicsRootDescriptorTable(6, m_Texture->ShaderResourceView.Index);
 
 
-	//描画
+
 	m_Model.Draw(true);
 
 }

@@ -96,7 +96,7 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 		resourceDesc.SampleDesc.Count = 1;
 		resourceDesc.SampleDesc.Quality = 0;
 
-		//頂点バッファの作成
+
 		resourceDesc.Width = sizeof(VERTEX_3D) * 4;
 		hr = render->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
 			&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
@@ -104,7 +104,7 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 		assert(SUCCEEDED(hr));
 
 
-		//頂点データの書き込み
+
 		VERTEX_3D *buffer{};
 		hr = m_ShadowVertexBuffer->Map(0, nullptr, (void**)&buffer);
 		assert(SUCCEEDED(hr));
@@ -146,7 +146,7 @@ void BodyRB::Update(float dt)
 	v.Normalize();
 
 
-	//空気抵抗
+	//air resistance
 	{
 		Vector3 airForce = v * vl * vl * 0.5f * m_AirDensity * m_CD * m_Size.X * m_Size.Y;
 		AddForceWorld(-airForce, dt);
@@ -154,7 +154,7 @@ void BodyRB::Update(float dt)
 	}
 
 
-	//ダウンフォース
+	//downforce
 	{
 		Matrix44 bodyMatrix = GetMatrix();
 
@@ -182,7 +182,7 @@ void BodyRB::Update(float dt)
 
 
 
-	//衝突
+
 	//if(false)
 	{
 		Matrix44 bodyMatrix = GetMatrix();
@@ -334,7 +334,7 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 	ShadowCamera** shadowCamera = GameManager::GetInstance()->GetScene()->GetCurrentShadowCamera();
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
 
@@ -351,7 +351,7 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 	Matrix44 shadowView2 = shadowCamera[2]->GetViewMatrix();
 	Matrix44 shadowProjection2 = shadowCamera[2]->GetProjectionMatrix();
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(m_WorldMatrix * view * projection);
 	constant.OldWVP = Matrix44::Transpose(m_OldWorldMatrix * oldView * oldProjection);
@@ -364,7 +364,7 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 
 
-	//描画
+
 	std::unordered_map<std::string, MATERIAL> overridMaterial;
 	MATERIAL material{};
 
@@ -408,7 +408,7 @@ void BodyRB::DrawShadow(Camera* DrawCamera)
 	RenderManager* render = RenderManager::GetInstance();
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 projection = DrawCamera->GetProjectionMatrix();
 	Matrix44 world = Matrix44::Identity();
@@ -417,7 +417,7 @@ void BodyRB::DrawShadow(Camera* DrawCamera)
 	world *= GetMatrix();
 
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(world * view * projection);
 	constant.World = Matrix44::Transpose(world);
@@ -425,7 +425,7 @@ void BodyRB::DrawShadow(Camera* DrawCamera)
 	render->SetConstant(2, &constant, sizeof(constant));
 
 
-	//頂点バッファ設定
+
 	D3D12_VERTEX_BUFFER_VIEW vertexView{};
 	vertexView.BufferLocation = m_ShadowVertexBuffer->GetGPUVirtualAddress();
 	vertexView.StrideInBytes = sizeof(VERTEX_3D);
@@ -434,15 +434,12 @@ void BodyRB::DrawShadow(Camera* DrawCamera)
 
 
 
-	//トポロジ設定
 	render->GetGraphicsCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 
 
-	//テクスチャ設定
 	render->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_ShadowTexture->ShaderResourceView.Index);
 
 
-	//描画
 	render->GetGraphicsCommandList()->DrawInstanced(4, 1, 0, 0);
 }

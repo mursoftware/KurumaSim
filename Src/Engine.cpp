@@ -50,7 +50,7 @@ void Engine::Update(float dt)
 
 	float rpm = m_OutputAngularSpeed1 * 30.0f / PI;
 
-	//レブリミッター
+	//rev limiter
 	if (rpm > m_Limiter)
 		m_Throttle = 0;
 
@@ -58,7 +58,8 @@ void Engine::Update(float dt)
 	m_DelayThrottle += (m_Throttle - m_DelayThrottle) * 0.1f;
 	//m_DelayThrottle = m_Throttle;
 
-	//トルクマップ→トルク
+
+	//Torque Map -> Torque
 	int emi = (int)(rpm / 500.0f);
 	float et = m_TorqueMap[emi] + (m_TorqueMap[emi + 1] - m_TorqueMap[emi]) * (rpm / 500.0f - emi);
 
@@ -70,7 +71,7 @@ void Engine::Update(float dt)
 
 
 
-	//エンジン回転速度
+	//Engine speed
 	float acc = (m_OutputTorque1 + m_OutputDriveTrain1->GetInputTorque1()) / m_Inertia;
 	m_OutputAngularSpeed1 += (m_Acc + acc) * 0.5f * dt;
 	m_Acc = acc;

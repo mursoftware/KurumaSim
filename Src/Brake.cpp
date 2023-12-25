@@ -128,7 +128,7 @@ void Brake::Draw(Camera* DrawCamera, int LodLevel)
 	ShadowCamera** shadowCamera = GameManager::GetInstance()->GetScene()->GetCurrentShadowCamera();
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
 
@@ -146,7 +146,7 @@ void Brake::Draw(Camera* DrawCamera, int LodLevel)
 	Matrix44 shadowProjection2 = shadowCamera[2]->GetProjectionMatrix();
 
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(m_WorldMatrix * view * projection);
 	constant.OldWVP = Matrix44::Transpose(m_OldWorldMatrix * oldView * oldProjection);
@@ -158,7 +158,7 @@ void Brake::Draw(Camera* DrawCamera, int LodLevel)
 	render->SetConstant(2, &constant, sizeof(constant));
 
 
-	//描画
+
 	for (int level = LodLevel; level < 5; level++)
 	{
 		if (m_Model[level].IsLoaded())

@@ -37,7 +37,7 @@ SmokeManager::SmokeManager()
 		resourceDesc.SampleDesc.Count = 1;
 		resourceDesc.SampleDesc.Quality = 0;
 
-		//頂点バッファの作成
+
 		resourceDesc.Width = sizeof(VERTEX_3D) * 4;
 		hr = render->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
 			&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
@@ -45,7 +45,7 @@ SmokeManager::SmokeManager()
 		assert(SUCCEEDED(hr));
 
 
-		//頂点データの書き込み
+
 		VERTEX_3D* buffer{};
 		hr = m_VertexBuffer->Map(0, nullptr, (void**)&buffer);
 		assert(SUCCEEDED(hr));
@@ -156,7 +156,7 @@ void SmokeManager::Draw(Camera* DrawCamera)
 
 
 
-	//マトリクス設定
+
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
 
@@ -176,7 +176,7 @@ void SmokeManager::Draw(Camera* DrawCamera)
 
 
 
-	// Zソート
+
 	{
 		Vector3 cameraPosition = DrawCamera->GetPosition();
 
@@ -197,7 +197,7 @@ void SmokeManager::Draw(Camera* DrawCamera)
 
 
 
-	//マトリクス設定
+
 	Matrix44 invView = Matrix44::Inverse(view);
 	invView.M[3][0] = 0.0f;
 	invView.M[3][1] = 0.0f;
@@ -205,7 +205,7 @@ void SmokeManager::Draw(Camera* DrawCamera)
 
 
 
-	//頂点バッファ設定
+
 	D3D12_VERTEX_BUFFER_VIEW vertexView{};
 	vertexView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
 	vertexView.StrideInBytes = sizeof(VERTEX_3D);
@@ -216,23 +216,23 @@ void SmokeManager::Draw(Camera* DrawCamera)
 
 
 
-	//トポロジ設定
+
 	render->GetGraphicsCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 
 
-	//テクスチャ設定
+
 	render->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_Texture->ShaderResourceView.Index);
 
 
 
 
 
-	//定数バッファ設定
+
 	OBJECT_CONSTANT constant;
 	constant.Param = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-	//マテリアル設定
+
 	MATERIAL material{};
 	material.EmissionColor = { 0.0f, 0.0f, 0.0f, 0.0f };
 	material.Metallic = 0.0f;
@@ -263,7 +263,7 @@ void SmokeManager::Draw(Camera* DrawCamera)
 		render->SetConstant(3, &material, sizeof(material));
 
 
-		//描画
+
 		render->GetGraphicsCommandList()->DrawInstanced(4, 1, 0, 0);
 	}
 

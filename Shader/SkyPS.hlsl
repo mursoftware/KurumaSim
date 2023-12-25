@@ -33,7 +33,7 @@ PS_OUTPUT main(PS_INPUT input)
     float dle = dot(LightDirection, eyeVector);
     
     
-    //ÉåÉCÉäÅ[éUóê
+    //Rayleigh scattering
 	float atomThicknessRatio = 0.05;
 	float atomDensityEye = atomThicknessRatio + pow(1.0 - eyeVector.y, 20) * (1.0 - atomThicknessRatio);
 	float atomDensityLight = atomThicknessRatio + pow(1.0 - LightDirection.y, 20) * (1.0 - atomThicknessRatio);
@@ -48,7 +48,7 @@ PS_OUTPUT main(PS_INPUT input)
     
    
     
-    //â_
+    //cloud
 	float atomDensityCloud = atomThicknessRatio + pow(1.0 - CloudHeight, 20) * (1.0 - atomThicknessRatio);
 	float3 cloudColor = sunLight * exp(-atomDensityLight * atomDensityCloud * wavelength4inv * 1.0);
 	float2 cloudPosition = input.WorldPosition.xz * 700.0 / input.WorldPosition.y;
@@ -64,7 +64,7 @@ PS_OUTPUT main(PS_INPUT input)
     
     
     
-    //É~Å[éUóê
+    //Mie scattering
 	float g = 0.990f;
 	float g2 = g * g;
 	float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 + dle * dle) / pow((1.0 + g2 - 2.0 * g * dle), 0.5); 
@@ -78,7 +78,7 @@ PS_OUTPUT main(PS_INPUT input)
    
     
 
-    //ínïΩê¸
+    //horizon 
     output.Color.rgb *= smoothstep(-10.0, 10.0, input.WorldPosition.y);
 	
     

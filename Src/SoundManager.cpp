@@ -26,13 +26,10 @@ SoundManager::SoundManager()
 
 
 
-	// COM初期化
 	(void)CoInitializeEx( NULL, COINIT_MULTITHREADED );
 
-	// XAudio生成
 	XAudio2Create( &m_Xaudio, 0 );
 
-	// マスタリングボイス生成
 	m_Xaudio->CreateMasteringVoice( &m_MasteringVoice );
 
 
@@ -42,47 +39,21 @@ SoundManager::SoundManager()
 
 
 
-	// リバーブエフェクト設定
 	//CreateFX(__uuidof(::FXReverb), &m_Reverb);
 	XAudio2CreateReverb(&m_Reverb);
 	assert(m_Reverb);
 
 	XAUDIO2_EFFECT_DESCRIPTOR desc;
 	desc.InitialState = TRUE;
-	desc.OutputChannels = 2;      // 出力チャンネル数
-	desc.pEffect = m_Reverb; // エフェクトへのポインタ
+	desc.OutputChannels = 2;
+	desc.pEffect = m_Reverb;
 
 	XAUDIO2_EFFECT_CHAIN chain;
-	chain.pEffectDescriptors = &desc; // Descriptorへのポインタ、複数個接続する場合は配列の先頭
-	chain.EffectCount = 1;     // Descriptorがいくつあるのか
-
-	m_MasteringVoice->SetEffectChain(&chain);
-
-/*
-	FXREVERB_PARAMETERS param;
-	param.Diffusion = 0.9f; // 散布量（拡散量？）
-	param.RoomSize = 0.5f;  // 音が鳴っている施設の大きさを示す
-	m_MasteringVoice->SetEffectParameters(0, &param, sizeof(FXREVERB_PARAMETERS));
-*/
-
-
-/*
-	IUnknown* pXAPO;
-	HRESULT hr = XAudio2CreateReverb(&pXAPO);
-
-
-	XAUDIO2_EFFECT_DESCRIPTOR descriptor;
-	descriptor.InitialState = true;
-	descriptor.OutputChannels = 1;
-	descriptor.pEffect = pXAPO;
-
-	XAUDIO2_EFFECT_CHAIN chain;
+	chain.pEffectDescriptors = &desc;
 	chain.EffectCount = 1;
-	chain.pEffectDescriptors = &descriptor;
-
 
 	m_MasteringVoice->SetEffectChain(&chain);
-*/
+
 
 
 	XAUDIO2FX_REVERB_PARAMETERS reverbParameters;
@@ -120,7 +91,6 @@ SoundManager::~SoundManager()
 {
 
 
-	//バッファ削除
 	for( std::pair<std::string, SOUND*> pair : m_BufferList )
 	{
 		for (int j = 0; j < SOUND_SOURCE_MAX; j++)
@@ -164,20 +134,16 @@ SOUND* SoundManager::LoadData( const char *FileName )
 
 
 
-	//サウンド構造体生成
 	SOUND *sound = new SOUND{};
 
-	//ファイル名設定
 	strcpy_s( sound->FileName, FileName );
 
-	//バッファ作成
 	char path[260]{};
 	strcpy( path, "Asset\\" );
 	strcat( path, FileName );
 
 
 
-	// サウンドデータ読込
 	WAVEFORMATEX wfx{};
 
 	{
@@ -230,14 +196,12 @@ SOUND* SoundManager::LoadData( const char *FileName )
 		mmioClose(hmmio, 0);
 	}
 
-	// サウンドソース生成
 	for (int j = 0; j < SOUND_SOURCE_MAX; j++)
 	{
 		m_Xaudio->CreateSourceVoice(&sound->SourceVoice[j], &wfx);
 	}
 
 
-	//リスト追加
 	m_BufferList[FileName] = sound;
 
 
@@ -268,7 +232,6 @@ int SoundManager::Play( const char *FileName, bool Loop, float Volume )
 
 		if( state.BuffersQueued == 0 )
 		{
-			// バッファ設定
 			XAUDIO2_BUFFER bufinfo;
 
 			memset(&bufinfo,0x00,sizeof(bufinfo));
@@ -277,7 +240,6 @@ int SoundManager::Play( const char *FileName, bool Loop, float Volume )
 			bufinfo.PlayBegin = 0;
 			bufinfo.PlayLength = sound->PlayLength;
 
-			// ループ設定
 			if( Loop )
 			{
 				bufinfo.LoopBegin = 0;
@@ -288,7 +250,6 @@ int SoundManager::Play( const char *FileName, bool Loop, float Volume )
 			sound->SourceVoice[j]->SubmitSourceBuffer( &bufinfo, NULL );
 
 
-			// 再生
 			sound->SourceVoice[j]->Start();
 			sound->SourceVoice[j]->SetVolume( Volume );
 

@@ -7,7 +7,6 @@
 
 
 
-// 描画サブセットマテリアル構造体
 struct SUBSET_MATERIAL
 {
 	char						Name[256];
@@ -17,7 +16,6 @@ struct SUBSET_MATERIAL
 	std::unique_ptr<TEXTURE>	TextureSubColor;
 };
 
-// 描画サブセット構造体
 struct SUBSET
 {
 	char			Name[256];
@@ -31,7 +29,6 @@ struct SUBSET
 
 
 
-// モデルサブセットマテリアル構造体
 struct MODEL_SUBSET_MATERIAL
 {
 	char						Name[256];
@@ -41,7 +38,6 @@ struct MODEL_SUBSET_MATERIAL
 	char						TextureNameSubColor[256];
 };
 
-// モデルサブセット構造体
 struct MODEL_SUBSET
 {
 	char					Name[256];
@@ -50,7 +46,6 @@ struct MODEL_SUBSET
 	MODEL_SUBSET_MATERIAL	Material;
 };
 
-// モデル構造体
 struct MODEL
 {
 	VERTEX_3D		*VertexArray;

@@ -16,7 +16,7 @@ SamplerState sampler1 : register(s1);
 SamplerState sampler2 : register(s2);
 
 
-//EarlyZ有効時にはClip、Discardが使えない
+//Clip and Discard are not available when EarlyZ is enabled.
 //[earlydepthstencil]
 
 
@@ -47,7 +47,7 @@ PS_OUTPUT main(PS_INPUT input)
     ao = pow(ao, 2.2);
     
  
-    //ブロブシャドウ
+    //blob shadow
 	float4 wp = float4(input.WorldPosition.xyz, 1.0);
 	float4 localShadowPos = mul(wp, BodyW);
 	float2 blobTexCoord = localShadowPos.xz;
@@ -70,7 +70,6 @@ PS_OUTPUT main(PS_INPUT input)
     
     
 
-    //マテリアルパラメータ
     float metallic = Material.Metallic;
     float spec = Material.Specular;
     float smoothness = (1.0 - Material.Roughness) * pow(saturate(baseColor.r * 4.0), 1.0);
@@ -97,7 +96,7 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //シャドウ
+
     float shadow = 1.0;
     float2 shadowTexCoord;
     
@@ -134,7 +133,7 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //フレネル反射率
+
 	float3 fresnel;
     {
         float3 f0 = lerp(0.08 * spec, baseColor.rgb, metallic);
@@ -145,21 +144,21 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //拡散反射光
+
     float3 diffuse;
     {
 
-        //環境光
+
         float3 envLight;
         {
             float2 iblTexCoord;
             iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
             iblTexCoord.y = acos(normal.y) / PI;
 
-			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb; //IBLテクスチャ生成時に正規化済
+			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb; //Normalized during IBL texture generation
 		}
 
-        //太陽光
+
         float3 dirLight;
         if (Material.NormalWeight > 0.5)
         {
@@ -179,13 +178,13 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    //鏡面反射光
+
     float3 specular = 0.0;
     {
 
 
 
-        //環境光
+
         float3 envSpec = 0.0;
         {
             envSpec = textureEnv.SampleLevel(sampler0, eyeRefVector, roughness * 10.0).rgb;
@@ -195,7 +194,7 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-        //太陽光
+
         float3 dirSpec = 0.0;
         {
             float NdotH = saturate(dot(halfVector, normal.xyz));
@@ -221,7 +220,7 @@ PS_OUTPUT main(PS_INPUT input)
             }
 
 
-            //GGX
+
 			dirSpec = (d * fresnel * g) / (4.0 * NdotV * NdotL + 0.000001);
 
             
@@ -254,7 +253,7 @@ PS_OUTPUT main(PS_INPUT input)
 
     
     
-    //フォグ
+    //fog
     {
 		output.Color.rgb = output.Color.rgb * input.Fog.a + input.Fog.rgb * (1.0 - input.Fog.a) * saturate(output.Color.g + 0.1);
 	}
@@ -262,7 +261,7 @@ PS_OUTPUT main(PS_INPUT input)
     
     
 
-    //速度ベクトル
+    //velocity
     {
 		float2 oldPosition = input.OldPosition.xy;
 		oldPosition /= input.OldPosition.w;

@@ -26,7 +26,7 @@ PS_INPUT main(VS_INPUT input)
     
     
    
-    //フォグ
+    //fog
     {
 		float3 fogColor;
               
@@ -39,7 +39,8 @@ PS_INPUT main(VS_INPUT input)
 		eyeVector /= len;
 		float dle = dot(LightDirection, eyeVector);
 
-        //レイリー散乱
+        
+        //Rayleigh scattering
 		float atomDensityEye = 1.0 + pow(1.0 - 0.01, 10) * 10.0;
 		float atomDensityLight = 1.0 + pow(1.0 - LightDirection.y, 10) * 10.0;
 		float3 scatteringLight = sunLight * exp(-atomDensityLight * atomDensityEye * wavelength4inv * 0.01);
@@ -49,7 +50,7 @@ PS_INPUT main(VS_INPUT input)
 		fogColor.rgb = scatteringLight * atomDensityEye * wavelength4inv * rayleighPhase * 0.01;
     
     
-        //ミー散乱
+        //Mie scattering
 		float g = 0.990f;
 		float g2 = g * g;
 		float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 + dle * dle) / pow((1.0 + g2 - 2.0 * g * dle), 0.5);

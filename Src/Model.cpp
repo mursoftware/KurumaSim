@@ -109,7 +109,7 @@ void Model::LoadThread()
 
 
 
-	//衝突判定用データ構築
+	//Data construction for collision detection
 	if (m_Collision)
 	{
 		m_BBMinX = 0.0f;
@@ -232,7 +232,7 @@ void Model::LoadThread()
 
 
 
-		//頂点バッファの作成
+
 		m_VertexNum = model.VertexNum;
 		resourceDesc.Width = sizeof(VERTEX_3D) * m_VertexNum;
 		hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_VertexBuffer));
@@ -249,7 +249,7 @@ void Model::LoadThread()
 
 
 
-		//インデックスバッファの作成
+
 		m_IndexNum = model.IndexNum;
 		resourceDesc.Width = sizeof(unsigned int) * m_IndexNum;
 		hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_IndexBuffer));
@@ -277,7 +277,7 @@ void Model::LoadThread()
 		//GameManager::GetInstance()->WaitDraw();
 		//RenderManager::GetInstance()->ResourceCommandBegin();
 
-		// サブセット設定
+
 		{
 			m_SubsetArray.resize(model.SubsetNum);
 
@@ -306,7 +306,7 @@ void Model::LoadThread()
 
 
 
-				//定数バッファ設定
+
 				{
 					m_SubsetArray[i].ConstantBuffer = RenderManager::GetInstance()->CreateConstantBuffer(256);
 
@@ -357,7 +357,7 @@ void Model::Draw(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>
 
 	ID3D12GraphicsCommandList* CommandList = RenderManager::GetInstance()->GetGraphicsCommandList();
 
-	//頂点バッファ設定
+
 	D3D12_VERTEX_BUFFER_VIEW vertexView{};
 	vertexView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
 	vertexView.StrideInBytes = sizeof(VERTEX_3D);
@@ -365,7 +365,7 @@ void Model::Draw(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>
 	CommandList->IASetVertexBuffers(0, 1, &vertexView);
 
 
-	//インデックスバッファ設定
+
 	D3D12_INDEX_BUFFER_VIEW indexView{};
 	indexView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
 	indexView.SizeInBytes = sizeof(unsigned int) * m_IndexNum;
@@ -373,17 +373,17 @@ void Model::Draw(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>
 	CommandList->IASetIndexBuffer(&indexView);
 
 
-	//トポロジ設定
+
 	CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
-	//不透明描画
+
 	for( unsigned int i = 0; i < m_SubsetArray.size(); i++ )
 	{
 		if (m_SubsetArray[i].Name[0] != '@')
 		if (m_SubsetArray[i].Material.Material.BaseColor.W == 1.0f)
 		{
-			// マテリアル設定
+
 			if (OverridMaterial && (*OverridMaterial).count(m_SubsetArray[i].Material.Name))
 			{
 				RenderManager::GetInstance()->SetConstant(3, &(*OverridMaterial)[m_SubsetArray[i].Material.Name], sizeof(MATERIAL));
@@ -394,14 +394,14 @@ void Model::Draw(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>
 			}
 
 
-			// テクスチャ設定
+
 			if (!OverrideTexture)
 			{
 				RenderManager::GetInstance()->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_SubsetArray[i].Material.TextureBaseColor->ShaderResourceView.Index);
 				RenderManager::GetInstance()->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 4, m_SubsetArray[i].Material.TextureSubColor->ShaderResourceView.Index);
 			}
 
-			// ポリゴン描画
+
 			CommandList->DrawIndexedInstanced(m_SubsetArray[i].IndexNum, 1, m_SubsetArray[i].StartIndex, 0, 0);
 			RenderManager::GetInstance()->AddIndexCount(m_SubsetArray[i].IndexNum);
 		}
@@ -409,13 +409,13 @@ void Model::Draw(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>
 	}
 
 
-	//透明描画
+
 	for (unsigned int i = 0; i < m_SubsetArray.size(); i++)
 	{
 		if (m_SubsetArray[i].Name[0] != '@')
 		if (m_SubsetArray[i].Material.Material.BaseColor.W != 1.0f)
 		{
-			// マテリアル設定
+
 			if (OverridMaterial && (*OverridMaterial).count(m_SubsetArray[i].Material.Name))
 			{
 				RenderManager::GetInstance()->SetConstant(3, &(*OverridMaterial)[m_SubsetArray[i].Material.Name], sizeof(MATERIAL));
@@ -427,13 +427,13 @@ void Model::Draw(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>
 
 
 
-			// テクスチャ設定
+
 			if (!OverrideTexture)
 			{
 				RenderManager::GetInstance()->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_SubsetArray[i].Material.TextureBaseColor->ShaderResourceView.Index);
 			}
 
-			// ポリゴン描画
+
 			CommandList->DrawIndexedInstanced(m_SubsetArray[i].IndexNum, 1, m_SubsetArray[i].StartIndex, 0, 0);
 			RenderManager::GetInstance()->AddIndexCount(m_SubsetArray[i].IndexNum);
 		}
@@ -510,7 +510,7 @@ void Model::SaveObjBin(const char* FileName, MODEL* Model)
 }
 
 
-//モデル読込////////////////////////////////////////////
+
 void Model::LoadObj( const char *FileName, MODEL *Model )
 {
 
@@ -546,7 +546,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 
 
-	//要素数カウント
+
 	while( true )
 	{
 		(void)fscanf( file, "%s", str );
@@ -587,7 +587,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 			}
 			while( c != '\n' && c!= '\r' );
 
-			//四角は三角に分割
+
 			//if( in == 4 )
 			//	in = 6;
 
@@ -596,7 +596,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 	}
 
 
-	//メモリ確保
+
 	//positionArray = new Vector3[ positionNum ];
 	normalArray = new Vector3[ normalNum ];
 	texcoordArray = new Vector2[ texcoordNum ];
@@ -615,7 +615,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 
 
-	//要素読込
+
 	//Vector3* position = positionArray;
 	Vector3* normal = normalArray;
 	Vector2* texcoord = texcoordArray;
@@ -639,7 +639,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 		if( strcmp( str, "mtllib" ) == 0 )
 		{
-			//マテリアルファイル
+
 			(void)fscanf( file, "%s", str );
 
 			char path[256]{};
@@ -651,12 +651,10 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "o" ) == 0 )
 		{
-			//オブジェクト名
 			(void)fscanf( file, "%s", objectName);
 		}
 		else if( strcmp( str, "v" ) == 0 )
 		{
-			//頂点座標
 			Vector3 position{};
 
 			(void)fscanf( file, "%f", &position.X );
@@ -671,7 +669,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "vn" ) == 0 )
 		{
-			//法線
 			(void)fscanf( file, "%f", &normal->X );
 			(void)fscanf( file, "%f", &normal->Y );
 			(void)fscanf( file, "%f", &normal->Z );
@@ -680,7 +677,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		}
 		else if (strcmp(str, "vc") == 0)
 		{
-			//頂点色
 			(void)fscanf(file, "%f", &color->X);
 			(void)fscanf(file, "%f", &color->Y);
 			(void)fscanf(file, "%f", &color->Z);
@@ -690,7 +686,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 		else if( strcmp( str, "vt" ) == 0 )
 		{
-			//テクスチャ座標
 			(void)fscanf( file, "%f", &texcoord->X );
 			(void)fscanf( file, "%f", &texcoord->Y );
 			texcoord->Y = 1.0f - texcoord->Y;
@@ -698,7 +693,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "usemtl" ) == 0 )
 		{
-			//マテリアル
 			(void)fscanf( file, "%s", str );
 
 			strcpy(Model->SubsetArray[sc].Name, objectName);
@@ -723,7 +717,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "f" ) == 0 )
 		{
-			//面
 			in = 0;
 
 			do
@@ -735,7 +728,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 				if( s[ strlen( s ) + 1 ] != '/' )
 				{
-					//テクスチャ座標が存在しない場合もある
 					s = strtok( NULL, "/" );
 					Model->VertexArray[idx].TexCoord = texcoordArray[ atoi( s ) - 1 ];
 				}
@@ -763,7 +755,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 			std::swap(Model->IndexArray[ic - in], Model->IndexArray[ic - in + 1]);
 			/*
-			//四角は三角に分割
 			if( in == 4 )
 			{
 				Model->IndexArray[ic] = vc - 2;
@@ -802,7 +793,6 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 
 
-//マテリアル読み込み///////////////////////////////////////////////////////////////////
 void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **MaterialArray, unsigned int *MaterialNum )
 {
 
@@ -815,7 +805,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 	MODEL_SUBSET_MATERIAL* materialArray{};
 	unsigned int materialNum = 0;
 
-	//要素数カウント
 	while( true )
 	{
 		(void)fscanf( file, "%s", str );
@@ -830,11 +819,9 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 	}
 
 
-	//メモリ確保
 	materialArray = new MODEL_SUBSET_MATERIAL[ materialNum ]{};
 
 
-	//要素読込
 	int mc = -1;
 
 	fseek( file, 0, SEEK_SET );
@@ -849,7 +836,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 
 		if( strcmp( str, "newmtl" ) == 0 )
 		{
-			//マテリアル名
 			mc++;
 			(void)fscanf( file, "%s", materialArray[ mc ].Name );
 			//strcpy( materialArray[ mc ].TextureName, "" );
@@ -867,7 +853,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 		}
 		else if( strcmp( str, "Ka" ) == 0 )
 		{
-			//アンビエント
 			float ambient;
 			(void)fscanf(file, "%f", &ambient);
 			(void)fscanf(file, "%f", &ambient);
@@ -875,7 +860,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 		}
 		else if( strcmp( str, "Kd" ) == 0 )
 		{
-			//ディフューズ
 			(void)fscanf( file, "%f", &materialArray[ mc ].Material.BaseColor.X );
 			(void)fscanf( file, "%f", &materialArray[ mc ].Material.BaseColor.Y );
 			(void)fscanf( file, "%f", &materialArray[ mc ].Material.BaseColor.Z );
@@ -883,7 +867,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 		}
 		else if (strcmp(str, "Ke") == 0)
 		{
-			//エミッション
 			(void)fscanf(file, "%f", &materialArray[mc].Material.EmissionColor.X);
 			(void)fscanf(file, "%f", &materialArray[mc].Material.EmissionColor.Y);
 			(void)fscanf(file, "%f", &materialArray[mc].Material.EmissionColor.Z);
@@ -891,7 +874,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 		}
 		else if( strcmp( str, "Ks" ) == 0 )
 		{
-			//スペキュラ
 			float specular;
 			(void)fscanf( file, "%f", &specular );
 			(void)fscanf( file, "%f", &specular );
@@ -901,46 +883,38 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 		}
 		else if( strcmp( str, "Ns" ) == 0 )
 		{
-			//スペキュラ強度
 			float shininess;
 			(void)fscanf( file, "%f", &shininess);
 		}
 		else if( strcmp( str, "d" ) == 0 )
 		{
-			//アルファ
 			(void)fscanf( file, "%f", &materialArray[ mc ].Material.BaseColor.W );
 		}
 		else if (strcmp(str, "Metallic") == 0)
 		{
-			//メタリック
 			(void)fscanf(file, "%f", &materialArray[mc].Material.Metallic);
 		}
 		else if (strcmp(str, "Roughness") == 0)
 		{
-			//ラフネス
 			(void)fscanf(file, "%f", &materialArray[mc].Material.Roughness);
 		}
 		else if( strcmp( str, "map_Kd" ) == 0 )
 		{
-			//テクスチャ
 			(void)fscanf( file, "%s", str );
 			strcat( materialArray[ mc ].TextureNameBaseColor, str);
 		}
 		else if (strcmp(str, "map_Ns") == 0)
 		{
-			//テクスチャ
 			(void)fscanf(file, "%s", str);
 			strcat(materialArray[mc].TextureNameSubColor, str);
 		}/*
 		else if (strcmp(str, "refl") == 0)
 		{
-			//テクスチャ
 			(void)fscanf(file, "%s", str);
 			strcat( materialArray[ mc ].TextureNameARM, str);
 		}
 		else if (strcmp(str, "map_Bump") == 0)
 		{
-			//テクスチャ
 			(void)fscanf(file, "%s", str);
 			strcat( materialArray[ mc ].TextureNameNormal, str);
 		}*/

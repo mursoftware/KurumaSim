@@ -26,7 +26,6 @@ struct MATERIAL
 
 
 
-// 16*4ƒoƒCƒg‹«ŠE///////////////////////
 
 struct ENV_CONSTANT
 {

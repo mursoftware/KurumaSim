@@ -31,7 +31,7 @@ void Transmission::Load(const char * FileName, const char * PartName)
 
 void Transmission::Update(float dt)
 {
-	//ギア比
+	//gear ratio
 	{
 		switch (m_Gear)
 		{
@@ -46,7 +46,7 @@ void Transmission::Update(float dt)
 			break;
 		}
 
-		//ファイナルギア
+		//final gear
 		m_GearRatio *= m_GearRatioFinal;
 	}
 

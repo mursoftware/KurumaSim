@@ -56,7 +56,7 @@ void Meter::DrawUI()
 		position = Vector3(0.0f, -380.0f, 0.0f);
 
 
-	//ÉpÉlÉã
+
 	{
 		render->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_PanleTexture->ShaderResourceView.Index);
 		render->DrawSprite(
@@ -70,7 +70,7 @@ void Meter::DrawUI()
 
 
 
-	//ÉMÉA
+
 	{
 		int gear = m_Gear;
 		if (gear == -1)
@@ -89,7 +89,7 @@ void Meter::DrawUI()
 
 
 
-	//ë¨ìx
+
 	{
 		int speedkmph{};
 		speedkmph = (int)(m_Speed / 1000.0f * 60.0f * 60.0f);
@@ -114,7 +114,7 @@ void Meter::DrawUI()
 	}
 
 
-	//êj
+
 	{
 		float needleRotation = -PI + m_RPM / 200.0f;
 

@@ -13,8 +13,6 @@ SamplerState sampler0 : register(s0);
 SamplerState sampler1 : register(s1);
 
 
-
-//EarlyZ有効時にはClip、Discardが使えない
 //[earlydepthstencil]
 
 
@@ -35,7 +33,6 @@ PS_OUTPUT2 main(PS_INPUT input)
 
 
 
-    //シャドウ
     float shadow = 1.0;
     float2 shadowTexCoord;
 
@@ -61,7 +58,7 @@ PS_OUTPUT2 main(PS_INPUT input)
 
 
 
-    //レイリー散乱
+    //Rayleigh scattering
 	float3 sunLight = LightColor;
 	float3 wavelength = float3(0.650, 0.570, 0.475);
 	float3 wavelength4inv = 1.0 / pow(wavelength, 4);
@@ -70,14 +67,12 @@ PS_OUTPUT2 main(PS_INPUT input)
 
 
 
-    //ディレクショナルライト
     float3 directionalLight;
 	directionalLight = saturate(dot(LightDirection, normal) * 0.25 + 0.75) * scatteringLight * shadow / PI;
 
 
 
 
-    //IBL
     float2 iblTexCoord;
     iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
     iblTexCoord.y = acos(normal.y) / PI;
