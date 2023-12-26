@@ -1,6 +1,16 @@
 # KurumaSim
-KurumaSim is a Car Simulator.
+KurumaSim is Light Weight Driving Simulator.
 ![2023-12-10](https://github.com/mursoftware/KurumaSim/assets/135035096/ce447147-ea26-40a2-ab85-3aedffcbab7f)
+
+
+https://github.com/mursoftware/KurumaSim/assets/135035096/17aec63a-1d88-4e7d-84e4-b80cfb14bb9b
+
+
+
+## System Requirement
+- Windows 10, 11
+- DirectX 12
+- Intel UHD
 
 ## Download
 KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/download/v0.1.0/KurumaSim_0_1_0.zip)
