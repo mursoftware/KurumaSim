@@ -182,8 +182,9 @@ float4 main(PS_INPUT input) : SV_TARGET0
     //Exposure 
 	if (AutoExposure)
 	{
-		float4 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.75), 0);
+		float4 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.5), 0);
 		float lumi = exposure.r * 0.3 + exposure.g * 0.6 + exposure.g * 0.1;
+		lumi *= 10000.0; //Luminance unit in shader is 1/10000 nit
         
 		color.rgb *= Exposure / lumi;
 	}
@@ -191,7 +192,8 @@ float4 main(PS_INPUT input) : SV_TARGET0
 	{
   		color.rgb *= Exposure;      
 	}
-
+    
+    
 
 
     //tone mapping

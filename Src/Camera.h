@@ -12,8 +12,7 @@ protected:
 	float		m_FocalLength = 35.0f;
 	float		m_FocalBlur = 20.0f;
 	float		m_Exposure = 0.0f;
-	float		m_IBLWhiteBalance = 5000.0f;
-	float		m_WhiteBalance = 5000.0f;
+	float		m_WhiteBalance = 6000.0f;
 	float		m_Gamma = 2.2f;
 	//bool		m_ACESFilmEnable = true;
 	//bool		m_FXAAEnable = false;

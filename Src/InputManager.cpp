@@ -3,7 +3,7 @@
 #include "InputManager.h"
 
 
-//#define USE_LOGITECH_STEERING_WHEEL_LIB
+#define USE_LOGITECH_STEERING_WHEEL_LIB
 //https://gaming.logicool.co.jp/innovation/developer-lab.html
 
 

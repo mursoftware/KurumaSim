@@ -12,7 +12,7 @@ private:
 
 	float			m_Fog{};
 	Vector2			m_LightRotation{};
-	Vector3			m_LightColor{};
+	float			m_LightTemperature{};
 	float			m_LightIntensity{};
 	float			m_Time{};
 	float			m_CloudDensity{};

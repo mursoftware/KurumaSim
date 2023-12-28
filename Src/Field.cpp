@@ -27,8 +27,8 @@ void Field::Load(int Index)
 		m_Model.Load("Asset\\Road\\ShowRoom\\ShowRoom_Out.obj", THREAD_PRIORITY_ABOVE_NORMAL, true);
 
 		m_LightRotation = { 0.6006f * PI * 2.0f, 0.2598f * PI };
-		m_LightColor = Vector3{ 0.9f, 0.9f, 1.0f };
-		m_LightIntensity = 5.0f;
+		m_LightTemperature = 6000.0f;
+		m_LightIntensity = 130000.0f;
 
 		m_Fog = 3.0f;
 	}
@@ -37,8 +37,8 @@ void Field::Load(int Index)
 		m_Model.Load("Asset\\Road\\Forest\\Forest.obj", THREAD_PRIORITY_ABOVE_NORMAL, true);
 
 		m_LightRotation = { 0.6006f * PI * 2.0f, 0.2598f * PI };
-		m_LightColor = Vector3{ 0.9f, 0.9f, 1.0f };
-		m_LightIntensity = 5.0f;
+		m_LightTemperature = 6000.0f;
+		m_LightIntensity = 130000.0f;
 
 		m_Fog = 3.0f;
 	}
@@ -93,6 +93,45 @@ void Field::DrawDepth(Camera* DrawCamera)
 }
 
 
+float Saturate(float in)
+{
+	float ret;
+
+	ret = min(in, 1.0f);
+	ret = max(in, 0.0f);
+
+	return ret;
+}
+
+Vector3 ColorTemperatureToRGB(float temperatureInKelvins)
+{
+	Vector3 retColor;
+
+	temperatureInKelvins = temperatureInKelvins / 100.0f;
+
+	if (temperatureInKelvins <= 66.0)
+	{
+		retColor.X = 1.0;
+		retColor.Y = Saturate(0.39008157876901960784f * log(temperatureInKelvins) - 0.63184144378862745098f);
+	}
+	else
+	{
+		float t = abs(temperatureInKelvins - 60.0f);
+		retColor.X = Saturate(1.29293618606274509804f * pow(t, -0.1332047592f));
+		retColor.Y = Saturate(1.12989086089529411765f * pow(t, -0.0755148492f));
+	}
+
+	if (temperatureInKelvins >= 66.0f)
+		retColor.Z = 1.0f;
+	else if (temperatureInKelvins <= 19.0f)
+		retColor.Z = 0.0f;
+	else
+		retColor.Z = Saturate(0.54320678911019607843f * log(temperatureInKelvins - 10.0f) - 1.19625408914f);
+
+	return retColor;
+}
+
+
 
 void Field::Draw(Camera* DrawCamera)
 {	
@@ -107,7 +146,7 @@ void Field::Draw(Camera* DrawCamera)
 		constant.LightDirection.Z = sinf(m_LightRotation.Y) * sinf(m_LightRotation.X);
 		constant.LightDirection.Y = cosf(m_LightRotation.Y);
 
-		constant.LightColor = m_LightColor * m_LightIntensity;
+		constant.LightColor = ColorTemperatureToRGB(m_LightTemperature) * m_LightIntensity / 10000.0f;//Luminance unit in shader is 1/10000 nit
 		
 		constant.Time = m_Time;
 
@@ -218,16 +257,28 @@ void Field::DrawDebug()
 {
 	ImGui::Begin("Field");
 
-	ImGui::SliderFloat("Fog", &m_Fog, 0.0f, 10.0f, "%.2f");
 
-	ImGui::SliderFloat("LightRotationX", &m_LightRotation.X, 0.0f, PI * 2.0f, "%.2f");
-	ImGui::SliderFloat("LightRotationY", &m_LightRotation.Y, 0.0f, PI * 0.5f, "%.2f");
+	if (ImGui::CollapsingHeader("SunLight"))
+	{
+		ImGui::SliderFloat("RotationX", &m_LightRotation.X, 0.0f, PI * 2.0f, "%.2f");
+		ImGui::SliderFloat("RotationY", &m_LightRotation.Y, 0.0f, PI * 0.5f, "%.2f");
 
-	ImGui::ColorPicker3("LightColor", (float*)&m_LightColor, ImGuiColorEditFlags_PickerHueWheel);
-	ImGui::SliderFloat("LightIntencity", &m_LightIntensity, 0.0f, 10.0f, "%.2f");
+		ImGui::SliderFloat("Temperature", &m_LightTemperature, 1000.0f, 10000.0f, "%.0f K");
+		ImGui::SliderFloat("Intensity", &m_LightIntensity, 0.0f, 200000.0f, "%.0f lx");
+	}
 
-	ImGui::SliderFloat("CloudDensity", &m_CloudDensity, 0.0f, 1.0f, "%.2f");
-	ImGui::SliderFloat("CloudHeight", &m_CloudHeight, 0.0f, 0.5f, "%.3f");
+
+	if (ImGui::CollapsingHeader("Cloud"))
+	{
+		ImGui::SliderFloat("Density", &m_CloudDensity, 0.0f, 1.0f, "%.2f");
+		ImGui::SliderFloat("Height", &m_CloudHeight, 0.0f, 0.5f, "%.3f");
+	}
+
+
+	if (ImGui::CollapsingHeader("Fog"))
+	{
+		ImGui::SliderFloat("Density", &m_Fog, 0.0f, 10.0f, "%.2f");
+	}
 
 	ImGui::End();
 	

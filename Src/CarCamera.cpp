@@ -25,8 +25,8 @@ CarCamera::CarCamera()
 	m_DroneRotationSpeed = Vector3{ 0.0f, 0.0f, 0.0f };
 
 
-
-	m_Exposure = -0.75f;
+	m_AutoExposure = false;
+	m_Exposure = 15.0f;
 	m_Gamma = 2.2f;
 	m_Vignette = 0.4f;
 	m_LensFlare = 0.2f;
@@ -433,28 +433,27 @@ void CarCamera::Draw()
 
 
 	CAMERA_CONSTANT constant{};
-	constant.CameraPosition = { m_DrawPosition.X, m_DrawPosition.Y, m_DrawPosition.Z, 0.0f };
-	constant.Exposure = std::powf(10.0f, m_Exposure);
-	//constant.IBLWhiteBalance = m_IBLWhiteBalance;
+	constant.CameraPosition = { m_DrawPosition.X, m_DrawPosition.Y, m_DrawPosition.Z, 0.0f };	
+
+	constant.Exposure = std::powf(2.0f, -m_Exposure) * 10000.0;//Luminance unit in shader is 1/10000 nit
 	constant.WhiteBalance = m_WhiteBalance;
 	constant.Gamma = m_Gamma;
-	//constant.ACESFilmEnable = m_ACESFilmEnable;
-	//constant.FXAAEnable = m_FXAAEnable;
 	constant.AutoExposure = m_AutoExposure;
-	//constant.TSS = m_TSSEnable && m_TSS;
-	//constant.TSSCount = m_TSSCount;
+
 	constant.LensFlare = m_LensFlare;
-	constant.MotionBlur = m_MotionBlur;
+
 	constant.Vignette = m_Vignette;
-	//constant.Fog = m_Fog;
+
 	constant.FocalLength = m_FocalLength / 1000.0f;
 	constant.FocalDistance = (playerPosition - m_Position).Length();
 	constant.FocalBlur = m_FocalBlur;
+
+	constant.MotionBlur = m_MotionBlur;
+	constant.MotionBlurCount = m_MotionBlurCount;
+
 	constant.AntiAliasing = m_AntiAliasng;
 	constant.TemporalRatio = m_TemporalRatio;
-	constant.MotionBlurCount = m_MotionBlurCount;
 	constant.TemporalFrame = m_TaaFrame;
-
 
 	constant.SSBufferSize.X = (float)RenderManager::GetInstance()->GetSSBufferWidth();
 	constant.SSBufferSize.Y = (float)RenderManager::GetInstance()->GetSSBufferHeight();
@@ -481,10 +480,14 @@ void CarCamera::DrawDebug()
 	//ImGui::SliderFloat("Distance", &m_Distance, 1.0f, 10.0f, "%.1f m");
 	ImGui::SliderFloat("FocalLength", &m_FocalLength, 10.0f, 200.0f, "%.0f mm");
 	ImGui::SliderFloat("FocalBlur", &m_FocalBlur, 0.0f, 1000.0f, "%.0f");
+
 	ImGui::Checkbox("AutoExposure", &m_AutoExposure);
-	ImGui::SliderFloat("Exposure", &m_Exposure, -5.0f, 5.0f, "%.2f EV");
-	//ImGui::SliderFloat("IBLWhiteBalance", &m_IBLWhiteBalance, 0.0f, 10000.0f, "%.0f K");
-	ImGui::SliderFloat("WhiteBalance", &m_WhiteBalance, 0.0f, 10000.0f, "%.0f K");
+	if(m_AutoExposure)
+		ImGui::SliderFloat("Compensation", &m_Exposure, -5.0f, 5.0f, "%.2f EV");
+	else
+		ImGui::SliderFloat("Exposure", &m_Exposure, 1.0f, 20.0f, "%.2f EV");
+
+	ImGui::SliderFloat("WhiteBalance", &m_WhiteBalance, 1000.0f, 10000.0f, "%.0f K");
 	ImGui::SliderFloat("Gamma", &m_Gamma, 1.0f, 3.0f, "%.2f");
 	ImGui::SliderFloat("LensFlare", &m_LensFlare, 0.0f, 1.0f, "%.1f");
 	ImGui::SliderFloat("MotionBlur", &m_MotionBlur, 0.0f, 2.0f, "%.1f");
