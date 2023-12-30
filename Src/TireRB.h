@@ -48,7 +48,6 @@ private:
 	float		m_BrushStaticFrictionRatio{};
 	float		m_BrushDynamicFrictionRatio{};
 
-	//ComPtr<ID3D12Resource>		m_ShadowVertexBuffer;
 	//std::unique_ptr<TEXTURE>	m_ShadowTexture;
 
 
@@ -61,7 +60,6 @@ public:
 	void DrawDebug(const char* DebugName);
 	void PreDraw();
 	void Draw(class Camera* DrawCamera, int LodLevel = 2);
-	//void DrawShadow(Camera* DrawCamera);
 
 
 	float GetSrip() { return m_Srip; }

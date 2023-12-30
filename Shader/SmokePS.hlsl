@@ -11,6 +11,7 @@ Texture2D<float4> textureIBLStatic : register(t3);
 Texture2D<float> textureShadow[3] : register(t5);
 SamplerState sampler0 : register(s0);
 SamplerState sampler1 : register(s1);
+SamplerState sampler2 : register(s2);
 
 
 //[earlydepthstencil]
@@ -19,7 +20,6 @@ SamplerState sampler1 : register(s1);
 PS_OUTPUT2 main(PS_INPUT input)
 {
     PS_OUTPUT2 output;
-    float PI = 3.141592653589;
 
 
 
@@ -58,17 +58,9 @@ PS_OUTPUT2 main(PS_INPUT input)
 
 
 
-    //Rayleigh scattering
-	float3 sunLight = LightColor;
-	float3 wavelength = float3(0.650, 0.570, 0.475);
-	float3 wavelength4inv = 1.0 / pow(wavelength, 4);
-	float atomDensityLight = 1.0 + pow(1.0 - LightDirection.y, 10) * 10.0;
-	float3 scatteringLight = sunLight * exp(-atomDensityLight * atomDensityLight * wavelength4inv * 0.01);
-
-
 
     float3 directionalLight;
-	directionalLight = saturate(dot(LightDirection, normal) * 0.25 + 0.75) * scatteringLight * shadow / PI;
+	directionalLight = saturate(dot(LightDirection, normal) * 0.25 + 0.75) * ScatteringLight * shadow / PI;
 
 
 
@@ -76,7 +68,7 @@ PS_OUTPUT2 main(PS_INPUT input)
     float2 iblTexCoord;
     iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
     iblTexCoord.y = acos(normal.y) / PI;
-    float3 iblLight = textureIBLStatic.Sample(sampler0, iblTexCoord).rgb;
+	float3 iblLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb;
 
 
 
@@ -117,6 +109,38 @@ PS_OUTPUT2 main(PS_INPUT input)
 	float4 color;
 	color.rgb = diffuse * baseColor.a * alpha;
 	color.a = baseColor.a * alpha;
+    
+    
+    
+   
+    
+ //   //fog
+ //   {
+	//	float3 eyeVector = position.xyz - CameraPosition.xyz;
+	//	float len = length(eyeVector);
+	//	eyeVector = normalize(eyeVector);
+    
+	//	float3 envLight;
+ //       {
+	//		float2 iblTexCoord;
+	//		iblTexCoord.x = 0.0;
+	//		iblTexCoord.y = 0.0;
+
+	//		envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb;
+	//	}
+
+
+	//	float3 dirLight;
+	//	dirLight = ScatteringLight / PI;
+
+
+	//	float3 fogColor = float3(0.9, 0.9, 0.9) * 0.5;
+	//	float fog = (1.0 - exp(-len * Fog)) * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+
+	//	output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
+	//}
+    
+    
 
     //color.rgb = depth.rgb;
     //color.a = 1.0;

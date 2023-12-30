@@ -82,9 +82,12 @@ float4 main(PS_INPUT input) : SV_TARGET0
     float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
 
 
-
-
-
+	float4 projectionPosition = float4(texcoord * 2.0 - 1.0, depth, 1.0);
+	projectionPosition.y = -projectionPosition.y;
+	float4 worldPosition = mul(projectionPosition, InvVP);
+	worldPosition /= worldPosition.w;
+    
+    
     float blur = FocalLength * abs(z - FocalDistance) / (z * (FocalDistance - FocalLength)) * FocalBlur;
 
 
@@ -157,6 +160,29 @@ float4 main(PS_INPUT input) : SV_TARGET0
 	}
 
     
+    
+        
+   
+ //   //fog
+ //   {
+ //		float3 eyeVector = worldPosition.xyz - CameraPosition.xyz;
+	//	float len = length(eyeVector);
+	//	eyeVector /= len;
+        
+	//	//if (len > 400.0)
+	//	//	len = 1000.0;
+        
+	//		float3 dirLight;
+	//	dirLight = ScatteringLight / PI;
+
+
+	//	float3 fogColor = float3(0.9, 0.9, 0.9) * 0.15;
+	//	float fog = (1.0 - exp(-len * Fog)) * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+
+	//	color.rgb = color.rgb * (1.0 - fog) + fogColor * dirLight * fog;
+	//}
+    
+    
 
     
     
@@ -218,7 +244,10 @@ float4 main(PS_INPUT input) : SV_TARGET0
 		color.rgb = gammacorrect(color.rgb, Gamma);
 	}
 
+    
+    
 
 
 	return color;
+
 }

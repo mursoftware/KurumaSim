@@ -9,6 +9,8 @@
 
 
 #include <intrin.h>
+#include <Camera.h>
+#include <GameManager.h>
 
 
 
@@ -914,7 +916,6 @@ void RenderManager::Initialize()
 		blendDesc.LogicOp = D3D12_LOGIC_OP_CLEAR;
 
 		m_PipelineState["Sky"] = CreatePipeline("Shader\\SkyVS.cso", "Shader\\SkyPS.cso", RTVFormats, _countof(RTVFormats), blendDesc, true, false);
-		m_PipelineState["Shadow"] = CreatePipeline("Shader\\ShadowVS.cso", "Shader\\ShadowPS.cso", RTVFormats, _countof(RTVFormats), blendDesc, false, false);
 		m_PipelineState["Field"] = CreatePipeline("Shader\\FieldVS.cso", "Shader\\FieldPS.cso", RTVFormats, _countof(RTVFormats), blendDesc, true, false);
 		m_PipelineState["Car"] = CreatePipeline("Shader\\CarVS.cso", "Shader\\CarPS.cso", RTVFormats, _countof(RTVFormats), blendDesc, true, false);
 	}
@@ -1351,7 +1352,7 @@ void RenderManager::DrawIBLStatic()
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Shrink"].Get());
+		m_GraphicsCommandList->SetPipelineState(m_PipelineState["IBL"].Get());
 
 
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_IBLStaticBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -1361,7 +1362,7 @@ void RenderManager::DrawIBLStatic()
 
 
 
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_IBLBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
 
 
 		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
@@ -2627,9 +2628,19 @@ void RenderManager::DrawScreen(unsigned int Width, unsigned int Height, float Al
 
 	Matrix44 world = Matrix44::Identity();
 
+
+	Camera* camera = GameManager::GetInstance()->GetScene()->GetCurrentCamera();
+
+
+	Matrix44 vp = camera->GetViewMatrix() * camera->GetProjectionMatrix();
+	Matrix44 invvp = Matrix44::Inverse(vp);
+
+
+
 	OBJECT_CONSTANT constant;
 	constant.WVP = Matrix44::Transpose(world);
 	constant.World = Matrix44::Transpose(world);
+	constant.InvVP = Matrix44::Transpose(invvp);
 	constant.Param = { (float)Width, (float)Height, 0.0f, Alpha };
 	SetConstant(2, &constant, sizeof(constant));
 

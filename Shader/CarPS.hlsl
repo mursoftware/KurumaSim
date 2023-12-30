@@ -4,6 +4,8 @@
 TextureCube<float4> textureEnv : register(t0);
 Texture2D<float4> textureIBL : register(t1);
 Texture2D<float4> textureDif : register(t2);
+Texture2D<float4> textureIBLStatic : register(t3);
+
 //Texture2D<float4> textureARM : register(t3);
 //Texture2D<float4> textureNor : register(t4);
 Texture2D<float> textureShadow[3] : register(t5);
@@ -21,10 +23,7 @@ PS_OUTPUT main(PS_INPUT input)
 {
     PS_OUTPUT output;
 
-    float PI = 3.141592653589;
     
-   
-
 
 
     //float4 arm = textureARM.Sample(sampler0, input.TexCoord);
@@ -56,10 +55,10 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 	float3 eyeVector = position.xyz - CameraPosition.xyz;
+	float len = length(eyeVector);
 	eyeVector = normalize(eyeVector);
 
     float3 eyeRefVector = reflect(eyeVector, normal.xyz);
-	float len = length(eyeVector);
     eyeRefVector = normalize(eyeRefVector);
 
     float ned = saturate(dot(normal.xyz, eyeRefVector));
@@ -220,9 +219,28 @@ PS_OUTPUT main(PS_INPUT input)
     
     //fog
     {
-		output.Color.rgb = output.Color.rgb * input.Fog.a + input.Fog.rgb * (1.0 - input.Fog.a) * saturate(output.Color.g + 0.1);
-	}
+		float3 envLight;
+        {
+			float2 iblTexCoord;
+			iblTexCoord.x = 0.0;
+			iblTexCoord.y = 0.0;
 
+			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb / 2.0;
+		}
+
+
+		float3 dirLight;
+		dirLight = ScatteringLight / (2.0 * PI);
+
+
+		float3 fogColor = float3(0.9, 0.9, 0.9) * 1.0;
+		float fog = (1.0 - exp(-len * Fog)); // * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+
+		output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
+		output.Color.a += (1.0 - output.Color.a) * fog;
+
+	}
+    
 
 
     //velocity vector

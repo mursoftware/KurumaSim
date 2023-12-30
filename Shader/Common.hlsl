@@ -52,6 +52,7 @@ cbuffer ObjectConstantBuffer : register(b2)
     float4x4 OldWVP;
     float4x4 World;
     float4x4 ShadowWVP[3];
+	float4x4 InvVP;
     float4 Param;
 };
 
@@ -99,10 +100,8 @@ struct PS_INPUT
     float4 Normal : NORMAL;
     float2 TexCoord : TEXCOORD;
     float4 Color : COLOR;
-    //float Occlusion : OCCLUSION;
     float4 WorldPosition : POSITION;
     float4 OldPosition : OLD_POSITION;
-	float4 Fog : FOG;
     float4 ShadowPosition[3] : SHADOW_POSITION0;
 
 };
@@ -194,3 +193,6 @@ float Random(float4 Seed)
     float d = dot(Seed, float4(12.9898, 78.233, 32.241, 61.233));
     return frac(sin(d) * 43758.5453);
 }
+
+
+static float PI = 3.141592653589;

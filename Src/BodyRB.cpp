@@ -72,57 +72,6 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 		fileName = path;
 		fileName += GetPrivateProfileStdString(PartName, "SHADOW", FileName);
 		m_ShadowTexture = render->LoadTexture(fileName.c_str());
-
-
-
-
-
-		HRESULT hr{};
-		D3D12_HEAP_PROPERTIES heapProperties{};
-		D3D12_RESOURCE_DESC   resourceDesc{};
-
-		heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-		heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-		heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-		heapProperties.CreationNodeMask = 0;
-		heapProperties.VisibleNodeMask = 0;
-
-		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		resourceDesc.Height = 1;
-		resourceDesc.DepthOrArraySize = 1;
-		resourceDesc.MipLevels = 1;
-		resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-		resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-		resourceDesc.SampleDesc.Count = 1;
-		resourceDesc.SampleDesc.Quality = 0;
-
-
-		resourceDesc.Width = sizeof(VERTEX_3D) * 4;
-		hr = render->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
-			&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-			IID_PPV_ARGS(&m_ShadowVertexBuffer));
-		assert(SUCCEEDED(hr));
-
-
-
-		VERTEX_3D *buffer{};
-		hr = m_ShadowVertexBuffer->Map(0, nullptr, (void**)&buffer);
-		assert(SUCCEEDED(hr));
-
-		buffer[0].Position = Vector3{ -2.0f,  0.0f,  3.0f };
-		buffer[1].Position = Vector3{ 2.0f,  0.0f,  3.0f };
-		buffer[2].Position = Vector3{ -2.0f,  0.0f, -3.0f };
-		buffer[3].Position = Vector3{ 2.0f,  0.0f, -3.0f };
-		buffer[0].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-		buffer[1].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-		buffer[2].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-		buffer[3].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-		buffer[0].TexCoord = { 0.0f, 1.0f };
-		buffer[1].TexCoord = { 1.0f, 1.0f };
-		buffer[2].TexCoord = { 0.0f, 0.0f };
-		buffer[3].TexCoord = { 1.0f, 0.0f };
-
-		m_ShadowVertexBuffer->Unmap(0, nullptr);
 	}
 
 
@@ -399,47 +348,3 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 }
 
-
-
-
-void BodyRB::DrawShadow(Camera* DrawCamera)
-{
-
-	RenderManager* render = RenderManager::GetInstance();
-
-
-
-	Matrix44 view = DrawCamera->GetViewMatrix();
-	Matrix44 projection = DrawCamera->GetProjectionMatrix();
-	Matrix44 world = Matrix44::Identity();
-	world *= Matrix44::Scale(1.5f, 1.5f, 1.5f);
-	world *= Matrix44::TranslateXYZ(m_Offset.X, m_Offset.Y - 0.14f, m_Offset.Z);
-	world *= GetMatrix();
-
-
-
-	OBJECT_CONSTANT constant;
-	constant.WVP = Matrix44::Transpose(world * view * projection);
-	constant.World = Matrix44::Transpose(world);
-	constant.Param = { 0.0f, 0.0f, 0.0f, 0.0f };
-	render->SetConstant(2, &constant, sizeof(constant));
-
-
-
-	D3D12_VERTEX_BUFFER_VIEW vertexView{};
-	vertexView.BufferLocation = m_ShadowVertexBuffer->GetGPUVirtualAddress();
-	vertexView.StrideInBytes = sizeof(VERTEX_3D);
-	vertexView.SizeInBytes = sizeof(VERTEX_3D) * 4;
-	render->GetGraphicsCommandList()->IASetVertexBuffers(0, 1, &vertexView);
-
-
-
-	render->GetGraphicsCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-
-
-	render->SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_ShadowTexture->ShaderResourceView.Index);
-
-
-	render->GetGraphicsCommandList()->DrawInstanced(4, 1, 0, 0);
-}

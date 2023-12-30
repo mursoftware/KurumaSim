@@ -278,12 +278,6 @@
     <FxCompile Include="Shader\PostVS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\ShadowPS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\ShadowVS.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\SkyPS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>

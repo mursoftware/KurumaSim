@@ -83,13 +83,13 @@ void CarCamera::Update()
 		{
 			m_FocalBlur = 0.0f;
 			m_FocalLength = 16.0f;
-			m_Exposure = -0.8f;
+			//m_Exposure = -0.8f;
 		}
 		else
 		{
 			m_FocalBlur = 50.0f;
 			m_FocalLength = 35.0f;
-			m_Exposure = -0.5f;
+			//m_Exposure = -0.5f;
 		}
 
 	}

@@ -1669,35 +1669,35 @@ Matrix44 Matrix44::Transpose( const Matrix44& Matrix1 )
 Matrix44 Matrix44::Inverse(const Matrix44& Matrix1)
 {
 	float det = (Matrix1.M[0][0]*Matrix1.M[1][1] - Matrix1.M[1][0] * Matrix1.M[0][1])*(Matrix1.M[2][2]*Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[2][3])
-				- (Matrix1.M[0][0]*Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[0][1])*(Matrix1.M[1][2]*Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[1][3])
-				+ (Matrix1.M[0][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[0][1])*(Matrix1.M[1][2]*Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[1][3])
-				+ (Matrix1.M[1][0]*Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[1][1])*(Matrix1.M[0][2]*Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[0][3])
-				- (Matrix1.M[1][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[1][1])*(Matrix1.M[0][2]*Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[0][3])
-				+ (Matrix1.M[2][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[2][1])*(Matrix1.M[0][2]*Matrix1.M[1][3] - Matrix1.M[1][2] * Matrix1.M[0][3]);
+			- (Matrix1.M[0][0]*Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[0][1])*(Matrix1.M[1][2]*Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[1][3])
+			+ (Matrix1.M[0][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[0][1])*(Matrix1.M[1][2]*Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[1][3])
+			+ (Matrix1.M[1][0]*Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[1][1])*(Matrix1.M[0][2]*Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[0][3])
+			- (Matrix1.M[1][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[1][1])*(Matrix1.M[0][2]*Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[0][3])
+			+ (Matrix1.M[2][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[2][1])*(Matrix1.M[0][2]*Matrix1.M[1][3] - Matrix1.M[1][2] * Matrix1.M[0][3]);
 
 	det = 1.0f / det;
 
 	Matrix44 matrix;
 
-	matrix.M[0][0] = (Matrix1.M[1][1] * (Matrix1.M[2][2]*Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[2][3]) + Matrix1.M[2][1] * (Matrix1.M[3][2]*Matrix1.M[1][3] - Matrix1.M[1][2] * Matrix1.M[3][3]) + Matrix1.M[3][1] * (Matrix1.M[1][2]*Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[1][3])) * det;
-	matrix.M[1][0] = (Matrix1.M[1][2] * (Matrix1.M[2][0]*Matrix1.M[3][3] - Matrix1.M[3][0] * Matrix1.M[2][3]) + Matrix1.M[2][2] * (Matrix1.M[3][0]*Matrix1.M[1][3] - Matrix1.M[1][0] * Matrix1.M[3][3]) + Matrix1.M[3][2] * (Matrix1.M[1][0]*Matrix1.M[2][3] - Matrix1.M[2][0] * Matrix1.M[1][3])) * det;
-	matrix.M[2][0] = (Matrix1.M[1][3] * (Matrix1.M[2][0]*Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[2][1]) + Matrix1.M[2][3] * (Matrix1.M[3][0]*Matrix1.M[1][1] - Matrix1.M[1][0] * Matrix1.M[3][1]) + Matrix1.M[3][3] * (Matrix1.M[1][0]*Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[1][1])) * det;
-	matrix.M[3][0] = (Matrix1.M[1][0] * (Matrix1.M[3][1]*Matrix1.M[2][2] - Matrix1.M[2][1] * Matrix1.M[3][2]) + Matrix1.M[2][0] * (Matrix1.M[1][1]*Matrix1.M[3][2] - Matrix1.M[3][1] * Matrix1.M[1][2]) + Matrix1.M[3][0] * (Matrix1.M[2][1]*Matrix1.M[1][2] - Matrix1.M[1][1] * Matrix1.M[2][2])) * det;
+	matrix.M[0][0] = (Matrix1.M[1][1] * (Matrix1.M[2][2] * Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[2][3]) + Matrix1.M[2][1] * (Matrix1.M[3][2] * Matrix1.M[1][3] - Matrix1.M[1][2] * Matrix1.M[3][3]) + Matrix1.M[3][1] * (Matrix1.M[1][2] * Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[1][3])) * det;
+	matrix.M[1][0] = (Matrix1.M[1][2] * (Matrix1.M[2][0] * Matrix1.M[3][3] - Matrix1.M[3][0] * Matrix1.M[2][3]) + Matrix1.M[2][2] * (Matrix1.M[3][0] * Matrix1.M[1][3] - Matrix1.M[1][0] * Matrix1.M[3][3]) + Matrix1.M[3][2] * (Matrix1.M[1][0] * Matrix1.M[2][3] - Matrix1.M[2][0] * Matrix1.M[1][3])) * det;
+	matrix.M[2][0] = (Matrix1.M[1][3] * (Matrix1.M[2][0] * Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[2][1]) + Matrix1.M[2][3] * (Matrix1.M[3][0] * Matrix1.M[1][1] - Matrix1.M[1][0] * Matrix1.M[3][1]) + Matrix1.M[3][3] * (Matrix1.M[1][0] * Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[1][1])) * det;
+	matrix.M[3][0] = (Matrix1.M[1][0] * (Matrix1.M[3][1] * Matrix1.M[2][2] - Matrix1.M[2][1] * Matrix1.M[3][2]) + Matrix1.M[2][0] * (Matrix1.M[1][1] * Matrix1.M[3][2] - Matrix1.M[3][1] * Matrix1.M[1][2]) + Matrix1.M[3][0] * (Matrix1.M[2][1] * Matrix1.M[1][2] - Matrix1.M[1][1] * Matrix1.M[2][2])) * det;
 
 	matrix.M[0][1] = (Matrix1.M[2][1] * (Matrix1.M[0][2] * Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[0][3]) + Matrix1.M[3][1] * (Matrix1.M[2][2] * Matrix1.M[0][3] - Matrix1.M[0][2] * Matrix1.M[2][3]) + Matrix1.M[0][1] * (Matrix1.M[3][2] * Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[3][3])) * det;
 	matrix.M[1][1] = (Matrix1.M[2][2] * (Matrix1.M[0][0] * Matrix1.M[3][3] - Matrix1.M[3][0] * Matrix1.M[0][3]) + Matrix1.M[3][2] * (Matrix1.M[2][0] * Matrix1.M[0][3] - Matrix1.M[0][0] * Matrix1.M[2][3]) + Matrix1.M[0][2] * (Matrix1.M[3][0] * Matrix1.M[2][3] - Matrix1.M[2][0] * Matrix1.M[3][3])) * det;
 	matrix.M[2][1] = (Matrix1.M[2][3] * (Matrix1.M[0][0] * Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[0][1]) + Matrix1.M[3][3] * (Matrix1.M[2][0] * Matrix1.M[0][1] - Matrix1.M[0][0] * Matrix1.M[2][1]) + Matrix1.M[0][3] * (Matrix1.M[3][0] * Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[3][1])) * det;
-	matrix.M[3][1] = (Matrix1.M[2][0] * (Matrix1.M[3][1]*Matrix1.M[0][2] - Matrix1.M[0][1] * Matrix1.M[3][2]) + Matrix1.M[3][0] * (Matrix1.M[0][1]*Matrix1.M[2][2] - Matrix1.M[2][1] * Matrix1.M[0][2]) + Matrix1.M[0][0] * (Matrix1.M[2][1]*Matrix1.M[3][2] - Matrix1.M[3][1] * Matrix1.M[2][2])) * det;
+	matrix.M[3][1] = (Matrix1.M[2][0] * (Matrix1.M[3][1] * Matrix1.M[0][2] - Matrix1.M[0][1] * Matrix1.M[3][2]) + Matrix1.M[3][0] * (Matrix1.M[0][1] * Matrix1.M[2][2] - Matrix1.M[2][1] * Matrix1.M[0][2]) + Matrix1.M[0][0] * (Matrix1.M[2][1] * Matrix1.M[3][2] - Matrix1.M[3][1] * Matrix1.M[2][2])) * det;
 
 	matrix.M[0][2] = (Matrix1.M[3][1] * (Matrix1.M[0][2] * Matrix1.M[1][3] - Matrix1.M[1][2] * Matrix1.M[0][3]) + Matrix1.M[0][1] * (Matrix1.M[1][2] * Matrix1.M[3][3] - Matrix1.M[3][2] * Matrix1.M[1][3]) + Matrix1.M[1][1] * (Matrix1.M[3][2] * Matrix1.M[0][3] - Matrix1.M[0][2] * Matrix1.M[3][3])) * det;
 	matrix.M[1][2] = (Matrix1.M[3][2] * (Matrix1.M[0][0] * Matrix1.M[1][3] - Matrix1.M[1][0] * Matrix1.M[0][3]) + Matrix1.M[0][2] * (Matrix1.M[1][0] * Matrix1.M[3][3] - Matrix1.M[3][0] * Matrix1.M[1][3]) + Matrix1.M[1][2] * (Matrix1.M[3][0] * Matrix1.M[0][3] - Matrix1.M[0][0] * Matrix1.M[3][3])) * det;
 	matrix.M[2][2] = (Matrix1.M[3][3] * (Matrix1.M[0][0] * Matrix1.M[1][1] - Matrix1.M[1][0] * Matrix1.M[0][1]) + Matrix1.M[0][3] * (Matrix1.M[1][0] * Matrix1.M[3][1] - Matrix1.M[3][0] * Matrix1.M[1][1]) + Matrix1.M[1][3] * (Matrix1.M[3][0] * Matrix1.M[0][1] - Matrix1.M[0][0] * Matrix1.M[3][1])) * det;
-	matrix.M[3][2] = (Matrix1.M[3][0] * (Matrix1.M[1][1]*Matrix1.M[0][2] - Matrix1.M[0][1] * Matrix1.M[1][2]) + Matrix1.M[0][0] * (Matrix1.M[3][1]*Matrix1.M[1][2] - Matrix1.M[1][1] * Matrix1.M[3][2]) + Matrix1.M[1][0] * (Matrix1.M[0][1]*Matrix1.M[3][2] - Matrix1.M[3][1] * Matrix1.M[0][2])) * det;
+	matrix.M[3][2] = (Matrix1.M[3][0] * (Matrix1.M[1][1] * Matrix1.M[0][2] - Matrix1.M[0][1] * Matrix1.M[1][2]) + Matrix1.M[0][0] * (Matrix1.M[3][1] * Matrix1.M[1][2] - Matrix1.M[1][1] * Matrix1.M[3][2]) + Matrix1.M[1][0] * (Matrix1.M[0][1] * Matrix1.M[3][2] - Matrix1.M[3][1] * Matrix1.M[0][2])) * det;
 
 	matrix.M[0][3] = (Matrix1.M[0][1] * (Matrix1.M[2][2] * Matrix1.M[1][3] - Matrix1.M[1][2] * Matrix1.M[2][3]) + Matrix1.M[1][1] * (Matrix1.M[0][2] * Matrix1.M[2][3] - Matrix1.M[2][2] * Matrix1.M[0][3]) + Matrix1.M[2][1] * (Matrix1.M[1][2] * Matrix1.M[0][3] - Matrix1.M[0][2] * Matrix1.M[1][3])) * det;
 	matrix.M[1][3] = (Matrix1.M[0][2] * (Matrix1.M[2][0] * Matrix1.M[1][3] - Matrix1.M[1][0] * Matrix1.M[2][3]) + Matrix1.M[1][2] * (Matrix1.M[0][0] * Matrix1.M[2][3] - Matrix1.M[2][0] * Matrix1.M[0][3]) + Matrix1.M[2][2] * (Matrix1.M[1][0] * Matrix1.M[0][3] - Matrix1.M[0][0] * Matrix1.M[1][3])) * det;
 	matrix.M[2][3] = (Matrix1.M[0][3] * (Matrix1.M[2][0] * Matrix1.M[1][1] - Matrix1.M[1][0] * Matrix1.M[2][1]) + Matrix1.M[1][3] * (Matrix1.M[0][0] * Matrix1.M[2][1] - Matrix1.M[2][0] * Matrix1.M[0][1]) + Matrix1.M[2][3] * (Matrix1.M[1][0] * Matrix1.M[0][1] - Matrix1.M[0][0] * Matrix1.M[1][1])) * det;
-	matrix.M[3][3] = (Matrix1.M[0][0] * (Matrix1.M[1][1]*Matrix1.M[2][2] - Matrix1.M[2][1] * Matrix1.M[1][2]) + Matrix1.M[1][0] * (Matrix1.M[2][1]*Matrix1.M[0][2] - Matrix1.M[0][1] * Matrix1.M[2][2]) + Matrix1.M[2][0] * (Matrix1.M[0][1]*Matrix1.M[1][2] - Matrix1.M[1][1] * Matrix1.M[0][2])) * det;
+	matrix.M[3][3] = (Matrix1.M[0][0] * (Matrix1.M[1][1] * Matrix1.M[2][2] - Matrix1.M[2][1] * Matrix1.M[1][2]) + Matrix1.M[1][0] * (Matrix1.M[2][1] * Matrix1.M[0][2] - Matrix1.M[0][1] * Matrix1.M[2][2]) + Matrix1.M[2][0] * (Matrix1.M[0][1] * Matrix1.M[1][2] - Matrix1.M[1][1] * Matrix1.M[0][2])) * det;
 
 	return matrix;
 

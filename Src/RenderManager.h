@@ -76,6 +76,7 @@ struct OBJECT_CONSTANT
 	Matrix44 OldWVP;
 	Matrix44 World;
 	Matrix44 ShadowWVP[3];
+	Matrix44 InvVP;
 
 	Vector4 Param;
 };

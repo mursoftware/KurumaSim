@@ -26,7 +26,6 @@ private:
 	Matrix44	m_WorldMatrix;
 	Matrix44	m_OldWorldMatrix;
 
-	ComPtr<ID3D12Resource>		m_ShadowVertexBuffer;
 	std::unique_ptr<TEXTURE>	m_ShadowTexture;
 
 
@@ -39,7 +38,6 @@ public:
 	void PreDraw();
 	void Draw(class Camera* DrawCamera, int LodLevel=2);
 	void DrawDebug();
-	void DrawShadow(class Camera* DrawCamera);
 
 	void SetBrakeLamp(bool BrakeLamp) { m_BrakeLamp = BrakeLamp; }
 

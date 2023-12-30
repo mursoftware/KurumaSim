@@ -25,26 +25,20 @@ void Field::Load(int Index)
 	if(Index == 0)
 	{
 		m_Model.Load("Asset\\Road\\ShowRoom\\ShowRoom_Out.obj", THREAD_PRIORITY_ABOVE_NORMAL, true);
-
-		m_LightRotation = { 0.6006f * PI * 2.0f, 0.2598f * PI };
-		m_LightTemperature = 6000.0f;
-		m_LightIntensity = 130000.0f;
-
-		m_Fog = 3.0f;
 	}
 	else if (Index == 1)
 	{
 		m_Model.Load("Asset\\Road\\Forest\\Forest.obj", THREAD_PRIORITY_ABOVE_NORMAL, true);
-
-		m_LightRotation = { 0.6006f * PI * 2.0f, 0.2598f * PI };
-		m_LightTemperature = 6000.0f;
-		m_LightIntensity = 130000.0f;
-
-		m_Fog = 3.0f;
 	}
 
-	m_CloudDensity = 0.5f;
-	m_CloudHeight = 0.05f;
+	m_LightRotation = { 0.6006f * PI * 2.0f, 0.2598f * PI };
+	m_LightTemperature = 6000.0f;
+	m_LightIntensity = 130000.0f;
+
+	m_CloudDensity = 0.3f;
+	m_CloudHeight = 0.1f;
+
+	m_Fog = 0.0003f;
 
 }
 
@@ -158,16 +152,25 @@ void Field::Draw(Camera* DrawCamera)
 		//atmospheric dispersion
 		Vector3 wavelength = Vector3(0.650f, 0.570f, 0.475f);
 		Vector3 wavelength4inv;
-		wavelength4inv.X = 1.0f / powf(wavelength.X, 4);
-		wavelength4inv.Z = 1.0f / powf(wavelength.Z, 4);
-		wavelength4inv.Y = 1.0f / powf(wavelength.Y, 4);
+		wavelength4inv.X = 1.0f / powf(wavelength.X, 4.0f);
+		wavelength4inv.Z = 1.0f / powf(wavelength.Z, 4.0f);
+		wavelength4inv.Y = 1.0f / powf(wavelength.Y, 4.0f);
 
-		float atomDensityLight = 1.0f + pow(1.0f - constant.LightDirection.Y, 10.0f) * 10.0f;
+		float atomThicknessRatio = 0.05f;
+		float atomDensityLight = atomThicknessRatio + pow(1.0f - constant.LightDirection.Y, 10.0f) * (1.0f - atomThicknessRatio);
+		float attenuation = atomDensityLight * atomDensityLight * 0.5f;
 
-		constant.ScatteringLight.X = constant.LightColor.X * exp(-atomDensityLight * atomDensityLight * wavelength4inv.X * 0.01f);
-		constant.ScatteringLight.Z = constant.LightColor.Z * exp(-atomDensityLight * atomDensityLight * wavelength4inv.Z * 0.01f);
-		constant.ScatteringLight.Y = constant.LightColor.Y * exp(-atomDensityLight * atomDensityLight * wavelength4inv.Y * 0.01f);
+		constant.ScatteringLight.X = constant.LightColor.X * exp(-attenuation * wavelength4inv.X);
+		constant.ScatteringLight.Z = constant.LightColor.Z * exp(-attenuation * wavelength4inv.Z);
+		constant.ScatteringLight.Y = constant.LightColor.Y * exp(-attenuation * wavelength4inv.Y);
 
+		//float lumi = constant.ScatteringLight.X * 0.3 + constant.ScatteringLight.Y * 0.6 + constant.ScatteringLight.Z * 0.1;
+
+		constant.ScatteringLight *= (1.0 - m_CloudDensity);
+
+		//fog
+		//float fog = exp(-atomDensityLight * 1000.0f * m_Fog);
+		//constant.ScatteringLight *= fog;
 
 
 		RenderManager::GetInstance()->SetConstant(0, &constant, sizeof(constant));
@@ -261,7 +264,7 @@ void Field::DrawDebug()
 	if (ImGui::CollapsingHeader("SunLight"))
 	{
 		ImGui::SliderFloat("RotationX", &m_LightRotation.X, 0.0f, PI * 2.0f, "%.2f");
-		ImGui::SliderFloat("RotationY", &m_LightRotation.Y, 0.0f, PI * 0.5f, "%.2f");
+		ImGui::SliderFloat("RotationY", &m_LightRotation.Y, 0.0f, 1.8f, "%.2f");
 
 		ImGui::SliderFloat("Temperature", &m_LightTemperature, 1000.0f, 10000.0f, "%.0f K");
 		ImGui::SliderFloat("Intensity", &m_LightIntensity, 0.0f, 200000.0f, "%.0f lx");
@@ -277,7 +280,7 @@ void Field::DrawDebug()
 
 	if (ImGui::CollapsingHeader("Fog"))
 	{
-		ImGui::SliderFloat("Density", &m_Fog, 0.0f, 10.0f, "%.2f");
+		ImGui::SliderFloat("FogDensity", &m_Fog, 0.0f, 0.001f, "%.5f");
 	}
 
 	ImGui::End();

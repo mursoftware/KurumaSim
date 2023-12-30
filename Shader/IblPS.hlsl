@@ -14,8 +14,6 @@ SamplerState sampler2 : register(s2);
 
 float4 main(PS_INPUT input) : SV_TARGET0
 {
-     float PI = 3.141592653589;
-
 
     float4 color = 0.0;
     float2 texcoord = input.TexCoord;
