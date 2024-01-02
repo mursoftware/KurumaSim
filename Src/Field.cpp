@@ -166,7 +166,7 @@ void Field::Draw(Camera* DrawCamera)
 
 		//float lumi = constant.ScatteringLight.X * 0.3 + constant.ScatteringLight.Y * 0.6 + constant.ScatteringLight.Z * 0.1;
 
-		constant.ScatteringLight *= (1.0 - m_CloudDensity);
+		constant.ScatteringLight *= (1.0f - m_CloudDensity);
 
 		//fog
 		//float fog = exp(-atomDensityLight * 1000.0f * m_Fog);

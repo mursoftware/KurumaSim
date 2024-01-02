@@ -28,6 +28,7 @@ public:
 	void Load();
 
 	void Update() override;
+	void DrawEnvStatic(int Index) override;
 	void DrawEnv(int Index) override;
 	void DrawDepth(int Index) override;
 	void DrawZPrePass() override;

@@ -27,12 +27,6 @@ EnvCamera::EnvCamera()
 void EnvCamera::Update()
 {
 
-	GameManager* gameManager = GameManager::GetInstance();
-	GameScene* scene = (GameScene*)gameManager->GetScene();
-	Car* car = scene->GetGameObject<Car>();
-
-	m_Position = car->GetPosition();
-	m_Position.Y += 1.0f;
 
 }
 

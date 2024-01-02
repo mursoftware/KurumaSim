@@ -652,6 +652,26 @@ void RenderManager::Initialize()
 		m_IBLBuffer.RTVHandle = CreateRenderTargetView(m_IBLBuffer.Resource.Get());
 	}
 
+
+
+
+	//for (int i = 0; i < 2; i++)
+	{
+		m_EnvStaticBuffer.Resource = CreateTextureResource(32, 32,
+			m_HDRBufferFormat,
+			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, 1, 6);
+
+		m_EnvStaticBuffer.Resource->SetName(L"EnvStaticBuffer");
+
+		m_EnvStaticBuffer.SRVIndex = CreateShaderResourceViewCube(m_EnvStaticBuffer.Resource.Get());
+
+		for (int j = 0; j < 6; j++)
+		{
+			m_EnvStaticBuffer.SRVIndexArray[j][0] = CreateShaderResourceViewArray(m_EnvStaticBuffer.Resource.Get(), 0, j);
+			m_EnvStaticBuffer.RTVHandleArray[j][0] = CreateRenderTargetViewArray(m_EnvStaticBuffer.Resource.Get(), 0, j);
+		}
+	}
+
 	//for (int i = 0; i < 2; i++)
 	{
 		m_IBLStaticBuffer.Resource = CreateTextureResource(m_IBLBufferWidth, m_IBLBufferHeight,
@@ -663,6 +683,10 @@ void RenderManager::Initialize()
 		m_IBLStaticBuffer.SRVIndex = CreateShaderResourceView(m_IBLStaticBuffer.Resource.Get());
 		m_IBLStaticBuffer.RTVHandle = CreateRenderTargetView(m_IBLStaticBuffer.Resource.Get());
 	}
+
+
+
+
 
 
 	//for (int i = 0; i < 2; i++)
@@ -1293,7 +1317,6 @@ void RenderManager::DrawEnvEnd(int Index)
 }
 
 
-
 void RenderManager::DrawIBL()
 {
 
@@ -1335,6 +1358,72 @@ void RenderManager::DrawIBL()
 
 
 
+
+
+void RenderManager::DrawEnvStaticBegin(int Index)
+{
+
+
+	{
+		D3D12_VIEWPORT viewport = m_Viewport;
+		D3D12_RECT scissorRect = m_ScissorRect;
+
+		viewport.Width = (float)32;
+		viewport.Height = (float)32;
+
+		scissorRect.right = 32;
+		scissorRect.bottom = 32;
+
+		m_GraphicsCommandList->RSSetViewports(1, &viewport);
+		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
+
+
+		SetResourceBarrier(m_GraphicsCommandList.Get(), m_EnvStaticBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, Index);
+
+
+		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle[m_RTIndex], D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+		m_GraphicsCommandList->ClearRenderTargetView(m_EnvStaticBuffer.RTVHandleArray[Index][0], clearColor, 0, nullptr);
+
+
+		D3D12_CPU_DESCRIPTOR_HANDLE rt[1] =
+		{
+			m_EnvStaticBuffer.RTVHandleArray[Index][0],
+		};
+		m_GraphicsCommandList->OMSetRenderTargets(1, rt, false, &m_DepthBufferHandle[m_RTIndex]);
+
+
+
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_IBLBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_IBLStaticBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 5, m_ShadowDepthBufferSRVIndex[0]);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 6, m_ShadowDepthBufferSRVIndex[1]);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 7, m_ShadowDepthBufferSRVIndex[2]);
+
+	}
+
+}
+
+
+
+
+void RenderManager::DrawEnvStaticEnd(int Index)
+{
+
+	{
+
+		SetResourceBarrier(m_GraphicsCommandList.Get(), m_EnvStaticBuffer.Resource.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, Index);
+	}
+
+
+
+}
+
+
+
+
+
 void RenderManager::DrawIBLStatic()
 {
 
@@ -1362,7 +1451,7 @@ void RenderManager::DrawIBLStatic()
 
 
 
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvStaticBuffer.SRVIndex);
 
 
 		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
@@ -1864,6 +1953,18 @@ void RenderManager::DrawUI(bool Debug)
 			ImGui::Image((void*)GetGpuDescriptorHandle(m_ShadowDepthBufferSRVIndex[2]).ptr, ImVec2(256.0f, 256.0f));
 
 
+
+			for (int i = 0; i < 6; i++)
+			{
+				ImGui::Text("EnvStaticBuffer[%d]", i);
+				ImGui::Image((void*)GetGpuDescriptorHandle(m_EnvStaticBuffer.SRVIndexArray[i][0]).ptr, ImVec2(128.0f, 128.0f));
+			}
+
+			ImGui::Text("IBLStaticBuffer");
+			ImGui::Image((void*)GetGpuDescriptorHandle(m_IBLStaticBuffer.SRVIndex).ptr, ImVec2(256.0f, 128.0f));
+
+
+
 			for (int i = 0; i < 6; i++)
 			{
 				ImGui::Text("EnvBuffer[%d]", i);
@@ -1873,8 +1974,7 @@ void RenderManager::DrawUI(bool Debug)
 			ImGui::Text("IBLBuffer");
 			ImGui::Image((void*)GetGpuDescriptorHandle(m_IBLBuffer.SRVIndex).ptr, ImVec2(256.0f, 128.0f));
 
-			ImGui::Text("IBLStaticBuffer");
-			ImGui::Image((void*)GetGpuDescriptorHandle(m_IBLStaticBuffer.SRVIndex).ptr, ImVec2(256.0f, 128.0f));
+
 
 
 			ImGui::Text("HDRBuffer");

@@ -306,6 +306,8 @@ private:
 
 	RESOURCE							m_EnvBuffer{};
 	RESOURCE							m_IBLBuffer{};
+
+	RESOURCE							m_EnvStaticBuffer{};
 	RESOURCE							m_IBLStaticBuffer{};
 
 	DXGI_FORMAT							m_HDRBufferFormat{};
@@ -406,8 +408,10 @@ public:
 
 	void DrawEnvBegin(int Index);
 	void DrawEnvEnd(int Index);
-
 	void DrawIBL();
+
+	void DrawEnvStaticBegin(int Index);
+	void DrawEnvStaticEnd(int Index);
 	void DrawIBLStatic();
 
 	void DrawZPrePassBegin();

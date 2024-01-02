@@ -126,8 +126,6 @@ void CarSelectScene::Update()
 	m_ShadowCamera[2]->Update();
 
 
-	for (int i = 0; i < 6; i++)
-		m_EnvCamera[i]->Update();
 
 	m_Field->Update(dt);
 	m_Sky->Update();
@@ -150,16 +148,34 @@ void CarSelectScene::Update()
 
 }
 
+void CarSelectScene::DrawEnvStatic(int Index)
+{
+
+	m_EnvCamera[Index]->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
+	m_EnvCamera[Index]->PreDraw();
+	m_EnvCamera[Index]->Draw();
+
+
+
+	m_Field->Draw(m_EnvCamera[Index]);
+	m_Sky->Draw(m_EnvCamera[Index]);
+}
+
+
 
 void CarSelectScene::DrawEnv(int Index)
 {
 
+	Vector3 envCamPosition = m_Car->GetPosition();
+	envCamPosition.Y += 1.0f;
+	m_EnvCamera[Index]->SetPosition(envCamPosition);
+	m_EnvCamera[Index]->PreDraw();
 	m_EnvCamera[Index]->Draw();
+
+
 
 	m_Field->Draw(m_EnvCamera[Index]);
 	m_Sky->Draw(m_EnvCamera[Index]);
-
-	//m_Car->DrawShadow(m_EnvCamera[Index]);
 
 }
 

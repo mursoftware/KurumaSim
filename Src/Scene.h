@@ -51,6 +51,7 @@ public:
 		}
 	}
 
+	virtual void DrawEnvStatic(int Index) {}
 	virtual void DrawEnv(int Index) {}
 	virtual void DrawDepth(int Index) {}
 	virtual void DrawZPrePass() {}
