@@ -296,7 +296,10 @@ PS_OUTPUT main(PS_INPUT input)
 		output.Velocity.a = 1.0;
 	}
 
-
-
+	//output.Color.rg = input.TexCoord;
+	//output.Color.b = 0.0;
+	//output.Color.rgb = input.Normal.rgb;
+	//output.Color.a = 1.0;
+    
 	return output;
 }

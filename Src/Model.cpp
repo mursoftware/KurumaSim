@@ -518,7 +518,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 	dir = dir.substr(0, dir.find_last_of("\\"));
 
 
-	//Vector3		*positionArray{};
+	Vector3		*positionArray{};
 	Vector3		*normalArray{};
 	Vector2		*texcoordArray{};
 	Vector4		*colorArray{};
@@ -597,14 +597,16 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 
 
-	//positionArray = new Vector3[ positionNum ];
+	positionArray = new Vector3[ positionNum ];
 	normalArray = new Vector3[ normalNum ];
 	texcoordArray = new Vector2[ texcoordNum ];
 	colorArray = new Vector4[ colorNum ];
 
 
-	Model->VertexArray = new VERTEX_3D[ positionNum ]{};
-	Model->VertexNum = positionNum;
+	//Model->VertexArray = new VERTEX_3D[ positionNum ]{};
+	//Model->VertexNum = positionNum;
+
+	std::vector<VERTEX_3D> vertexArray;
 
 	Model->IndexArray = new unsigned int[ indexNum ]{};
 	Model->IndexNum = indexNum;
@@ -616,12 +618,12 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 
 
-	//Vector3* position = positionArray;
+	Vector3* position = positionArray;
 	Vector3* normal = normalArray;
 	Vector2* texcoord = texcoordArray;
 	Vector4* color = colorArray;
 
-	unsigned int vc = 0;
+	//unsigned int vc = 0;
 	unsigned int ic = 0;
 	unsigned int sc = 0;
 
@@ -655,17 +657,11 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		}
 		else if( strcmp( str, "v" ) == 0 )
 		{
-			Vector3 position{};
-
-			(void)fscanf( file, "%f", &position.X );
-			(void)fscanf( file, "%f", &position.Y );
-			(void)fscanf( file, "%f", &position.Z );
-			position.X *= -1.0f;
-			//*position *= 100.0f;
-			//position++;
-
-			Model->VertexArray[vc].Position = position;
-			vc++;
+			(void)fscanf( file, "%f", &position->X );
+			(void)fscanf( file, "%f", &position->Y );
+			(void)fscanf( file, "%f", &position->Z );
+			position->X *= -1.0f;
+			position++;
 		}
 		else if( strcmp( str, "vn" ) == 0 )
 		{
@@ -695,6 +691,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 		{
 			(void)fscanf( file, "%s", str );
 
+			assert(sc < subsetNum);
 			strcpy(Model->SubsetArray[sc].Name, objectName);
 
 			if( sc != 0 )
@@ -721,47 +718,53 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 			do
 			{
+				VERTEX_3D vertex;
+
 				(void)fscanf( file, "%s", str );
 
 				s = strtok( str, "/" );	
-				int idx = atoi( s ) - 1;
+				vertex.Position = positionArray[ atoi(s) - 1 ];
 
-				if( s[ strlen( s ) + 1 ] != '/' )
-				{
-					s = strtok( NULL, "/" );
-					Model->VertexArray[idx].TexCoord = texcoordArray[ atoi( s ) - 1 ];
-				}
+				s = strtok( NULL, "/" );
+				vertex.TexCoord = texcoordArray[ atoi( s ) - 1 ];
 
 				s = strtok( NULL, "/" );	
-				Model->VertexArray[idx].Normal = normalArray[ atoi( s ) - 1 ];
+				vertex.Normal = normalArray[ atoi( s ) - 1 ];
 
 				s = strtok( NULL, "/" );
 				if (s)
-					Model->VertexArray[idx].Color = colorArray[atoi(s) - 1];
-					//Model->VertexArray[vc].Occlusion = colorArray[atoi(s) - 1].X;
+					vertex.Color = colorArray[atoi(s) - 1];
 				else
-					Model->VertexArray[idx].Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-					//Model->VertexArray[vc].Occlusion = 1.0f;
+					vertex.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 
-				Model->IndexArray[ic] = idx;
-				ic++;
-				//vc++;
+				auto itr = std::find(vertexArray.begin(), vertexArray.end(), vertex);
+				if (itr != vertexArray.end())
+				{
+					const int index = std::distance(vertexArray.begin(), itr);
+
+					Model->IndexArray[ic] = index;
+					ic++;
+				}
+				else
+				{
+					vertexArray.push_back(vertex);
+
+					Model->IndexArray[ic] = vertexArray.size() - 1;
+					ic++;
+				}
 
 				in++;
 				c = fgetc( file );
 			}
 			while( c != '\n' && c != '\r' );
 
+
+			assert(in == 3);
+
+
+			//flip face
 			std::swap(Model->IndexArray[ic - in], Model->IndexArray[ic - in + 1]);
-			/*
-			if( in == 4 )
-			{
-				Model->IndexArray[ic] = vc - 2;
-				ic++;
-				Model->IndexArray[ic] = vc - 4;
-				ic++;
-			}*/
 		}
 	}
 
@@ -773,12 +776,24 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 	fclose(file);
 
 
-	//assert(positionArray);
+
+
+	Model->VertexNum = vertexArray.size();
+	Model->VertexArray = new VERTEX_3D[Model->VertexNum]{};
+	unsigned int vc = 0;
+	for (auto vertex : vertexArray)
+	{
+		Model->VertexArray[vc] = vertex;
+		vc++;
+	}
+
+
+	assert(positionArray);
 	assert(normalArray);
 	assert(texcoordArray);
 	assert(colorArray);
 
-	//delete[] positionArray;
+	delete[] positionArray;
 	delete[] normalArray;
 	delete[] texcoordArray;
 	delete[] colorArray;

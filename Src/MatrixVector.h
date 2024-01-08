@@ -25,6 +25,13 @@ struct Vector2
 		X = Xn;
 		Y = Yn;
 	}
+
+
+	bool operator==(const Vector2& Vector) const
+	{
+		return X == Vector.X && Y == Vector.Y;
+	}
+
 };
 
 
@@ -40,6 +47,11 @@ struct Vector3
 	Vector3( float nx, float ny, float nz );
 
 	operator Vector3D() const;
+
+	bool operator==(const Vector3& Vector) const
+	{
+		return X == Vector.X && Y == Vector.Y && Z == Vector.Z;
+	}
 
 	Vector3 &operator=( const Vector3& Vector );
 	Vector3 &operator=( const Vector3D& Vector );
@@ -94,6 +106,7 @@ struct Vector3D
 	Vector3D(double nx, double ny, double nz);
 
 	operator Vector3() const;
+
 
 	Vector3D &operator=(const Vector3D& Vector);
 	Vector3D &operator=(const Vector3& Vector);
@@ -152,6 +165,14 @@ struct Vector4
 		this->Z = Z;
 		this->W = W;
 	}
+
+
+	bool operator==(const Vector4& Vector) const
+	{
+		return X == Vector.X && Y == Vector.Y && Z == Vector.Z && W == Vector.W;
+	}
+
+
 };
 
 

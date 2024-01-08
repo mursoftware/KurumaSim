@@ -188,7 +188,7 @@ void GameScene::DrawEnvStatic(int Index)
 {
 
 
-	m_EnvCamera[Index]->SetPosition(Vector3(0.0f, 2.0f, 0.0f));
+	m_EnvCamera[Index]->SetPosition(Vector3(20.0f, 2.0f, 0.0f));
 	m_EnvCamera[Index]->PreDraw();
 	m_EnvCamera[Index]->Draw();
 

@@ -28,7 +28,7 @@ void Field::Load(int Index)
 	}
 	else if (Index == 1)
 	{
-		m_Model.Load("Asset\\Road\\Forest\\Forest.obj", THREAD_PRIORITY_ABOVE_NORMAL, true);
+		m_Model.Load("Asset\\Road\\Forest\\Forest2.obj", THREAD_PRIORITY_ABOVE_NORMAL, true);
 	}
 
 	m_LightRotation = { 0.6006f * PI * 2.0f, 0.2598f * PI };

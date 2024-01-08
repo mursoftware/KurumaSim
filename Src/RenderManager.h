@@ -10,6 +10,11 @@ struct VERTEX_3D
 	Vector2 TexCoord;
 	Vector4 Color;
 	//float	 Occlusion;
+
+	bool operator==(const VERTEX_3D& Vertex) const
+	{
+		return Position == Vertex.Position && Normal == Vertex.Normal && TexCoord == Vertex.TexCoord && Color == Vertex.Color;
+	}
 };
 
 

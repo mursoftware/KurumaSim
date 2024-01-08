@@ -436,6 +436,7 @@ void Car::Update( bool Control, bool Input, float dt )
 		m_TireRRRB.AddForceWorld(g*m_TireRRRB.GetMass(), dt);
 	}
 
+	//m_JackUp = true;
 
 	if (m_JackUp || m_Frame < 60)
 	{
