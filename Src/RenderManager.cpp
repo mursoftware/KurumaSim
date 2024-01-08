@@ -1441,7 +1441,7 @@ void RenderManager::DrawIBLStatic()
 		m_GraphicsCommandList->RSSetScissorRects(1, &scissorRect);
 
 
-		m_GraphicsCommandList->SetPipelineState(m_PipelineState["IBL"].Get());
+		m_GraphicsCommandList->SetPipelineState(m_PipelineState["Shrink"].Get());
 
 
 		SetResourceBarrier(m_GraphicsCommandList.Get(), m_IBLStaticBuffer.Resource.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -1451,10 +1451,10 @@ void RenderManager::DrawIBLStatic()
 
 
 
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvStaticBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_IBLBuffer.SRVIndex);
 
 
-		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height);
+		DrawScreen((unsigned int)viewport.Width, (unsigned int)viewport.Height, 0.1f);
 
 
 
@@ -1954,14 +1954,12 @@ void RenderManager::DrawUI(bool Debug)
 
 
 
-			for (int i = 0; i < 6; i++)
-			{
-				ImGui::Text("EnvStaticBuffer[%d]", i);
-				ImGui::Image((void*)GetGpuDescriptorHandle(m_EnvStaticBuffer.SRVIndexArray[i][0]).ptr, ImVec2(128.0f, 128.0f));
-			}
+			//for (int i = 0; i < 6; i++)
+			//{
+			//	ImGui::Text("EnvStaticBuffer[%d]", i);
+			//	ImGui::Image((void*)GetGpuDescriptorHandle(m_EnvStaticBuffer.SRVIndexArray[i][0]).ptr, ImVec2(128.0f, 128.0f));
+			//}
 
-			ImGui::Text("IBLStaticBuffer");
-			ImGui::Image((void*)GetGpuDescriptorHandle(m_IBLStaticBuffer.SRVIndex).ptr, ImVec2(256.0f, 128.0f));
 
 
 
@@ -1974,6 +1972,8 @@ void RenderManager::DrawUI(bool Debug)
 			ImGui::Text("IBLBuffer");
 			ImGui::Image((void*)GetGpuDescriptorHandle(m_IBLBuffer.SRVIndex).ptr, ImVec2(256.0f, 128.0f));
 
+			ImGui::Text("IBLStaticBuffer");
+			ImGui::Image((void*)GetGpuDescriptorHandle(m_IBLStaticBuffer.SRVIndex).ptr, ImVec2(256.0f, 128.0f));
 
 
 
