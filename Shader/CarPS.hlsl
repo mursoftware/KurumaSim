@@ -125,7 +125,7 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-    float3 specular;
+    float3 specular = 0.0;
     {
 
 
@@ -216,7 +216,7 @@ PS_OUTPUT main(PS_INPUT input)
     }
 
 
-    
+   
     //fog
     {
 		float3 envLight;
