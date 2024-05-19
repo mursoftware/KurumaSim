@@ -3,20 +3,144 @@
 #include "Pch.h"
 
 
+struct CompPosition
+{
+	short X, Y, Z, W;
+
+	bool operator==(const CompPosition& Vector) const
+	{
+		return X == Vector.X && Y == Vector.Y && Z == Vector.Z;
+	}
+
+	CompPosition& operator=(const Vector3& Vector)
+	{
+		X = (short)(Vector.X * MAXSHORT);
+		Y = (short)(Vector.Y * MAXSHORT);
+		Z = (short)(Vector.Z * MAXSHORT);
+
+		return *this;
+	}
+
+
+	operator Vector3() const
+	{
+		Vector3 out;
+
+		out.X = (float)X / MAXSHORT;
+		out.Y = (float)Y / MAXSHORT;
+		out.Z = (float)Z / MAXSHORT;
+
+		return out;
+	}
+};
+
+struct CompNormal
+{
+	short X, Y;
+
+	bool operator==(const CompNormal& Vector) const
+	{
+		return X == Vector.X && Y == Vector.Y;
+	}
+
+
+
+	Vector2 OctWrap(const Vector2& v)
+	{
+		Vector2 out;
+
+		out.X = (1.0f - abs(v.Y)) * (v.X >= 0.0f ? 1.0f : -1.0f);
+		out.Y = (1.0f - abs(v.X)) * (v.Y >= 0.0f ? 1.0f : -1.0f);
+
+		return out;
+	}
+
+	Vector2 Encode(const Vector3& n)
+	{
+		Vector2 normal;
+
+		float l = abs(n.X) + abs(n.Y) + abs(n.Z);
+		normal.X = n.X / l;
+		normal.Y = n.Y / l;
+
+		normal = n.Z >= 0.0f ? normal : OctWrap(normal);
+
+		return normal;
+	}
+
+	CompNormal& operator=(const Vector3D& Vector)
+	{
+		Vector2 normal = Encode(Vector);
+
+		X = (short)(normal.X * MAXSHORT);
+		Y = (short)(normal.Y * MAXSHORT);
+
+		return *this;
+	}
+
+
+};
+
+
+struct CompTexCoord
+{
+	short X, Y;
+
+	bool operator==(const CompTexCoord& Vector) const
+	{
+		return X == Vector.X && Y == Vector.Y;
+	}
+
+	CompTexCoord& operator=(const Vector2& Vector)
+	{
+		X = (short)(Vector.X * 50.0f);
+		Y = (short)(Vector.Y * 50.0f);
+
+		return *this;
+	}
+
+
+	operator Vector2() const
+	{
+		Vector2 out;
+
+		out.X = X / 50.0f;
+		out.Y = Y / 50.0f;
+
+		return out;
+	}
+};
+
+
+struct VERTEX_3D
+{
+	CompPosition Position;
+	CompNormal Normal;
+	CompTexCoord TexCoord;
+
+	bool operator==(const VERTEX_3D& Vertex) const
+	{
+		return Position == Vertex.Position && Normal == Vertex.Normal && TexCoord == Vertex.TexCoord;
+	}
+
+};
+
+/*
 struct VERTEX_3D
 {
 	Vector3 Position;
 	Vector3 Normal;
 	Vector2 TexCoord;
-	Vector4 Color;
+
+	//Vector4 Color;
 	//float	 Occlusion;
 
 	bool operator==(const VERTEX_3D& Vertex) const
 	{
-		return Position == Vertex.Position && Normal == Vertex.Normal && TexCoord == Vertex.TexCoord && Color == Vertex.Color;
+		return Position == Vertex.Position && Normal == Vertex.Normal && TexCoord == Vertex.TexCoord;
 	}
 };
-
+*/
 
 struct MATERIAL
 {
@@ -80,6 +204,7 @@ struct OBJECT_CONSTANT
 	Matrix44 WVP;
 	Matrix44 OldWVP;
 	Matrix44 World;
+	//Matrix44 NormalWorld;
 	Matrix44 ShadowWVP[3];
 	Matrix44 InvVP;
 
@@ -293,7 +418,7 @@ private:
 
 
 
-	static const unsigned int			CONSTANT_BUFFER_SIZE = 1000;
+	static const unsigned int			CONSTANT_BUFFER_SIZE = 2000;
 	ComPtr<ID3D12Resource>				m_ConstantBuffer[2];
 	byte*								m_ConstantBufferPointer[2]{};
 	unsigned int						m_ConstantBufferView[2][CONSTANT_BUFFER_SIZE]{};

@@ -50,9 +50,16 @@ void Sky::PreDraw()
 
 void Sky::Draw(Camera* DrawCamera)
 {
+	//return;
+
+
 	RenderManager* render = RenderManager::GetInstance();
 	render->SetPipelineState("Sky");
 
+
+
+	float size = m_Model.GetSize();
+	Matrix44 scale = Matrix44::Scale(size, size, size);
 
 
 	Matrix44 view = DrawCamera->GetViewMatrix();
@@ -66,9 +73,9 @@ void Sky::Draw(Camera* DrawCamera)
 
 
 	OBJECT_CONSTANT constant;
-	constant.WVP = Matrix44::Transpose(m_WorldMatrix * trans * view * projection);
-	constant.OldWVP = Matrix44::Transpose(m_OldWorldMatrix * trans * oldView * projection);
-	constant.World = Matrix44::Transpose(m_WorldMatrix * trans);
+	constant.WVP = Matrix44::Transpose(scale * m_WorldMatrix * trans * view * projection);
+	constant.OldWVP = Matrix44::Transpose(scale * m_OldWorldMatrix * trans * oldView * projection);
+	constant.World = Matrix44::Transpose(scale * m_WorldMatrix * trans);
 	constant.Param = { 0.0f, 0.0f, 0.4f, 1.0f };
 	render->SetConstant(2, &constant, sizeof(constant));
 

@@ -25,7 +25,11 @@ PS_OUTPUT main(PS_INPUT input)
 	//output.Color = color;
     
  
+	//output.Color = 1.0;
+	//output.Velocity = 0.0;
     
+	//return output;
+
     
     
      

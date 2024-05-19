@@ -51,6 +51,7 @@ cbuffer ObjectConstantBuffer : register(b2)
     float4x4 WVP;
     float4x4 OldWVP;
     float4x4 World;
+	//float4x4 NormalWorld;
     float4x4 ShadowWVP[3];
 	float4x4 InvVP;
     float4 Param;
@@ -78,20 +79,80 @@ cbuffer BlobShadowBuffer : register(b4)
 
 
 
+float4 DecodePosition(int3 input)
+{
+	float4 position;
+	position.xyz = input.xyz / (float)0x7fff;
+	position.w = 1.0;
+    
+	return position;
+}
 
 
+float4 DecodeNormal(int2 input)
+{
+	float2 normal;
+	normal.xy = input.xy / (float)0x7fff;
+
+	float3 n = float3(normal.x, normal.y, 1.0 - abs(normal.x) - abs(normal.y));
+	float t = max(-n.z, 0.0);
+	n.x += n.x >= 0.0 ? -t : t;
+	n.y += n.y >= 0.0 ? -t : t;
+	return float4(normalize(n), 0.0);
+}
 
 
+float2 DecodeTexCoord(int2 input)
+{
+	float4 texCoord;
+	texCoord.xy = input.xy / 50.0;
+    
+	return texCoord;
+}
+
+float4 DecodeColor(int input)
+{
+	float4 color;
+	color.r = (float) (input & 0xf) / 0xf;
+	color.g = (float) ((input & 0xf0) >> 4) / 0xf;   
+	color.b = (float) ((input & 0xf00) >> 8) / 0xf;
+	color.a = (float) ((input & 0xf000) >> 12) / 0xf;
+
+	return color;
+}
+
+
+float4 DecodeAO(int input)
+{
+	float4 color;
+	color.r = (float) input / 0x7fff;
+	color.g = 1.0;
+	color.b = 1.0;
+	color.a = 1.0;
+
+	return color;
+}
 
 
 struct VS_INPUT
 {
-    float3 Position : POSITION;
-    float3 Normal : NORMAL;
-    float2 TexCoord : TEXCOORD;
-    float4 Color : COLOR;
+	int4 Position : POSITION;
+	int2 Normal : NORMAL;
+	int2 TexCoord : TEXCOORD;
+};
+
+/*
+struct VS_INPUT
+{
+	float3 Position : POSITION;
+	float3 Normal : NORMAL;
+	float2 TexCoord : TEXCOORD;
+    
+    //float4 Color : COLOR;
     //float Occlusion : OCCLUSION;
 };
+*/
+
 
 
 struct PS_INPUT

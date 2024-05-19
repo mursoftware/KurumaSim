@@ -94,24 +94,24 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
 		case 2: //TAA
 		{
-			float2 velocity = textureVelocity.Sample(sampler1, texcoord);
+			float2 velocity = textureVelocity.Sample(sampler3, texcoord);
 			//float2 oldVelocity = textureVelocity.Sample(sampler1, texcoord - velocity);
-			float3 newColor = textureColor.SampleLevel(sampler1, texcoord, 0).rgb;
-			float3 oldColor = textureColorOld.SampleLevel(sampler1, texcoord - velocity, 0).rgb;
+			float3 newColor = textureColor.SampleLevel(sampler3, texcoord, 0).rgb;
+			float3 oldColor = textureColorOld.SampleLevel(sampler3, texcoord - velocity, 0).rgb;
 			
-			float newDepth = textureDepth.SampleLevel(sampler1, texcoord, 0).r;
+			float newDepth = textureDepth.SampleLevel(sampler3, texcoord, 0).r;
 			float oldDepth, ddmin = 100.0;
 			
-			oldDepth = textureDepthOld.SampleLevel(sampler1, texcoord - velocity + float2(-1.0 / SSBufferSize.x, 1.0 / SSBufferSize.y), 0).r;
+			oldDepth = textureDepthOld.SampleLevel(sampler3, texcoord - velocity + float2(-1.0 / SSBufferSize.x, 1.0 / SSBufferSize.y), 0).r;
 			ddmin = min(ddmin, abs(newDepth - oldDepth));
 			
-			oldDepth = textureDepthOld.SampleLevel(sampler1, texcoord - velocity + float2(1.0 / SSBufferSize.x, 1.0 / SSBufferSize.y), 0).r;
+			oldDepth = textureDepthOld.SampleLevel(sampler3, texcoord - velocity + float2(1.0 / SSBufferSize.x, 1.0 / SSBufferSize.y), 0).r;
 			ddmin = min(ddmin, abs(newDepth - oldDepth));
 			
-			oldDepth = textureDepthOld.SampleLevel(sampler1, texcoord - velocity + float2(-1.0 / SSBufferSize.x, -1.0 / SSBufferSize.y), 0).r;
+			oldDepth = textureDepthOld.SampleLevel(sampler3, texcoord - velocity + float2(-1.0 / SSBufferSize.x, -1.0 / SSBufferSize.y), 0).r;
 			ddmin = min(ddmin, abs(newDepth - oldDepth));
 			
-			oldDepth = textureDepthOld.SampleLevel(sampler1, texcoord - velocity + float2(1.0 / SSBufferSize.x, -1.0 / SSBufferSize.y), 0).r;
+			oldDepth = textureDepthOld.SampleLevel(sampler3, texcoord - velocity + float2(1.0 / SSBufferSize.x, -1.0 / SSBufferSize.y), 0).r;
 			ddmin = min(ddmin, abs(newDepth - oldDepth));
 			
 		
