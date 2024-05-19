@@ -52,11 +52,11 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 		std::string fileName;
 		fileName = path;
 		fileName += GetPrivateProfileStdString(PartName, "MODEL", FileName);
-		m_Model[4].Load((fileName + "_4.obj").c_str(), THREAD_PRIORITY_ABOVE_NORMAL);
-		m_Model[3].Load((fileName + "_3.obj").c_str(), THREAD_PRIORITY_LOWEST);
-		m_Model[2].Load((fileName + "_2.obj").c_str(), THREAD_PRIORITY_LOWEST);
-		m_Model[1].Load((fileName + "_1.obj").c_str(), THREAD_PRIORITY_LOWEST);
-		m_Model[0].Load((fileName + "_0.obj").c_str(), THREAD_PRIORITY_LOWEST);
+		m_Model[4].Load((fileName + "_4.obj").c_str(), THREAD_PRIORITY_ABOVE_NORMAL, false, true);
+		m_Model[3].Load((fileName + "_3.obj").c_str(), THREAD_PRIORITY_NORMAL, false, true);
+		m_Model[2].Load((fileName + "_2.obj").c_str(), THREAD_PRIORITY_NORMAL, false, true);
+		m_Model[1].Load((fileName + "_1.obj").c_str(), THREAD_PRIORITY_NORMAL, false, true);
+		m_Model[0].Load((fileName + "_0.obj").c_str(), THREAD_PRIORITY_NORMAL, false, true);
 	}
 	
 	
@@ -277,12 +277,25 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 
 
+	int level = LodLevel;
+	for (; level < 5; level++)
+	{
+		if (m_Model[level].IsLoaded())
+		{
+			break;
+		}
+	}
+
+	if (level >= 5)
+		return;
+
 
 	RenderManager* render = RenderManager::GetInstance();
 
 	ShadowCamera** shadowCamera = GameManager::GetInstance()->GetScene()->GetCurrentShadowCamera();
 
-
+	float size = m_Model[level].GetSize();
+	Matrix44 scale = Matrix44::Scale(size, size, size);
 
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 oldView = DrawCamera->GetOldViewMatrix();
@@ -302,12 +315,12 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 
 	OBJECT_CONSTANT constant;
-	constant.WVP = Matrix44::Transpose(m_WorldMatrix * view * projection);
-	constant.OldWVP = Matrix44::Transpose(m_OldWorldMatrix * oldView * oldProjection);
-	constant.World = Matrix44::Transpose(m_WorldMatrix);
-	constant.ShadowWVP[0] = Matrix44::Transpose(m_WorldMatrix * shadowView0 * shadowProjection0);
-	constant.ShadowWVP[1] = Matrix44::Transpose(m_WorldMatrix * shadowView1 * shadowProjection1);
-	constant.ShadowWVP[2] = Matrix44::Transpose(m_WorldMatrix * shadowView2 * shadowProjection2);
+	constant.WVP = Matrix44::Transpose(scale * m_WorldMatrix * view * projection);
+	constant.OldWVP = Matrix44::Transpose(scale * m_OldWorldMatrix * oldView * oldProjection);
+	constant.World = Matrix44::Transpose(scale * m_WorldMatrix);
+	constant.ShadowWVP[0] = Matrix44::Transpose(scale * m_WorldMatrix * shadowView0 * shadowProjection0);
+	constant.ShadowWVP[1] = Matrix44::Transpose(scale * m_WorldMatrix * shadowView1 * shadowProjection1);
+	constant.ShadowWVP[2] = Matrix44::Transpose(scale * m_WorldMatrix * shadowView2 * shadowProjection2);
 	constant.Param = { 0.0f, 0.0f, 0.1f, 1.0f };
 	render->SetConstant(2, &constant, sizeof(constant));
 
@@ -335,14 +348,8 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 	}
 
 
-	for (int level = LodLevel; level < 5; level++)
-	{
-		if (m_Model[level].IsLoaded())
-		{
-			m_Model[level].Draw(false, &overridMaterial);
-			break;
-		}
-	}
+
+	m_Model[level].Draw(false, &overridMaterial);
 
 	//m_Model[LodLevel].Draw(false, &overridMaterial);
 

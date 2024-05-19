@@ -28,6 +28,13 @@ PS_OUTPUT main(PS_INPUT input)
 
     float4 baseColorTex = textureDif.Sample(sampler0, input.TexCoord);
     
+    
+	//output.Color = baseColorTex;
+	//output.Velocity = 0.0;
+    
+	//return output;
+
+    
 	float threshold = Random(float4(input.TexCoord, 0.0, TemporalFrame)) * 0.5 + 0.5;
 	clip(baseColorTex.a - threshold);
 

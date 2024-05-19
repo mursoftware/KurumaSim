@@ -20,10 +20,11 @@ Model::~Model()
 
 
 
-void Model::Load(const char* FileName, int Priority, bool Collision)
+void Model::Load(const char* FileName, int Priority, bool Collision, bool AO)
 {
 	m_FileName = FileName;
 	m_Collision = Collision;
+	m_AO = AO;
 
 
 	if (Priority == THREAD_PRIORITY_ABOVE_NORMAL)
@@ -33,7 +34,7 @@ void Model::Load(const char* FileName, int Priority, bool Collision)
 	else
 	{
 		std::thread thLoad(&Model::LoadThread, this);
-		SetThreadPriority(thLoad.native_handle(), Priority);
+		//SetThreadPriority(thLoad.native_handle(), Priority);
 		thLoad.detach();
 	}
 }
@@ -92,7 +93,6 @@ void Model::LoadThread()
 
 
 
-
 		if (findBin)
 		//if (false)
 		{
@@ -124,6 +124,7 @@ void Model::LoadThread()
 				for (unsigned int i = model.SubsetArray[s].StartIndex; i < model.SubsetArray[s].StartIndex + model.SubsetArray[s].IndexNum; i++)
 				{
 					Vector3 position = model.VertexArray[model.IndexArray[i]].Position;
+					position *= m_Size;
 
 					m_BBMinX = min(m_BBMinX, position.X);
 					m_BBMaxX = max(m_BBMaxX, position.X);
@@ -157,8 +158,13 @@ void Model::LoadThread()
 					COLLISION_FACE collisionFace;
 
 					collisionFace.Position[0] = model.VertexArray[model.IndexArray[i + 0]].Position;
+					collisionFace.Position[0] *= m_Size;
+
 					collisionFace.Position[1] = model.VertexArray[model.IndexArray[i + 1]].Position;
+					collisionFace.Position[1] *= m_Size;
+
 					collisionFace.Position[2] = model.VertexArray[model.IndexArray[i + 2]].Position;
+					collisionFace.Position[2] *= m_Size;
 
 					Vector3 v01, v12, c;
 					v01 = collisionFace.Position[1] - collisionFace.Position[0];
@@ -194,6 +200,7 @@ void Model::LoadThread()
 				}
 
 				position /= (float)model.SubsetArray[s].IndexNum;
+				position *= m_Size;
 
 				m_PositionList.push_back(position);
 			}
@@ -452,6 +459,8 @@ void Model::LoadObjBin(const char* FileName, MODEL* Model)
 	assert(file);
 
 
+	fread(&m_Size, sizeof(m_Size), 1, file);
+
 
 	fread(&Model->VertexNum, sizeof(Model->VertexNum), 1, file);
 
@@ -491,6 +500,7 @@ void Model::SaveObjBin(const char* FileName, MODEL* Model)
 	assert(file);
 
 
+	fwrite(&m_Size, sizeof(m_Size), 1, file);
 
 	fwrite(&Model->VertexNum, sizeof(Model->VertexNum), 1, file);
 	fwrite(Model->VertexArray, sizeof(VERTEX_3D), Model->VertexNum, file);
@@ -556,6 +566,13 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 		if( strcmp( str, "v" ) == 0 )
 		{
+			for (int i = 0; i < 3; i++)
+			{
+				float pos;
+				(void)fscanf(file, "%f", &pos);
+				m_Size = max(m_Size, abs(pos));
+			}
+
 			positionNum++;
 		}
 		else if( strcmp( str, "vn" ) == 0 )
@@ -718,30 +735,37 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 			do
 			{
-				VERTEX_3D vertex;
+				VERTEX_3D vertex{};
 
-				(void)fscanf( file, "%s", str );
+				(void)fscanf(file, "%s", str);
 
-				s = strtok( str, "/" );	
-				vertex.Position = positionArray[ atoi(s) - 1 ];
+				s = strtok(str, "/");
+				vertex.Position = positionArray[atoi(s) - 1] / m_Size;
 
-				s = strtok( NULL, "/" );
-				vertex.TexCoord = texcoordArray[ atoi( s ) - 1 ];
 
-				s = strtok( NULL, "/" );	
-				vertex.Normal = normalArray[ atoi( s ) - 1 ];
+				s = strtok(NULL, "/");
+				vertex.TexCoord = texcoordArray[atoi(s) - 1];
 
-				s = strtok( NULL, "/" );
+				s = strtok(NULL, "/");
+				vertex.Normal = normalArray[atoi(s) - 1];
+
+				s = strtok(NULL, "/");
+				Vector4 color;
 				if (s)
-					vertex.Color = colorArray[atoi(s) - 1];
+					color = colorArray[atoi(s) - 1];
 				else
-					vertex.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+					color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+				if (m_AO)
+					vertex.Position.W = (short)(color.X * 0x7fff);
+				else
+					vertex.Position.W = (short)(color.X * 0xf) | ((short)(color.Y * 0xf)) << 4 | ((short)(color.Z * 0xf)) << 8 | ((short)(color.W * 0xf)) << 12;
 
 
 				auto itr = std::find(vertexArray.begin(), vertexArray.end(), vertex);
 				if (itr != vertexArray.end())
 				{
-					const int index = std::distance(vertexArray.begin(), itr);
+					unsigned int index = (unsigned int)std::distance(vertexArray.begin(), itr);
 
 					Model->IndexArray[ic] = index;
 					ic++;
@@ -750,7 +774,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 				{
 					vertexArray.push_back(vertex);
 
-					Model->IndexArray[ic] = vertexArray.size() - 1;
+					Model->IndexArray[ic] = (unsigned int)vertexArray.size() - 1;
 					ic++;
 				}
 
@@ -778,7 +802,7 @@ void Model::LoadObj( const char *FileName, MODEL *Model )
 
 
 
-	Model->VertexNum = vertexArray.size();
+	Model->VertexNum = (unsigned int)vertexArray.size();
 	Model->VertexArray = new VERTEX_3D[Model->VertexNum]{};
 	unsigned int vc = 0;
 	for (auto vertex : vertexArray)

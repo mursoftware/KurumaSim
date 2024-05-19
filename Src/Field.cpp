@@ -59,12 +59,15 @@ void Field::Update(float dt)
 
 void Field::DrawDepth(Camera* DrawCamera)
 {
+
 	RenderManager* render = RenderManager::GetInstance();
 
 
 	//m_Camera = GameManager::GetInstance()->GetScene()->GetCurrentCamera();
 
 
+	float size = m_Model.GetSize();
+	Matrix44 scale = Matrix44::Scale(size, size, size);
 
 	Matrix44 view = DrawCamera->GetViewMatrix();
 	Matrix44 projection = DrawCamera->GetProjectionMatrix();
@@ -74,8 +77,8 @@ void Field::DrawDepth(Camera* DrawCamera)
 
 
 	OBJECT_CONSTANT constant;
-	constant.WVP = Matrix44::Transpose(world * view * projection);
-	constant.OldWVP = Matrix44::Transpose(world * oldView * projection);
+	constant.WVP = Matrix44::Transpose(scale * world * view * projection);
+	constant.OldWVP = Matrix44::Transpose(scale * world * oldView * projection);
 	constant.World = Matrix44::Transpose(world);
 	constant.Param = { 0.0f, 0.0f, 0.0f, 0.0f };
 	render->SetConstant(2, &constant, sizeof(constant));
@@ -129,7 +132,6 @@ Vector3 ColorTemperatureToRGB(float temperatureInKelvins)
 
 void Field::Draw(Camera* DrawCamera)
 {	
-
 
 	{
 		ENV_CONSTANT constant;
@@ -192,6 +194,9 @@ void Field::Draw(Camera* DrawCamera)
 
 			Matrix44 world = Matrix44::Identity();
 
+			float size = m_Model.GetSize();
+			Matrix44 scale = Matrix44::Scale(size, size, size);
+
 			Matrix44 view = DrawCamera->GetViewMatrix();
 			Matrix44 oldView = DrawCamera->GetOldViewMatrix();
 
@@ -211,12 +216,12 @@ void Field::Draw(Camera* DrawCamera)
 
 
 			OBJECT_CONSTANT constant;
-			constant.WVP = Matrix44::Transpose(world * view * projection);
-			constant.OldWVP = Matrix44::Transpose(world * oldView * oldProjection);
-			constant.World = Matrix44::Transpose(world);
-			constant.ShadowWVP[0] = Matrix44::Transpose(world * shadowView0 * shadowProjection0);
-			constant.ShadowWVP[1] = Matrix44::Transpose(world * shadowView1 * shadowProjection1);
-			constant.ShadowWVP[2] = Matrix44::Transpose(world * shadowView2 * shadowProjection2);
+			constant.WVP = Matrix44::Transpose(scale * world * view * projection);
+			constant.OldWVP = Matrix44::Transpose(scale * world * oldView * oldProjection);
+			constant.World = Matrix44::Transpose(scale * world);
+			constant.ShadowWVP[0] = Matrix44::Transpose(scale * world * shadowView0 * shadowProjection0);
+			constant.ShadowWVP[1] = Matrix44::Transpose(scale * world * shadowView1 * shadowProjection1);
+			constant.ShadowWVP[2] = Matrix44::Transpose(scale * world * shadowView2 * shadowProjection2);
 			constant.Param = { 0.0f, 0.0f, 0.3f, 1.0f };
 			render->SetConstant(2, &constant, sizeof(constant));
 

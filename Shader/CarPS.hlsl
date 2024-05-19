@@ -25,6 +25,12 @@ PS_OUTPUT main(PS_INPUT input)
 
     
 
+	//output.Color.rgb = Material.BaseColor.rgb * saturate(dot(float3(0.0, 1.0, 0.0), input.Normal.xyz));
+	////output.Color.rgb = input.Normal.xyz;
+	//output.Color.a = 1.0;
+	//output.Velocity = 0.0;
+	//return output;
+
 
     //float4 arm = textureARM.Sample(sampler0, input.TexCoord);
     float4 arm = 1.0;
