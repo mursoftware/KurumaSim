@@ -276,6 +276,7 @@ void GameManager::Draw()
 					m_RenderManger.EndCommandTime("IBL");
 				}
 
+				
 				m_RenderManger.DrawIBLStatic();
 
 

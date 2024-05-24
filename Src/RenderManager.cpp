@@ -825,7 +825,7 @@ void RenderManager::Initialize()
 		samplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDesc[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		samplerDesc[0].MipLODBias = 0.0f;//-0.1f Bias for TSR ////////////////////////////////////////////////////////////////////////
+		samplerDesc[0].MipLODBias = -1.0f;//-0.1f Bias for TSR ////////////////////////////////////////////////////////////////////////
 		samplerDesc[0].MaxAnisotropy = 2;
 		samplerDesc[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 		samplerDesc[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;

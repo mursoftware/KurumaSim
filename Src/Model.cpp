@@ -986,7 +986,6 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 			strcpy(materialArray[mc].TextureNameARM, "");
 			strcpy(materialArray[mc].TextureNameNormal, "");
 */
-
 		}
 		else if( strcmp( str, "Ka" ) == 0 )
 		{
