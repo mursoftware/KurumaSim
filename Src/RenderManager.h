@@ -55,6 +55,10 @@ struct CompNormal
 		return out;
 	}
 
+
+	//Octahedron normal vector encoding
+	//https://knarkowicz.wordpress.com/2014/04/16/octahedron-normal-vector-encoding/
+
 	Vector2 Encode(const Vector3& n)
 	{
 		Vector2 normal;

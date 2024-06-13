@@ -149,7 +149,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
     //Smoke Reduction Buffer Composition
     {
-		float4 shrinkColor = textureShrink.SampleLevel(sampler3, texcoord, 0);
+		float4 shrinkColor = textureShrink.SampleLevel(sampler1, texcoord, 0);
         
         //float2 pixelSize = 1.0 / SSBufferSize;
 		//float shrinkAlpah = 0.0;
