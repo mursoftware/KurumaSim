@@ -435,7 +435,7 @@ void CarCamera::Draw()
 	CAMERA_CONSTANT constant{};
 	constant.CameraPosition = { m_DrawPosition.X, m_DrawPosition.Y, m_DrawPosition.Z, 0.0f };	
 
-	constant.Exposure = std::powf(2.0f, -m_Exposure) * 10000.0;//Luminance unit in shader is 1/10000 nit
+	constant.Exposure = std::powf(2.0f, -m_Exposure) * 10000.0f;//Luminance unit in shader is 1/10000 nit
 	constant.WhiteBalance = m_WhiteBalance;
 	constant.Gamma = m_Gamma;
 	constant.AutoExposure = m_AutoExposure;

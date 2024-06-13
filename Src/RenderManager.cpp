@@ -737,7 +737,7 @@ void RenderManager::Initialize()
 
 		float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		m_ShrinkBuffer.Resource = CreateTextureResource(width, height,
-			DXGI_FORMAT_R16G16B16A16_FLOAT,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, 1, 1, clearColor);
 
 		m_ShrinkBuffer.Resource->SetName(L"ShrinkBuffer");
@@ -825,7 +825,7 @@ void RenderManager::Initialize()
 		samplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		samplerDesc[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		samplerDesc[0].MipLODBias = 0.0f;//-0.1f Bias for TSR ////////////////////////////////////////////////////////////////////////
+		samplerDesc[0].MipLODBias = -1.0f;//-0.1f Bias for TSR ////////////////////////////////////////////////////////////////////////
 		samplerDesc[0].MaxAnisotropy = 2;
 		samplerDesc[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 		samplerDesc[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
@@ -858,7 +858,7 @@ void RenderManager::Initialize()
 		samplerDesc[2].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 		samplerDesc[2].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
 		samplerDesc[2].MinLOD = 0.0f;
-		samplerDesc[2].MaxLOD = D3D12_FLOAT32_MAX;
+		samplerDesc[2].MaxLOD = 0.0f;
 		samplerDesc[2].ShaderRegister = 2;
 		samplerDesc[2].RegisterSpace = 0;
 		samplerDesc[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -872,7 +872,7 @@ void RenderManager::Initialize()
 		samplerDesc[3].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 		samplerDesc[3].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
 		samplerDesc[3].MinLOD = 0.0f;
-		samplerDesc[3].MaxLOD = D3D12_FLOAT32_MAX;
+		samplerDesc[3].MaxLOD = 0.0f;
 		samplerDesc[3].ShaderRegister = 3;
 		samplerDesc[3].RegisterSpace = 0;
 		samplerDesc[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -970,7 +970,7 @@ void RenderManager::Initialize()
 	{
 		DXGI_FORMAT RTVFormats[] =
 		{
-			DXGI_FORMAT_R16G16B16A16_FLOAT
+			DXGI_FORMAT_R8G8B8A8_UNORM
 		};
 
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
@@ -1083,10 +1083,10 @@ void RenderManager::Initialize()
 		buffer[1].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
 		buffer[2].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
 		buffer[3].Normal = Vector3{ 0.0f, 1.0f, 0.0f };
-		buffer[0].TexCoord = { 0.0f, 0.0f };
-		buffer[1].TexCoord = { 1.0f, 0.0f };
-		buffer[2].TexCoord = { 0.0f, 1.0f };
-		buffer[3].TexCoord = { 1.0f, 1.0f };
+		buffer[0].TexCoord = Vector2{ 0.0f, 0.0f };
+		buffer[1].TexCoord = Vector2{ 1.0f, 0.0f };
+		buffer[2].TexCoord = Vector2{ 0.0f, 1.0f };
+		buffer[3].TexCoord = Vector2{ 1.0f, 1.0f };
 
 		m_SpriteVertexBuffer->Unmap(0, nullptr);
 	}
@@ -2390,11 +2390,15 @@ ComPtr<ID3D12PipelineState> RenderManager::CreatePipeline(const char* VertexShad
 
 	D3D12_INPUT_ELEMENT_DESC InputElementDesc[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0,  0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,			0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,    0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		//{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0,  0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		//{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		//{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,			0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		//{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,    0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		//{ "OCCLUSION",    0, DXGI_FORMAT_R32_FLOAT,    0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+
+		{ "POSITION", 0, DXGI_FORMAT_R16G16B16A16_SINT,		0,  0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",   0, DXGI_FORMAT_R16G16_SINT,			0, 8, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R16G16_SINT,			0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 	pipelineStateDesc.InputLayout.pInputElementDescs = InputElementDesc;
 	pipelineStateDesc.InputLayout.NumElements = _countof(InputElementDesc);

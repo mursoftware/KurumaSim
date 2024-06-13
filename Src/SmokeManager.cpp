@@ -58,14 +58,14 @@ SmokeManager::SmokeManager()
 		buffer[1].Normal = Vector3{ 1.0f, 1.0f, -0.1f };
 		buffer[2].Normal = Vector3{ -1.0f, -1.0f, -0.1f };
 		buffer[3].Normal = Vector3{ 1.0f, -1.0f, -0.1f };
-		buffer[0].TexCoord = { 0.0f, 1.0f };
-		buffer[1].TexCoord = { 1.0f, 1.0f };
-		buffer[2].TexCoord = { 0.0f, 0.0f };
-		buffer[3].TexCoord = { 1.0f, 0.0f };
-		buffer[0].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
-		buffer[1].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
-		buffer[2].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
-		buffer[3].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
+		buffer[0].TexCoord = Vector2{ 0.0f, 1.0f };
+		buffer[1].TexCoord = Vector2{ 1.0f, 1.0f };
+		buffer[2].TexCoord = Vector2{ 0.0f, 0.0f };
+		buffer[3].TexCoord = Vector2{ 1.0f, 0.0f };
+		//buffer[0].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
+		//buffer[1].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
+		//buffer[2].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
+		//buffer[3].Color = Vector4{ 1.0f, 1.0f, 0.1f, 0.1f };
 
 		m_VertexBuffer->Unmap(0, nullptr);
 	}

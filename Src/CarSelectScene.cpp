@@ -202,7 +202,7 @@ void CarSelectScene::DrawZPrePass()
 	m_CarCamera->Draw();
 
 
-	m_Field->DrawDepth(m_CarCamera);
+	//m_Field->DrawDepth(m_CarCamera);
 	//m_Sky->DrawDepth(m_CarCamera);
 	//m_Car->DrawDepth(m_CarCamera, 0);
 

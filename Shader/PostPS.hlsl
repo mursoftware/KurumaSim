@@ -4,12 +4,12 @@
 #include "Common.hlsl"
 
 
-Texture2D<float4> textureColor : register(t0);
-Texture2D<float4> textureVelocity : register(t1);
+Texture2D<float3> textureColor : register(t0);
+Texture2D<float2> textureVelocity : register(t1);
 Texture2D<float> textureDepth : register(t2);
 Texture2D<float4> textureShrink : register(t3);
-Texture2D<float4> textureExposure : register(t4);
-SamplerState sampler0 : register(s0);
+Texture2D<float3> textureExposure : register(t4);
+//SamplerState sampler0 : register(s0);
 SamplerState sampler1 : register(s1);
 SamplerState sampler3 : register(s3);
 
@@ -76,7 +76,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
     color.rgb = 0.0;
     color.a = 1.0;
 
-    float depth = textureDepth.SampleLevel(sampler1, texcoord, 0).r;
+	float depth = textureDepth.SampleLevel(sampler3, texcoord, 0).r;
     float n = 0.5; // camera z near
     float f = 400.0; // camera z far
     float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
@@ -106,11 +106,10 @@ float4 main(PS_INPUT input) : SV_TARGET0
 		float2 velocity = textureVelocity.SampleLevel(sampler3, blurPos, 0);      
       	float2 ov = velocity;
 
-		for (int i = 0; i < MotionBlurCount; i++)
+		for (int i = 0; i < MotionBlurCount-1; i++)
 		{
 			float a = saturate(1.0 - length(ov - velocity) * 100.0);
-
-			color.rgb += textureColor.SampleLevel(sampler1, blurPos, offset).rgb * a;
+			color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
 			count += a;
             
 			blurPos += -velocity * MotionBlur / MotionBlurCount;
@@ -118,12 +117,17 @@ float4 main(PS_INPUT input) : SV_TARGET0
             
 		}
         
+		float a = saturate(1.0 - length(ov - velocity) * 100.0);
+		color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+		count += a;
+        
+  
 		color.rgb /= count;
 	}
 
  
     
-    
+   
 
     //flare
     {
@@ -208,7 +212,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
     //Exposure 
 	if (AutoExposure)
 	{
-		float4 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.5), 0);
+		float3 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.5), 0);
 		float lumi = exposure.r * 0.3 + exposure.g * 0.6 + exposure.g * 0.1;
 		lumi *= 10000.0; //Luminance unit in shader is 1/10000 nit
         

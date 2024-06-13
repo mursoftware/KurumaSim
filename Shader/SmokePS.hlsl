@@ -60,7 +60,7 @@ PS_OUTPUT2 main(PS_INPUT input)
 
 
     float3 directionalLight;
-	directionalLight = saturate(dot(LightDirection, normal) * 0.25 + 0.75) * ScatteringLight * shadow / PI;
+	directionalLight = saturate(dot(LightDirection, normal) * 0.5 + 0.5) * ScatteringLight * shadow / PI;
 
 
 

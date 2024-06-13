@@ -79,6 +79,7 @@ private:
 	std::string		m_FileName;
 	bool			m_Loaded = false;
 	bool			m_Collision{};
+	bool			m_AO{};
 
 
 
@@ -91,6 +92,7 @@ private:
 	std::vector<SUBSET>			m_SubsetArray;
 
 
+	float m_Size{};
 
 	float m_BBMinX{};
 	float m_BBMaxX{};
@@ -118,8 +120,9 @@ public:
 
 
 	void Draw(bool OverridTexture =false, std::unordered_map<std::string, MATERIAL>* OverridMaterial =nullptr);
+	void DrawNonIndex(bool OverrideTexture, std::unordered_map<std::string, MATERIAL>* OverridMaterial = nullptr);
 
-	void Load(const char *FileName, int Priority= THREAD_PRIORITY_NORMAL, bool Collision=false);
+	void Load(const char *FileName, int Priority= THREAD_PRIORITY_NORMAL, bool Collision=false, bool AO = false);
 	void LoadThread();
 
 
@@ -131,4 +134,6 @@ public:
 
 	std::vector<Vector3>* GetPositionList() { return &m_PositionList; }
 
+
+	float GetSize() { return m_Size; }
 };
