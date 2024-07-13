@@ -234,7 +234,7 @@ PS_OUTPUT main(PS_INPUT input)
 
 
 
-        specular = envSpec + dirSpec;
+		specular = envSpec; // + dirSpec;
 
         specular *= baseColor.rgb;
     }
@@ -258,27 +258,27 @@ PS_OUTPUT main(PS_INPUT input)
 
     
     
-    //fog
-    {
-		float3 envLight;
-        {
-			float2 iblTexCoord;
-			iblTexCoord.x = 0.0;
-			iblTexCoord.y = 0.0;
+ //   //fog
+ //   {
+	//	float3 envLight;
+ //       {
+	//		float2 iblTexCoord;
+	//		iblTexCoord.x = 0.0;
+	//		iblTexCoord.y = 0.0;
 
-			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb / 2.0;
-		}
-
-
-		float3 dirLight;
-		dirLight = ScatteringLight / (2.0 * PI);
+	//		envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb / 2.0;
+	//	}
 
 
-		float3 fogColor = float3(0.9, 0.9, 0.9) * 1.0;
-		float fog = (1.0 - exp(-len * Fog)); // * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+	//	float3 dirLight;
+	//	dirLight = ScatteringLight / (2.0 * PI);
 
-		output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
-	}
+
+	//	float3 fogColor = float3(0.9, 0.9, 0.9) * 1.0;
+	//	float fog = (1.0 - exp(-len * Fog)); // * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+
+	//	output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
+	//}
     
     
     

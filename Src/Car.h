@@ -77,11 +77,11 @@ class Car : public GameObject
 
 		int				m_SoundIndexBrake{};
 		//int				m_SoundIndexEngine2000{};
-		//int				m_SoundIndexEngine2000Ex{};
+		int				m_SoundIndexEngine2000Ex{};
 		int				m_SoundIndexEngine4000{};
 		int				m_SoundIndexEngine4000Ex{};
 		//int				m_SoundIndexEngine6000{};
-		//int				m_SoundIndexEngine6000Ex{};
+		int				m_SoundIndexEngine6000Ex{};
 		int				m_SoundIndexEngineNoise{};
 
 		int				m_SoundIndexEngineRedNoise{};

@@ -139,7 +139,7 @@ PS_OUTPUT main(PS_INPUT input)
 
         float3 envSpec = 0.0;
         {
-            envSpec += textureEnv.SampleLevel(sampler1, eyeRefVector, roughness * 10.0).rgb;
+            envSpec += textureEnv.SampleLevel(sampler1, eyeRefVector, roughness * 5.0).rgb;
 			//envSpec += textureEnv.SampleLevel(sampler0, eyeRefVector + ddx(eyeRefVector) * 0.5, roughness * 10.0).rgb;
 			//envSpec += textureEnv.SampleLevel(sampler0, eyeRefVector + ddy(eyeRefVector) * 0.5, roughness * 10.0).rgb;
 			//envSpec += textureEnv.SampleLevel(sampler0, eyeRefVector + ddx(eyeRefVector) * 0.5 + ddy(eyeRefVector) * 0.5, roughness * 10.0).rgb;
@@ -211,7 +211,7 @@ PS_OUTPUT main(PS_INPUT input)
     float4 color;
     {
 		color.rgb = diffuse * (1.0 - metallic) * baseColor.a * (1.0 - fresnel)
-            + specular * fresnel * pow(ao, 4.4)
+            + specular * fresnel * pow(ao, 2.2)
             + Material.EmissionColor.rgb;
 
 		color.a = baseColor.a * (1.0 - fresnel.r) + 1.0 * fresnel.r;
@@ -223,29 +223,29 @@ PS_OUTPUT main(PS_INPUT input)
 
 
    
-    //fog
-    {
-		float3 envLight;
-        {
-			float2 iblTexCoord;
-			iblTexCoord.x = 0.0;
-			iblTexCoord.y = 0.0;
+ //   //fog
+ //   {
+	//	float3 envLight;
+ //       {
+	//		float2 iblTexCoord;
+	//		iblTexCoord.x = 0.0;
+	//		iblTexCoord.y = 0.0;
 
-			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb / 2.0;
-		}
-
-
-		float3 dirLight;
-		dirLight = ScatteringLight / (2.0 * PI);
+	//		envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb / 2.0;
+	//	}
 
 
-		float3 fogColor = float3(0.9, 0.9, 0.9) * 1.0;
-		float fog = (1.0 - exp(-len * Fog)); // * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+	//	float3 dirLight;
+	//	dirLight = ScatteringLight / (2.0 * PI);
 
-		output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
-		output.Color.a += (1.0 - output.Color.a) * fog;
 
-	}
+	//	float3 fogColor = float3(0.9, 0.9, 0.9) * 1.0;
+	//	float fog = (1.0 - exp(-len * Fog)); // * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+
+	//	output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
+	//	output.Color.a += (1.0 - output.Color.a) * fog;
+
+	//}
     
 
 

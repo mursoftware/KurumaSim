@@ -23,6 +23,10 @@ struct SOUND
 	int						Length;
 	int						PlayLength;
 
+	IUnknown*				EffectLo;
+	IUnknown*				EffectHi;
+
+
 };
 
 
@@ -38,6 +42,7 @@ class SoundManager
 		static std::unordered_map<std::string, SOUND*>		m_BufferList;
 
 		static IUnknown*				m_Reverb;
+		static IUnknown*				m_EQ;
 
 	public:
 		static SoundManager* GetInstance() { return m_Instance; }
@@ -54,6 +59,7 @@ class SoundManager
 		void SetPitch( const char* FileName, int Index, float pitch );
 		//void SetPan(const char* FileName, int Index, float pan);
 		void SetVolume( const char* FileName, int Index, float volume );
+		void SetEQ(const char* FileName, FXEQ_PARAMETERS EqPrametersLo, FXEQ_PARAMETERS EqPrametersHi);
 
 		SOUND* LoadData( const char* FileName );
 

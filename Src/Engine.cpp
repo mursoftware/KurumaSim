@@ -35,6 +35,7 @@ void Engine::Load(const char * FileName, const char * PartName)
 
 
 	m_Inertia = GetPrivateProfileFloat(PartName, "INERTIA", FileName);
+	m_Brake = GetPrivateProfileFloat(PartName, "BRAKE", FileName);
 	m_BrakeRatio = GetPrivateProfileFloat(PartName, "BRAKE_RATIO", FileName);
 	m_Limiter = GetPrivateProfileFloat(PartName, "LIMITER", FileName);
 
@@ -50,24 +51,44 @@ void Engine::Update(float dt)
 
 	float rpm = m_OutputAngularSpeed1 * 30.0f / PI;
 
+
+
 	//rev limiter
 	if (rpm > m_Limiter)
-		m_Throttle = 0;
+		m_LimiterEnable = true;
+
+	if(rpm < m_Limiter - 100.0f)
+		m_LimiterEnable = false;
+
+	if (m_LimiterEnable)
+		m_Throttle = 0.0f;
 
 
-	m_DelayThrottle += (m_Throttle - m_DelayThrottle) * 0.1f;
+
+	//ilding
+	if (rpm < 1000.0f)
+	{
+		float it = (1000.0f - rpm) * 0.001f;
+		m_Throttle = max(m_Throttle, it);
+	}
+
+
+	//throttle delay
+	m_DelayThrottle += (m_Throttle - m_DelayThrottle) * 0.01f;
 	//m_DelayThrottle = m_Throttle;
+
 
 
 	//Torque Map -> Torque
 	int emi = (int)(rpm / 500.0f);
 	float et = m_TorqueMap[emi] + (m_TorqueMap[emi + 1] - m_TorqueMap[emi]) * (rpm / 500.0f - emi);
 
-	float mt = 0.0f;
-	if (m_OutputAngularSpeed1 > 100.0f)
-		mt = powf(m_OutputAngularSpeed1 - 100.0f, 0.2f) * 4.0f;
+	//Brake torque
+	float bt = m_OutputAngularSpeed1 * m_BrakeRatio + m_Brake;
 
-	m_OutputTorque1 = (et + m_BrakeRatio * m_OutputAngularSpeed1 + mt) * m_DelayThrottle - m_BrakeRatio * m_OutputAngularSpeed1 - mt;
+
+
+	m_OutputTorque1 = et * m_DelayThrottle - bt * (1.0f - m_DelayThrottle);
 
 
 

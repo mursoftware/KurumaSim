@@ -138,7 +138,52 @@ Car::Car()
 		//m_SoundIndexEngine6000 = soundManager->Play("sound\\6000.wav", true, 0.0f);
 		//m_SoundIndexEngine6000Ex = soundManager->Play("sound\\6000ex.wav", true, 0.0f);
 
+
+
+
+		FXEQ_PARAMETERS eqPrametersLo{};
+		eqPrametersLo.FrequencyCenter0 = 258.0f;
+		eqPrametersLo.Gain0 = 10.0f;
+		eqPrametersLo.Bandwidth0 = 0.05f;
+
+		eqPrametersLo.FrequencyCenter1 = 344.0f;
+		eqPrametersLo.Gain1 = 10.0f;
+		eqPrametersLo.Bandwidth1 = 0.05f;
+
+		eqPrametersLo.FrequencyCenter2 = 432.0f;
+		eqPrametersLo.Gain2 = 10.0f;
+		eqPrametersLo.Bandwidth2 = 0.05f;
+
+		eqPrametersLo.FrequencyCenter3 = 519.0f;
+		eqPrametersLo.Gain3 = 1.0f;
+		eqPrametersLo.Bandwidth3 = 0.001f;
+
+
+		FXEQ_PARAMETERS eqPrametersHi{};
+		eqPrametersHi.FrequencyCenter0 = 250.0f;
+		eqPrametersHi.Gain0 = 1.0f;
+		eqPrametersHi.Bandwidth0 = 1.0f;
+
+		eqPrametersHi.FrequencyCenter1 = 340.0f;
+		eqPrametersHi.Gain1 = 1.0f;
+		eqPrametersHi.Bandwidth1 = 0.5f;
+
+		eqPrametersHi.FrequencyCenter2 = 430.0f;
+		eqPrametersHi.Gain2 = 1.0f;
+		eqPrametersHi.Bandwidth2 = 0.5f;
+
+		eqPrametersHi.FrequencyCenter3 = 520.0f;
+		eqPrametersHi.Gain3 = 1.0f;
+		eqPrametersHi.Bandwidth3 = 0.5f;
+
+
+		soundManager->SetEQ("sound\\4000ex.wav", eqPrametersLo, eqPrametersHi);
+
+
+
 		m_SoundIndexEngineNoise = soundManager->Play("sound\\noise.wav", true, 0.0f);
+		soundManager->SetEQ("sound\\noise.wav", eqPrametersLo, eqPrametersHi);
+
 
 		m_SoundIndexEngineRedNoise = soundManager->Play("sound\\rednoise.wav", true, 0.0f);
 
@@ -314,8 +359,8 @@ void Car::Update( bool Control, bool Input, float dt )
 			m_BodyRB.SetBrakeLamp(false);
 
 
-		if (m_Throttle < 0.05f)
-			m_Throttle = 0.05f;
+		//if (m_Throttle < 0.05f)
+		//	m_Throttle = 0.05f;
 
 
 
@@ -369,8 +414,8 @@ void Car::Update( bool Control, bool Input, float dt )
 			m_ClutchRatio -= 15.0f * dt;
 			m_Throttle = m_ClutchRatio;
 
-			if (m_Throttle < 0.1f)
-				m_Throttle = 0.1f;
+			//if (m_Throttle < 0.1f)
+			//	m_Throttle = 0.1f;
 		}
 		else
 		{
@@ -650,7 +695,8 @@ void Car::Update( bool Control, bool Input, float dt )
 			//soundManager->SetVolume("sound\\4000.wav", m_SoundIndexEngine4000, (m_Engine.GetOutputAngularSpeed1() * 0.0005f) * (1.0f - m_Engine.GetThrottle()) * 0.3f * volume);
 
 			soundManager->SetPitch("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, rpm / 4000.0f * pitch);
-			soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, rpm / 50000.0f * volume);
+			//soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, (rpm / 1000000.0f + 0.2f) * 0.1f * volume);
+			soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, 0.05f * volume);
 
 			//soundManager->SetVolume("sound\\2000.wav", m_SoundIndexEngine2000, 0.0f);
 			//soundManager->SetVolume("sound\\2000ex.wav", m_SoundIndexEngine2000Ex, 0.0f);
@@ -673,15 +719,16 @@ void Car::Update( bool Control, bool Input, float dt )
 		//	soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, 0.0f);
 		//}
 
-		//soundManager->SetPitch("sound\\noise.wav", m_SoundIndexEngineNoise, 0.9f + rpm / 20000.0f);
-		soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, rpm * rpm / 200000000.0f * (0.5f + m_Engine.GetThrottle() * 0.5f) * volume);
+		//soundManager->SetPitch("sound\\noise.wav", m_SoundIndexEngineNoise, 1.0f * pitch);
+		soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, rpm / 20000.0f * (0.5f + m_Engine.GetDelayThrottle() * 0.5f) * 0.0f * volume);
+		//soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, 0.0f);
 
 		soundManager->SetVolume("sound\\rednoise.wav", m_SoundIndexEngineRedNoise, m_TireFLRB.GetInputAngularSpeed1() * 0.003f);
 
 
 
 		soundManager->SetPitch("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.005f * pitch);
-		soundManager->SetVolume("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.0002f * volume);
+		soundManager->SetVolume("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.0001f * volume);
 
 
 

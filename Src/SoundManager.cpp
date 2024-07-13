@@ -15,6 +15,7 @@ IXAudio2*				SoundManager::m_Xaudio{};
 IXAudio2MasteringVoice* SoundManager::m_MasteringVoice{};
 
 IUnknown*				SoundManager::m_Reverb{};
+IUnknown*				SoundManager::m_EQ{};
 
 
 
@@ -38,26 +39,59 @@ SoundManager::SoundManager()
 	//m_MasteringVoice->SetVolume( 0.0f );
 
 
+	XAUDIO2_EFFECT_DESCRIPTOR desc[2];
 
 	//CreateFX(__uuidof(::FXReverb), &m_Reverb);
 	XAudio2CreateReverb(&m_Reverb);
 	assert(m_Reverb);
 
-	XAUDIO2_EFFECT_DESCRIPTOR desc;
-	desc.InitialState = TRUE;
-	desc.OutputChannels = 2;
-	desc.pEffect = m_Reverb;
+	desc[1].InitialState = TRUE;
+	desc[1].OutputChannels = 2;
+	desc[1].pEffect = m_Reverb;
+
+
+	CreateFX(__uuidof(::FXEQ), &m_EQ);
+	assert(m_EQ);
+
+	desc[0].InitialState = TRUE;
+	desc[0].OutputChannels = 2;
+	desc[0].pEffect = m_EQ;
+
+
 
 	XAUDIO2_EFFECT_CHAIN chain;
-	chain.pEffectDescriptors = &desc;
-	chain.EffectCount = 1;
+	chain.pEffectDescriptors = desc;
+	chain.EffectCount = 2;
 
-	m_MasteringVoice->SetEffectChain(&chain);
+	//m_MasteringVoice->SetEffectChain(&chain);
+
+
+	
+
+	FXEQ_PARAMETERS eqPrameters{};
+	eqPrameters.FrequencyCenter0 = 10.0f; 
+	eqPrameters.Gain0 = 1.0f;             
+	eqPrameters.Bandwidth0 = 2.0f;        
+
+	eqPrameters.FrequencyCenter1 = 160.0f;
+	eqPrameters.Gain1 = 1.0f;             
+	eqPrameters.Bandwidth1 = 0.0f;        
+
+	eqPrameters.FrequencyCenter2 = 350.0f;
+	eqPrameters.Gain2 = 1.0f;             
+	eqPrameters.Bandwidth2 = 0.0f;        
+
+	eqPrameters.FrequencyCenter3 = 22000.0f;
+	eqPrameters.Gain3 = 1.0f;             
+	eqPrameters.Bandwidth3 = 3.0f;        
+
+	//m_MasteringVoice->SetEffectParameters(0, &eqPrameters, sizeof(FXEQ_PARAMETERS));
+
 
 
 
 	XAUDIO2FX_REVERB_PARAMETERS reverbParameters;
-	reverbParameters.ReflectionsDelay = 0;
+	reverbParameters.ReflectionsDelay = 1;
 	reverbParameters.ReverbDelay = 0;
 	reverbParameters.RearDelay = XAUDIO2FX_REVERB_DEFAULT_REAR_DELAY;
 	reverbParameters.PositionLeft = XAUDIO2FX_REVERB_DEFAULT_POSITION;
@@ -78,9 +112,10 @@ SoundManager::SoundManager()
 	reverbParameters.DecayTime = XAUDIO2FX_REVERB_DEFAULT_DECAY_TIME;
 	reverbParameters.Density = XAUDIO2FX_REVERB_DEFAULT_DENSITY;
 	reverbParameters.RoomSize = XAUDIO2FX_REVERB_DEFAULT_ROOM_SIZE;
-	reverbParameters.WetDryMix = 30.0f;
+	reverbParameters.WetDryMix = 0.0f;
 
-	m_MasteringVoice->SetEffectParameters(0, &reverbParameters, sizeof(XAUDIO2FX_REVERB_PARAMETERS));
+	//m_MasteringVoice->SetEffectParameters(1, &reverbParameters, sizeof(XAUDIO2FX_REVERB_PARAMETERS));
+
 
 
 }
@@ -196,6 +231,8 @@ SOUND* SoundManager::LoadData( const char *FileName )
 		mmioClose(hmmio, 0);
 	}
 
+
+
 	for (int j = 0; j < SOUND_SOURCE_MAX; j++)
 	{
 		m_Xaudio->CreateSourceVoice(&sound->SourceVoice[j], &wfx);
@@ -214,6 +251,10 @@ void SoundManager::Load( const char* FileName )
 {
 	LoadData( FileName );
 }
+
+
+
+
 
 
 
@@ -292,3 +333,44 @@ void SoundManager::SetVolume( const char *FileName, int Index, float Volume )
 	Volume = min(Volume, 2.0f);
 	sound->SourceVoice[Index]->SetVolume( Volume );
 }
+
+
+
+
+void SoundManager::SetEQ(const char* FileName, FXEQ_PARAMETERS EqPrametersLo, FXEQ_PARAMETERS EqPrametersHi)
+{
+
+	SOUND* sound = LoadData(FileName);
+
+
+	CreateFX(__uuidof(::FXEQ), &sound->EffectHi);
+	assert(sound->EffectHi);
+
+	CreateFX(__uuidof(::FXEQ), &sound->EffectLo);
+	assert(sound->EffectLo);
+
+
+	XAUDIO2_EFFECT_DESCRIPTOR desc[2];
+	desc[0].InitialState = TRUE;
+	desc[0].OutputChannels = 2;
+	desc[0].pEffect = sound->EffectHi;
+
+	desc[1].InitialState = TRUE;
+	desc[1].OutputChannels = 2;
+	desc[1].pEffect = sound->EffectLo;
+
+	XAUDIO2_EFFECT_CHAIN chain;
+	chain.pEffectDescriptors = desc;
+	chain.EffectCount = 1;
+
+
+	for (int j = 0; j < SOUND_SOURCE_MAX; j++)
+	{
+		sound->SourceVoice[j]->SetEffectChain(&chain);
+		sound->SourceVoice[j]->SetEffectParameters(0, &EqPrametersLo, sizeof(FXEQ_PARAMETERS));
+		//sound->SourceVoice[j]->SetEffectParameters(1, &EqPrametersHi, sizeof(FXEQ_PARAMETERS));
+	}
+
+}
+
+

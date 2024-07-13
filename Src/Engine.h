@@ -10,8 +10,10 @@ private:
 
 	float		m_TorqueMap[21]{};
 	float		m_Inertia{};
+	float		m_Brake{};
 	float		m_BrakeRatio{};
 	float		m_Limiter{};
+	bool		m_LimiterEnable{};
 	float		m_Throttle{};
 	float		m_DelayThrottle{};
 	float		m_Acc{};
@@ -37,5 +39,6 @@ public:
 	void  SetOutputAngularSpeed1(float AngularSpeed) { m_OutputAngularSpeed1 = AngularSpeed; }
 
 	float GetThrottle() { return m_Throttle; }
+	float GetDelayThrottle() { return m_DelayThrottle; }
 
 };
