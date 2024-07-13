@@ -85,26 +85,26 @@ PS_OUTPUT2 main(PS_INPUT input)
 
 	float alpha = 0.0;
     {
-		float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(-4.0 / SSBufferSize.x, 4.0 / SSBufferSize.y), 0).r;
+		float depth = textureDepth.SampleLevel(sampler1, depthTexCoord/* + float2(-4.0 / SSBufferSize.x, 4.0 / SSBufferSize.y)*/, 0).r;
 		float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
 		alpha += saturate((z - smokeZ + 0.5) * 0.5);
 	}
-    {
-		float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(4.0 / SSBufferSize.x, 4.0 / SSBufferSize.y), 0).r;
-		float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
-		alpha += saturate((z - smokeZ + 0.5) * 0.5);
-	}
-    {
-		float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(-4.0 / SSBufferSize.x, -4.0 / SSBufferSize.y), 0).r;
-		float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
-		alpha += saturate((z - smokeZ + 0.5) * 0.5);
-	}
-    {
-		float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(4.0 / SSBufferSize.x, -4.0 / SSBufferSize.y), 0).r;
-		float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
-		alpha += saturate((z - smokeZ + 0.5) * 0.5);
-	}
-	alpha /= 4;
+ //   {
+	//	float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(4.0 / SSBufferSize.x, 4.0 / SSBufferSize.y), 0).r;
+	//	float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
+	//	alpha += saturate((z - smokeZ + 0.5) * 0.5);
+	//}
+ //   {
+	//	float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(-4.0 / SSBufferSize.x, -4.0 / SSBufferSize.y), 0).r;
+	//	float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
+	//	alpha += saturate((z - smokeZ + 0.5) * 0.5);
+	//}
+ //   {
+	//	float depth = textureDepth.SampleLevel(sampler1, depthTexCoord + float2(4.0 / SSBufferSize.x, -4.0 / SSBufferSize.y), 0).r;
+	//	float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
+	//	alpha += saturate((z - smokeZ + 0.5) * 0.5);
+	//}
+	//alpha /= 4;
     
 	float4 color;
 	color.rgb = diffuse * baseColor.a * alpha;

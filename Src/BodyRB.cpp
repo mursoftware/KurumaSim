@@ -75,6 +75,17 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 	}
 
 
+
+	m_Material.ClearCoat = 1.0f;
+	m_Material.ClearColor = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_Material.ClearRoughness = 0.01f;
+	m_Material.ClearSpecular = 0.05f;
+
+	m_Material.BaseColor = Vector4(0.8f, 0.05f, 0.05f, 1.0f);
+	m_Material.BaseRoughness = 1.0f;
+	m_Material.BaseMetallic = 0.0f;
+	m_Material.BaseSpecular = 0.0f;
+
 }
 
 
@@ -205,12 +216,26 @@ void BodyRB::Update(float dt)
 void BodyRB::DrawDebug()
 {
 
+	if (ImGui::CollapsingHeader("BodyMaterial"))
+	{
+		ImGui::SliderFloat("ClearCoat", &m_Material.ClearCoat, 0.0f, 1.0f, "%.3f");
+		ImGui::SliderFloat("ClearRoughness", &m_Material.ClearRoughness, 0.0f, 1.0f, "%.3f");
+		ImGui::SliderFloat("ClearSpecular", &m_Material.ClearSpecular, 0.0f, 1.0f, "%.3f");
+
+		ImGui::SliderFloat("BaseMetallic", &m_Material.BaseMetallic, 0.0f, 1.0f, "%.3f");
+		//ImGui::ColorPicker3("MetalColor", &m_Material.ClearColor.X);
+		ImGui::ColorPicker3("BaseColor", &m_Material.BaseColor.X);
+		ImGui::SliderFloat("BaseRoughness", &m_Material.BaseRoughness, 0.0f, 1.0f, "%.3f");
+		ImGui::SliderFloat("BaseSpecular", &m_Material.BaseSpecular, 0.0f, 1.0f, "%.3f");
+	}
 
 	if (ImGui::CollapsingHeader("Body"))
 	{
 		char buf[32];
 
 		ImGui::Checkbox("Visible", &m_Visible);
+
+
 
 		Vector3 v = GetVelocity();
 		float vl = v.Length();
@@ -329,6 +354,9 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 	std::unordered_map<std::string, MATERIAL> overridMaterial;
 	MATERIAL material{};
+	material.BaseSpecular = 0.05f;
+	material.BaseMetallic= 0.0f;
+	material.BaseRoughness = 0.0f;
 
 	material.BaseColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 	material.EmissionColor = Vector4(10.0f, 10.0f, 10.0f, 1.0f);
@@ -342,11 +370,13 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 	if (m_BrakeLamp)
 	{
 		material.BaseColor = Vector4(0.5f, 0.0f, 0.0f, 1.0f);
-		material.EmissionColor = Vector4(10.0f, 1.0f, 1.0f, 1.0f);
+		material.EmissionColor = Vector4(50.0f, 1.0f, 1.0f, 1.0f);
 		overridMaterial["stop_side"] = material;
 		overridMaterial["stop_top"] = material;
 	}
 
+
+	overridMaterial["Material_#256"] = m_Material;
 
 
 	m_Model[level].Draw(false, &overridMaterial);

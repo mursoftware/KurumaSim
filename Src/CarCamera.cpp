@@ -26,7 +26,7 @@ CarCamera::CarCamera()
 
 
 	m_AutoExposure = false;
-	m_Exposure = 15.0f;
+	m_Exposure = 13.0f;
 	m_Gamma = 2.2f;
 	m_Vignette = 0.4f;
 	m_LensFlare = 0.2f;
@@ -195,7 +195,7 @@ void CarCamera::Update()
 
 		m_Rotation += (m_TargetRotation - m_Rotation) * 0.05f;
 
-
+		//m_TargetRotation.Y += 0.0001f;
 
 		if (InputManager::GetInstance()->GetKeyPress(VK_MBUTTON))
 		{
@@ -458,6 +458,8 @@ void CarCamera::Draw()
 	constant.SSBufferSize.X = (float)RenderManager::GetInstance()->GetSSBufferWidth();
 	constant.SSBufferSize.Y = (float)RenderManager::GetInstance()->GetSSBufferHeight();
 	//constant.SSRatio = RenderManager::GetInstance()->GetSSRatio();
+
+	constant.EnvBufferMipLevel = RenderManager::GetInstance()->GetEnvBufferMipLevel();
 
 	RenderManager::GetInstance()->SetConstant(1, &constant, sizeof(constant));
 

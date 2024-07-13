@@ -43,8 +43,10 @@ float4 main(PS_INPUT input) : SV_TARGET0
             srcVec.z = sin(srcPos.y * PI) * sin(srcPos.x * PI * 2.0);
             srcVec.y = cos(srcPos.y * PI);
 
-
-			float weight = dot(destVec, srcVec) / PI * dh * dw; //Normalized Lambert
+			float ndl = saturate(dot(destVec, srcVec));
+			float weight = ndl / PI; //Normalized Lambert
+			weight *= dh * dw; //Area Integral
+			weight *= 1.0 - Fresnel(0.04, ndl, 0.0);
 
             if (weight > 0.0f)
             {

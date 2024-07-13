@@ -285,7 +285,7 @@ void Field::DrawDebug()
 
 	if (ImGui::CollapsingHeader("Fog"))
 	{
-		ImGui::SliderFloat("FogDensity", &m_Fog, 0.0f, 0.001f, "%.5f");
+		ImGui::SliderFloat("FogDensity", &m_Fog, 0.0f, 0.01f, "%.5f");
 	}
 
 	ImGui::End();

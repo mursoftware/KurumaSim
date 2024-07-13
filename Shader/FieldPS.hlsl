@@ -25,261 +25,179 @@ PS_OUTPUT main(PS_INPUT input)
     PS_OUTPUT output;
 
 
-
-    float4 baseColorTex = textureDif.Sample(sampler0, input.TexCoord);
-    
-    
-	//output.Color = baseColorTex;
-	//output.Velocity = 0.0;
-    
-	//return output;
-
-    
+       
+	float4 baseColor = textureDif.Sample(sampler0, input.TexCoord);
 	float threshold = Random(float4(input.TexCoord, 0.0, TemporalFrame)) * 0.5 + 0.5;
-	clip(baseColorTex.a - threshold);
+	clip(baseColor.a - threshold);
+    
+	float4 subColorTex = textureSub.Sample(sampler0, input.TexCoord);
 
-    float4 subColorTex = textureSub.Sample(sampler0, input.TexCoord);
+	baseColor.rgb = lerp(subColorTex.rgb, baseColor.rgb, input.Color.b) * input.Color.g;
+ 
 
-    
-    
-    //AO
-    float4 baseColor = baseColorTex * Material.BaseColor;
-    float3 normal = normalize(input.Normal.xyz);
-    float3 position = input.WorldPosition.xyz;
-    float ao = input.Color.r;
-    //float ao = input.Occlusion;
-    ao = saturate(ao);
-    ao = pow(ao, 2.2);
-    
+	float3 normal = normalize(input.Normal.xyz);
+	float3 position = input.WorldPosition.xyz;
+	float ao = pow(input.Color.r, 4);
+	
+
+	float baseSpecular = Material.BaseSpecular;
+	float baseRoughness = Material.BaseRoughness;
+      
+
+	float3 eyeVector = normalize(CameraPosition.xyz - position.xyz);
+	float3 eyeRefVector = reflect(-eyeVector, normal.xyz);
+	float nde = saturate(dot(normal.xyz, eyeRefVector));
+	float ndl = saturate(dot(normal.xyz, LightDirection.xyz));
+	float rdl = saturate(dot(eyeRefVector.xyz, LightDirection.xyz));
+	float3 halfVector = normalize(eyeVector + LightDirection.xyz);
+	float ndh = saturate(dot(normal.xyz, halfVector));
+
+
  
     //blob shadow
-	float4 wp = float4(input.WorldPosition.xyz, 1.0);
-	float4 localShadowPos = mul(wp, BodyW);
-	float2 blobTexCoord = localShadowPos.xz;
-	blobTexCoord.y /= 1.5;
-	blobTexCoord += float2(-0.01, 0.04);
-	blobTexCoord *= 0.171;
-	blobTexCoord += 0.5;
-    
-	float4 blobShadowTex = textureBlobShadowBody.Sample(sampler1, blobTexCoord);
-    
-	ao *= pow(blobShadowTex.r, 1.6);
-    
-    
-    
-    
-
-    baseColor.rgb = lerp(subColorTex.rgb, baseColor.rgb, input.Color.b) * input.Color.g;
-
-    
-    
-    
-
-    float metallic = Material.Metallic;
-    float spec = Material.Specular;
-    float smoothness = (1.0 - Material.Roughness) * pow(saturate(baseColor.r * 4.0), 1.0);
-    float roughness = 1.0 - smoothness;
-
-    roughness = max(roughness, 0.1);
-
-
-
-
-    float3 eyeVector = position.xyz - CameraPosition.xyz;
-	float len = length(eyeVector);
-    eyeVector = normalize(eyeVector);
-
-    float3 eyeRefVector = reflect(eyeVector, normal.xyz);
-    eyeRefVector = normalize(eyeRefVector);
-
-    float ned = saturate(dot(normal.xyz, eyeRefVector));
-
-    float3 halfVector = normalize(LightDirection - eyeVector);
-
-
-
-
-
-
-
-    float shadow = 1.0;
-    float2 shadowTexCoord;
-    
-	float3 debugShadowColor[3] =
-	{
-		{ 1.0, 0.5, 0.5 },
-		{ 0.5, 1.0, 0.5 },
-		{ 0.5, 0.5, 1.0 }
-	};
-
-    for (int i = 0; i < 3; i++)
     {
-        shadowTexCoord.x = input.ShadowPosition[i].x * 0.5f + 0.5f;
-        shadowTexCoord.y = -input.ShadowPosition[i].y * 0.5f + 0.5f;
-
-        if (0.01 < shadowTexCoord.x && shadowTexCoord.x < 0.99 && 0.01 < shadowTexCoord.y && shadowTexCoord.y < 0.99)
-        {
-            //for (int j = 0; j < 4; j++)
-            {
-                float2 offset = PoissonSamples[(int)(Random(float4(position, /*j + */TemporalFrame)) * 64)] * 0.002;
-				float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
-                if (shadowColorTex + 0.001 * (i + 1) < input.ShadowPosition[i].z)
-                    shadow -= 1.0 / 1.0;
-            }
-            
-			//baseColor.rgb *= debugShadowColor[i];
-
-            break;
-        }
-    }
-
-	//shadow = 1.0;
-
-
-
-
-
-	float3 fresnel;
-    {
-        float3 f0 = lerp(0.08 * spec, baseColor.rgb, metallic);
-		fresnel = f0 + (1.0 - f0) * pow(1.0 - ned, 5);
-		fresnel *= (1.0 - roughness);
+		float4 wp = float4(input.WorldPosition.xyz, 1.0);
+		float4 localShadowPos = mul(wp, BodyW);
+		float2 blobTexCoord = localShadowPos.xz;
+		blobTexCoord.y /= 1.5;
+		blobTexCoord += float2(-0.01, 0.04);
+		blobTexCoord *= 0.171;
+		blobTexCoord += 0.5;
+    
+		float4 blobShadowTex = textureBlobShadowBody.Sample(sampler1, blobTexCoord);
+    
+		ao *= pow(blobShadowTex.r, 1.6);
 	}
-
-
-
-
-
-    float3 diffuse;
+    
+    
+   
+	output.Color.rgb = 0.0;
+    
+     
+    
+    //Sun Light
     {
+		float3 light = ScatteringLight;
+		
 
-
-        float3 envLight;
+		
+		//Shadow
+		float shadow = 0.0;
         {
-            float2 iblTexCoord;
-            iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
-            iblTexCoord.y = acos(normal.y) / PI;
+			float2 shadowTexCoord;
+    
+			float3 debugShadowColor[3] =
+			{
+				{ 1.0, 0.5, 0.5 },
+				{ 0.5, 1.0, 0.5 },
+				{ 0.5, 0.5, 1.0 }
+			};
 
-			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb; //Normalized during IBL texture generation
+			for (int i = 0; i < 3; i++)
+			{
+				shadowTexCoord.x = input.ShadowPosition[i].x * 0.5f + 0.5f;
+				shadowTexCoord.y = -input.ShadowPosition[i].y * 0.5f + 0.5f;
+
+				if (0.01 < shadowTexCoord.x && shadowTexCoord.x < 0.99 && 0.01 < shadowTexCoord.y && shadowTexCoord.y < 0.99)
+				{
+					//for (int j = 0; j < 4; j++)
+					{
+						float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.002;
+						float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
+						if (shadowColorTex + 0.001 * (i + 1) < input.ShadowPosition[i].z)
+							shadow += 1.0 / 1.0;
+					}
+                
+            		//baseColor.rgb *= debugShadowColor[i];
+
+					break;
+				}
+			}
+        
+			light -= light * shadow;
 		}
-
-
-        float3 dirLight;
-        if (Material.NormalWeight > 0.5)
+		
+        
+        
+		
+		
+		float sunSize = 0.0001;
+		float x0 = (1 - rdl) - sunSize;
+		float x1 = (1 - rdl) + sunSize;
+		
+        
+/*    
+		//Base Layer Specular
+		if (Material.NormalWeight < 0.5)
         {
-			dirLight = saturate(dot(LightDirection, normal) * 0.5 + 0.5) * ScatteringLight * 0.0 / PI;
+			float3 fresnel = Fresnel(baseSpecular, ndl, baseRoughness);
+                       			
+			float d0, d1, d;
+			float a = 1.0 / (baseRoughness * baseRoughness * 0.1 + 0.00001);
+			d0 = 1.0 / (1.0 + exp(-x0 * a));
+			d1 = 1.0 / (1.0 + exp(-x1 * a));
+			d = d1 - d0;
+          
+			output.Color.rgb += light * 1000.0 * (1.0 - shadow) * fresnel * d;
+
+			light -= light * fresnel * d;
+
 		}
-        else
+ */     
+        
+        //Base Layer Diffuse
         {
-			dirLight = saturate(dot(LightDirection, normal)) * ScatteringLight * shadow / PI;
+			if (Material.NormalWeight > 0.5)
+			{
+				//output.Color.rgb += light * (dot(normal.xyz, LightDirection.xyz) * 0.5 + 0.5) * (1.0 - baseMetallic) * baseColor.rgb / PI;
+			}
+            else
+			{
+				output.Color.rgb += light * ndl * baseColor.rgb / PI;
+			}
 		}
+       
+	}
+    
+    
+    
+    
 
-
-
-        diffuse = baseColor.rgb * (envLight * ao + dirLight);
-    }
-
-
-
-
-
-
-    float3 specular = 0.0;
+    //Environment Light
     {
-
-
-
-
-        float3 envSpec = 0.0;
-        {
-            envSpec = textureEnv.SampleLevel(sampler0, eyeRefVector, roughness * 10.0).rgb;
-        }
-
-
-
-
-
-
-        float3 dirSpec = 0.0;
-        {
-            float NdotH = saturate(dot(halfVector, normal.xyz));
-            float NdotV = saturate(dot(normal.xyz, -eyeVector));
-            float NdotL = saturate(dot(normal.xyz, LightDirection));
-            float VdotH = saturate(dot(-eyeVector, halfVector));
-
-            float d;
-            {
-                float alpha = roughness * roughness;
-                float alpha2 = alpha * alpha;
-                float t = ((NdotH * NdotH) * (alpha2 - 1.0) + 1.0);
-                d = alpha2 / (PI * t * t);
-            }
-
-            float g;
-            {
-
-                float NH2 = 2.0 * NdotH;
-                float g1 = (NH2 * NdotV) / VdotH;
-                float g2 = (NH2 * NdotL) / VdotH;
-                g = min(1.0, min(g1, g2));
-            }
-
-
-
-			dirSpec = (d * fresnel * g) / (4.0 * NdotV * NdotL + 0.000001);
-
+		float lightRatio = ao;
+        
+/*         
+        //Base Layer Specular
+		if (Material.NormalWeight < 0.5)
+		{
+			float3 fresnel = Fresnel(baseSpecular, ndl, baseRoughness);
             
-			dirSpec *= ScatteringLight * shadow;
+			output.Color.rgb += textureEnv.SampleLevel(sampler1, eyeRefVector, baseRoughness * 10.0 - 0.0).rgb * lightRatio * fresnel;
+            
+			lightRatio -= lightRatio * fresnel;
 		}
-
-
-
-        specular = envSpec + dirSpec;
-
-        specular *= baseColor.rgb;
-    }
-
-
-
-
-
-    {
-        float4 color;
-		color.rgb = diffuse * (1.0 - metallic) * baseColor.a * (1.0 - fresnel)
-            + specular * fresnel * pow(ao, 4.4)
-            + Material.EmissionColor.rgb;
-
-		color.a = baseColor.a * (1.0 - fresnel.r) + 1.0 * fresnel.r;
-        color.a *= baseColorTex.a;
-
-        output.Color = color;
-    }
-
-
-    
-    
-    //fog
-    {
-		float3 envLight;
+ */      
+        
+        //Base Layer Diffuse
         {
 			float2 iblTexCoord;
-			iblTexCoord.x = 0.0;
-			iblTexCoord.y = 0.0;
+			iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
+			iblTexCoord.y = acos(normal.y) / PI;
 
-			envLight = textureIBLStatic.Sample(sampler2, iblTexCoord).rgb / 2.0;
+			output.Color.rgb += textureIBL.Sample(sampler2, iblTexCoord).rgb * lightRatio * baseColor.rgb; //Normalized during IBL texture generation
 		}
-
-
-		float3 dirLight;
-		dirLight = ScatteringLight / (2.0 * PI);
-
-
-		float3 fogColor = float3(0.9, 0.9, 0.9) * 1.0;
-		float fog = (1.0 - exp(-len * Fog)); // * saturate(1.0 - eyeVector.y / (Fog * 100.0));
-
-		output.Color.rgb = output.Color.rgb * (1.0 - fog) + fogColor * (envLight + dirLight) * fog;
+       
 	}
+ 
+  
     
+    //Transmission
+    {   
+		output.Color.a = baseColor.a;
+	}
+	
+	 
     
     
 
@@ -303,10 +221,6 @@ PS_OUTPUT main(PS_INPUT input)
 		output.Velocity.a = 1.0;
 	}
 
-	//output.Color.rg = input.TexCoord;
-	//output.Color.b = 0.0;
-	//output.Color.rgb = input.Normal.rgb;
-	//output.Color.a = 1.0;
     
 	return output;
 }

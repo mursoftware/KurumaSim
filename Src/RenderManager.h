@@ -146,6 +146,7 @@ struct VERTEX_3D
 };
 */
 
+/*
 struct MATERIAL
 {
 	Vector4		BaseColor;
@@ -156,7 +157,25 @@ struct MATERIAL
 	float		Roughness;
 	float		NormalWeight;
 };
+*/
 
+
+struct MATERIAL
+{
+	Vector4		ClearColor = Vector4(0.0f, 0.0f, 0.0f, 0.001f);
+	float		ClearCoat = 0.0f;
+	float		ClearSpecular = 0.05f;
+	float		ClearRoughness = 0.05f;
+	float		Dummy;
+
+	Vector4		BaseColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	float		BaseMetallic = 0.0f;
+	float		BaseSpecular = 0.0f;
+	float		BaseRoughness = 0.0f;
+	float		NormalWeight = 0.0f;
+
+	Vector4		EmissionColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+};
 
 
 
@@ -199,6 +218,7 @@ struct CAMERA_CONSTANT
 
 	int         MotionBlurCount;
 	int         TemporalFrame;
+	int         EnvBufferMipLevel;
 
 };
 
@@ -512,6 +532,7 @@ public:
 	int GetBackBufferWidth() { return m_BackBufferWidth; }
 	int GetBackBufferHeight() { return m_BackBufferHeight; }
 	//float GetSSRatio() { return m_SSRatio; }
+	int GetEnvBufferMipLevel() { return m_EnvBufferMipLevel; }
 
 	std::mutex* GetResourceCommandMutex() { return &m_ResourceCommandMutex; }
 

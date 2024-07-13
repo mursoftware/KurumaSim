@@ -29,6 +29,9 @@ private:
 	std::unique_ptr<TEXTURE>	m_ShadowTexture;
 
 
+	MATERIAL	m_Material{};
+
+
 
 public:
 

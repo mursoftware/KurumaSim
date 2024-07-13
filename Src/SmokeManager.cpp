@@ -235,9 +235,9 @@ void SmokeManager::Draw(Camera* DrawCamera)
 
 	MATERIAL material{};
 	material.EmissionColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-	material.Metallic = 0.0f;
-	material.Specular = 0.5f;
-	material.Roughness = 1.0f;
+	material.BaseMetallic = 0.0f;
+	material.BaseSpecular = 0.0f;
+	material.BaseRoughness = 1.0f;
 	material.NormalWeight = 0.0f;
 
 

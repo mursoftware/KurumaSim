@@ -75,8 +75,8 @@ PS_OUTPUT main(PS_INPUT input)
 	float g = 0.990f;
 	float g2 = g * g;
 	float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 + dle * dle) / pow((1.0 + g2 - 2.0 * g * dle), 0.5); 
-	//miePhase = pow(saturate(dle), 200);
-	miePhase += step(0.99985, dle);
+	//miePhase = pow(saturate(dle), 1000);
+	miePhase += step(0.99998, dle);
     
 	float fog = (1.0 - exp(-1000.0 * Fog));// * saturate(exp(-input.WorldPosition.y * 0.01));
 	output.Color.rgb = output.Color.rgb * (1.0 - fog) + ScatteringLight / (2.0 * PI) * fog;

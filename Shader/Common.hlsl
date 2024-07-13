@@ -43,6 +43,7 @@ cbuffer CameraConstantBuffer : register(b1)
     
 	int         MotionBlurCount;
 	int         TemporalFrame;
+	int         EnvBufferMipLevel;
 };
 
 
@@ -59,6 +60,7 @@ cbuffer ObjectConstantBuffer : register(b2)
 
 cbuffer SubsetConstantBuffer : register(b3)
 {
+ /*   
     struct MATERIAL
     {
         float4 BaseColor;
@@ -68,6 +70,26 @@ cbuffer SubsetConstantBuffer : register(b3)
         float Roughness;
         float NormalWeight;
     } Material;
+*/    
+    
+
+    struct MATERIAL
+    {
+		float4  ClearColor;
+	    float   ClearCoat;
+	    float   ClearSpecular;
+	    float   ClearRoughness;
+	    float   Dummy;
+
+		float4  BaseColor;
+	    float	BaseMetallic;
+	    float	BaseSpecular;
+	    float	BaseRoughness;
+	    float	NormalWeight;
+
+		float4 EmissionColor;
+	} Material;
+
 };
 
 cbuffer BlobShadowBuffer : register(b4)
@@ -257,3 +279,16 @@ float Random(float4 Seed)
 
 
 static float PI = 3.141592653589;
+
+
+
+
+float3 Fresnel(float3 F0, float NdL, float Roughness)
+{
+	float3 fresnel;
+    
+	fresnel = F0 + (1.0 - F0) * pow(1.0 - NdL, 5.0);
+	fresnel *= (1.0 - Roughness);
+    
+	return fresnel;
+}

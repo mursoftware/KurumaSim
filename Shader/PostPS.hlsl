@@ -133,13 +133,13 @@ float4 main(PS_INPUT input) : SV_TARGET0
     {
         float r = LensFlare * 2.0;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 0 + offset).rgb * 1.0;
-        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 1.5 + offset).rgb / 2 * r;
+        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 1.5 + offset).rgb / 8 * r;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 2 + offset).rgb * pow(r, 2);
-        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 3.5 + offset).rgb / 8 * r;
+        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 3.5 + offset).rgb / 128 * r;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 4 + offset).rgb * pow(r, 4);
-        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 5.5 + offset).rgb / 32 * r;
+        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 5.5 + offset).rgb / 512 * r;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 6 + offset).rgb * pow(r, 6);
-        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 7.5 + offset).rgb / 128 * r;
+        color.rgb += textureColor.SampleLevel(sampler1, texcoord, 7.5 + offset).rgb / 1024 * r;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 8 + offset).rgb * pow(r, 8);
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 9.5 + offset).rgb * pow(r, 9);
     }
@@ -167,24 +167,24 @@ float4 main(PS_INPUT input) : SV_TARGET0
     
         
    
- //   //fog
- //   {
- //		float3 eyeVector = worldPosition.xyz - CameraPosition.xyz;
-	//	float len = length(eyeVector);
-	//	eyeVector /= len;
+    //fog
+    {
+		float3 eyeVector = worldPosition.xyz - CameraPosition.xyz;
+		float len = length(eyeVector);
+		eyeVector /= len;
         
-	//	//if (len > 400.0)
-	//	//	len = 1000.0;
+		//if (len > 400.0)
+		//	len = 1000.0;
         
-	//		float3 dirLight;
-	//	dirLight = ScatteringLight / PI;
+		float3 dirLight;
+		dirLight = ScatteringLight / PI;
 
 
-	//	float3 fogColor = float3(0.9, 0.9, 0.9) * 0.15;
-	//	float fog = (1.0 - exp(-len * Fog)) * saturate(1.0 - eyeVector.y / (Fog * 100.0));
+		float3 fogColor = float3(0.9, 0.9, 0.9);
+		float fog = (1.0 - exp(-len * Fog)) * saturate(1.0 - eyeVector.y / (Fog * 1000.0));
 
-	//	color.rgb = color.rgb * (1.0 - fog) + fogColor * dirLight * fog;
-	//}
+		color.rgb = color.rgb * (1.0 - fog) + fogColor * dirLight * fog;
+	}
     
     
 
@@ -229,10 +229,15 @@ float4 main(PS_INPUT input) : SV_TARGET0
     //tone mapping
     {
         //if (ACESFilmEnable)
-			color.rgb = ACESFilm(color.rgb);
+		//	color.rgb = ACESFilm(color.rgb);
         //else
          //   color = saturate(color);
-    }
+        
+		//color.rgb = color.rgb / (1.0 + color.rgb);
+        
+		color.rgb = 1.0 - exp(-color.rgb);
+
+	}
     
 
 

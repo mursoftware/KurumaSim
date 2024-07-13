@@ -1015,7 +1015,7 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 			(void)fscanf( file, "%f", &specular );
 			(void)fscanf( file, "%f", &specular );
 
-			materialArray[mc].Material.Specular = specular;
+			materialArray[mc].Material.BaseSpecular = specular;
 		}
 		else if( strcmp( str, "Ns" ) == 0 )
 		{
@@ -1028,11 +1028,15 @@ void Model::LoadMaterial( const char *FileName, MODEL_SUBSET_MATERIAL **Material
 		}
 		else if (strcmp(str, "Metallic") == 0)
 		{
-			(void)fscanf(file, "%f", &materialArray[mc].Material.Metallic);
+			(void)fscanf(file, "%f", &materialArray[mc].Material.BaseMetallic);
 		}
 		else if (strcmp(str, "Roughness") == 0)
 		{
-			(void)fscanf(file, "%f", &materialArray[mc].Material.Roughness);
+			(void)fscanf(file, "%f", &materialArray[mc].Material.BaseRoughness);
+		}
+		else if (strcmp(str, "Clearcoat") == 0)
+		{
+			(void)fscanf(file, "%f", &materialArray[mc].Material.ClearCoat);
 		}
 		else if( strcmp( str, "map_Kd" ) == 0 )
 		{
