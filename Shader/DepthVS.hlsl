@@ -12,7 +12,7 @@ PS_INPUT main(VS_INPUT input)
     output.Position = mul(position, WVP);
     
     //output.TexCoord = input.TexCoord;
-	output.TexCoord = DecodeTexCoord(input.TexCoord);
+	output.TexCoord.xy = DecodeTexCoord(input.TexCoord);
 
     return output;
 }

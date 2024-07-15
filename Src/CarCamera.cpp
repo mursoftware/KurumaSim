@@ -27,7 +27,8 @@ CarCamera::CarCamera()
 
 	m_AutoExposure = false;
 	m_Exposure = 13.0f;
-	m_Gamma = 2.2f;
+	//m_Gamma = 2.2f;
+	m_Gamma = 1.5f;
 	m_Vignette = 0.4f;
 	m_LensFlare = 0.2f;
 	m_TemporalRatio = 0.8f;

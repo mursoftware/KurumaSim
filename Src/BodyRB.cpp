@@ -227,6 +227,7 @@ void BodyRB::DrawDebug()
 		ImGui::ColorPicker3("BaseColor", &m_Material.BaseColor.X);
 		ImGui::SliderFloat("BaseRoughness", &m_Material.BaseRoughness, 0.0f, 1.0f, "%.3f");
 		ImGui::SliderFloat("BaseSpecular", &m_Material.BaseSpecular, 0.0f, 1.0f, "%.3f");
+		ImGui::SliderFloat("BaseAnisotropic", &m_Material.Anisotropic, 0.0f, 1.0f, "%.3f");
 	}
 
 	if (ImGui::CollapsingHeader("Body"))

@@ -17,7 +17,7 @@ PS_INPUT main(VS_INPUT input)
     output.Normal = mul(normal, World);
     
     //output.TexCoord = input.TexCoord * Param.zw + Param.xy;
-	output.TexCoord = DecodeTexCoord(input.TexCoord) * Param.zw + Param.xy;
+	output.TexCoord.xy = DecodeTexCoord(input.TexCoord) * Param.zw + Param.xy;
     
     //output.Color = input.Color;
     //output.Occlusion = input.Occlusion;

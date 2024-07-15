@@ -79,7 +79,7 @@ cbuffer SubsetConstantBuffer : register(b3)
 	    float   ClearCoat;
 	    float   ClearSpecular;
 	    float   ClearRoughness;
-	    float   Dummy;
+		float   Anisotropic;
 
 		float4  BaseColor;
 	    float	BaseMetallic;
@@ -181,7 +181,7 @@ struct PS_INPUT
 {
     float4 Position : SV_POSITION;
     float4 Normal : NORMAL;
-    float2 TexCoord : TEXCOORD;
+    float4 TexCoord : TEXCOORD;
     float4 Color : COLOR;
     float4 WorldPosition : POSITION;
     float4 OldPosition : OLD_POSITION;

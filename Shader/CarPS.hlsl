@@ -35,7 +35,7 @@ PS_OUTPUT main(PS_INPUT input)
 	float clearSpecular = Material.ClearSpecular;
 	float clearRoughness = Material.ClearRoughness;
 
-   	float4 baseColor = textureDif.Sample(sampler1, input.TexCoord) * Material.BaseColor;
+   	float4 baseColor = Material.BaseColor;
 	float baseMetallic = Material.BaseMetallic;
 	float baseSpecular = Material.BaseSpecular;
 	float baseRoughness = Material.BaseRoughness;
@@ -44,15 +44,34 @@ PS_OUTPUT main(PS_INPUT input)
   
 
 	float3 eyeVector = normalize(CameraPosition.xyz - position.xyz);
-	float3 eyeRefVector = reflect(-eyeVector, normal.xyz);
+	float3 eyeRefVector = -reflect(eyeVector, normal.xyz);
 	float nde = saturate(dot(normal.xyz, eyeRefVector));
 	float ndl = saturate(dot(normal.xyz, LightDirection.xyz));
 	float rdl = saturate(dot(eyeRefVector.xyz, LightDirection.xyz));
 	float3 halfVector = normalize(eyeVector + LightDirection.xyz);
 	float ndh = saturate(dot(normal.xyz, halfVector));
+	float edh = saturate(dot(eyeVector, halfVector));
 
 
  
+	float3 binormal, tangent;
+	float binormalLen;
+	
+	binormal = cross(normal, float3(0.0, 0.0, 1.0));
+	binormalLen = length(binormal);
+	if (binormalLen > 0.001)
+		binormal /= binormalLen;
+	else
+	{
+		binormal = -cross(normal, float3(1.0, 0.0, 0.0));
+		binormal = normalize(binormal);
+	}
+	tangent = cross(normal, binormal);
+
+	
+	float aniso = fmod(floor((input.TexCoord.z + 10.0) * 100.0/* + (input.TexCoord.y + 10.0) * 100.0*/ + floor((input.TexCoord.x + 10.0) * 600.0) * 0.5), 2);
+	float3 anisoVector = lerp(binormal, tangent, aniso);
+
 
    
 	output.Color.rgb = 0.0;
@@ -85,15 +104,16 @@ PS_OUTPUT main(PS_INPUT input)
 		
 		
 		
-		float sunSize = 0.0001;
-		float x0 = (1 - rdl) - sunSize;
-		float x1 = (1 - rdl) + sunSize;
 		
-    
+		float sunSize = 0.0001;
+
         
         //Clear Layer Specular
         {
-			float3 fresnel = Fresnel(clearSpecular, ndl, clearRoughness);
+			float x0 = (1 - rdl) - sunSize;
+			float x1 = (1 - rdl) + sunSize;
+			
+			float3 fresnel = Fresnel(clearSpecular, edh, clearRoughness);
 			
 			float d0, d1, d;
 			float a = 1.0 / (clearRoughness * clearRoughness * 0.1 + 0.00001);
@@ -109,16 +129,28 @@ PS_OUTPUT main(PS_INPUT input)
        
 		//Base Layer Specular
         {
+			float anisoRef = length(cross(anisoVector, halfVector));
+			float ref = lerp(rdl, anisoRef, Material.Anisotropic);
+			
+			float anisoFres = length(cross(anisoVector, eyeVector));
+			float fres = lerp(edh, anisoFres, Material.Anisotropic);
+		
+			
+			float x0 = (1 - ref) - sunSize;
+			float x1 = (1 - ref) + sunSize;
+
+			
 			float3 f0 = lerp(baseSpecular, baseColor.rgb, baseMetallic);
 			float roughness = lerp(baseRoughness, 0.0, baseMetallic);
-			float3 fresnel = Fresnel(f0, ndl, roughness);
+			float3 fresnel = Fresnel(f0, fres, roughness);
+			
                        			
 			float d0, d1, d;
 			float a = 1.0 / (baseRoughness * baseRoughness * 0.1 + 0.00001);
 			d0 = 1.0 / (1.0 + exp(-x0 * a));
 			d1 = 1.0 / (1.0 + exp(-x1 * a));
 			d = d1 - d0;
-          
+			
 			output.Color.rgb += light * 1000.0 * (1.0 - shadow) * fresnel * d;
 
 			light -= light * fresnel * d;
@@ -154,11 +186,14 @@ PS_OUTPUT main(PS_INPUT input)
         
         //Base Layer Specular
         {
+			float anisoFres = length(cross(anisoVector, eyeVector));
+			float fres = lerp(edh, anisoFres, Material.Anisotropic);
+
 			float3 f0 = lerp(baseSpecular, baseColor.rgb, baseMetallic);
 			float roughness = lerp(baseRoughness, 0.0, baseMetallic);
-			float3 fresnel = Fresnel(f0, nde, roughness);
+			float3 fresnel = Fresnel(f0, fres, roughness);
             
-			output.Color.rgb += textureEnv.SampleLevel(sampler1, eyeRefVector, baseRoughness * 10.0 - 0.0).rgb * lightRatio * fresnel;
+			output.Color.rgb += textureEnv.SampleLevel(sampler1, eyeRefVector, baseRoughness * 10.0 - 0.0).rgb * lightRatio * fresnel;// * length(cross(anisoVector, eyeRefVector));
             
 			lightRatio -= lightRatio * fresnel;
 		}
@@ -189,10 +224,13 @@ PS_OUTPUT main(PS_INPUT input)
     //Transmission
     {   
 		float fresnel = Fresnel(baseSpecular, nde, baseRoughness);
-		output.Color.a = baseColor.a + fresnel;
+		output.Color.a = 1.0 - (1.0 - baseColor.a) * (1 - fresnel);
 		output.Color.a = saturate(output.Color.a * 2.0);//glass*2
 
 	}
+	
+	
+	//output.Color.rgb = anisoVector;
 	
 	
     
@@ -211,7 +249,6 @@ PS_OUTPUT main(PS_INPUT input)
 		output.Velocity.xy = velocity * Param.w;
 		output.Velocity.a = 1.0;
 	}
-
 
 
 	return output;

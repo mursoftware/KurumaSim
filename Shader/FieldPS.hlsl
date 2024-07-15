@@ -27,7 +27,7 @@ PS_OUTPUT main(PS_INPUT input)
 
        
 	float4 baseColor = textureDif.Sample(sampler0, input.TexCoord);
-	float threshold = Random(float4(input.TexCoord, 0.0, TemporalFrame)) * 0.5 + 0.5;
+	float threshold = Random(float4(input.TexCoord.xy, 0.0, TemporalFrame)) * 0.5 + 0.5;
 	clip(baseColor.a - threshold);
     
 	float4 subColorTex = textureSub.Sample(sampler0, input.TexCoord);
@@ -201,7 +201,7 @@ PS_OUTPUT main(PS_INPUT input)
     
     
 
-    //velocity
+    //velocity vector
     {
 		float2 oldPosition = input.OldPosition.xy;
 		oldPosition /= input.OldPosition.w;
@@ -213,11 +213,7 @@ PS_OUTPUT main(PS_INPUT input)
 		newPosition.y /= SSBufferSize.y;
 
 		float2 velocity = (newPosition - oldPosition);
-		output.Velocity.xy = velocity;
-
-
-        //output.Velocity.z = 1.0;
-	    //output.Velocity.z = 1.0 - input.Position.z / input.Position.w;
+		output.Velocity.xy = velocity * Param.w;
 		output.Velocity.a = 1.0;
 	}
 

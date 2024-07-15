@@ -166,7 +166,7 @@ struct MATERIAL
 	float		ClearCoat = 0.0f;
 	float		ClearSpecular = 0.05f;
 	float		ClearRoughness = 0.05f;
-	float		Dummy;
+	float		Anisotropic = 0.0f;
 
 	Vector4		BaseColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	float		BaseMetallic = 0.0f;
