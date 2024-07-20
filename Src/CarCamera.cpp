@@ -11,12 +11,20 @@
 
 
 
+#include <iostream>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+#pragma comment(lib, "ws2_32.lib")
+
+
+
 
 CarCamera::CarCamera()
 {
 	m_Position = Vector3{ 10.0f, 0.0f, 0.0f };
 	m_Target = Vector3{ 0.0f, 0.5f, 0.0f };
-	m_Rotation = Vector3{ 0.0f, 1.0f, 0.0f };
+	m_Rotation = Vector3{ 0.0f, 0.0f, 0.0f };
 	m_TargetRotation = m_Rotation;
 	m_Distance = 5.0f;
 	m_TargetDistance = m_Distance;
@@ -31,9 +39,9 @@ CarCamera::CarCamera()
 	m_Gamma = 1.5f;
 	m_Vignette = 0.4f;
 	m_LensFlare = 0.2f;
-	m_TemporalRatio = 0.8f;
-	m_MotionBlurCount = 4;
-	m_MotionBlur = 0.5f;
+	m_TemporalRatio = 0.9f;
+	m_MotionBlurCount = 10;
+	m_MotionBlur = 1.5f;
 
 
 
@@ -44,14 +52,22 @@ CarCamera::CarCamera()
 		m_AntiAliasng = GetPrivateProfileInt("RENDER", "ANTI_ALIASING", 0, path.c_str());
 	}
 
+
+	m_VirtualCameraReceiveUDPThread = std::thread(&CarCamera::VirtualCameraReceiveUDP, this);
+
 }
 
 
 
+CarCamera::~CarCamera()
+{
+	m_VirtualCameraReceiveUDPThreadStop = true;
+	m_VirtualCameraReceiveUDPThread.join();
+}
 
 
 
-void CarCamera::Update()
+void CarCamera::Update(float dt)
 {
 	GameManager* gameManager = GameManager::GetInstance();
 	InputManager* inputManager = InputManager::GetInstance();
@@ -62,7 +78,7 @@ void CarCamera::Update()
 	if (inputManager->GetButtonTrigger(8) || inputManager->GetKeyTrigger('W'))
 	{
 		m_ViewMode++;
-		if (m_ViewMode > 5)
+		if (m_ViewMode > 6)
 			m_ViewMode = 0;
 
 		changeViewMode = true;
@@ -71,7 +87,7 @@ void CarCamera::Update()
 	{
 		m_ViewMode--;
 		if (m_ViewMode < 0)
-			m_ViewMode = 5;
+			m_ViewMode = 6;
 
 		changeViewMode = true;
 	}
@@ -88,16 +104,14 @@ void CarCamera::Update()
 		}
 		else
 		{
-			m_FocalBlur = 50.0f;
+			m_FocalBlur = 150.0f;
 			m_FocalLength = 35.0f;
 			//m_Exposure = -0.5f;
 		}
 
+
+
 	}
-
-	if (m_ViewMode == 4)
-		m_FocalBlur = 300.0f;
-
 
 
 	GameScene* scene = (GameScene*)gameManager->GetScene();
@@ -283,7 +297,49 @@ void CarCamera::Update()
 					-sinf(m_Rotation.Y) * cosf(m_Rotation.X));
 
 	}
+	else if (m_ViewMode == 6)
+	{
+		//VirtualCamera
 
+
+		m_DroneRotationSpeed.Y += inputManager->GetAxisRight().X * 0.00002f;
+		m_DroneRotationSpeed.X += inputManager->GetAxisRight().Y * 0.00002f;
+		m_DroneRotationSpeed *= 0.99f;
+		m_Rotation += m_DroneRotationSpeed;
+
+
+		Quaternion quate = Quaternion::RotationAxis(Vector3(0.0f, m_Rotation.Y, 0.0f)) * m_VirtualCameraQuaternion * Quaternion::RotationAxis(Vector3(PI*0.5f, 0.0f, 0.0f));
+		m_Quaternion = Quaternion::Slerp(m_Quaternion, quate, 0.01f);
+
+
+
+		m_DronePosition.Y -= inputManager->GetTriggerLeft() * 0.002f;
+		m_DronePosition.Y += inputManager->GetTriggerRight() * 0.002f;
+
+
+
+		Matrix44 matrix = Matrix44::RotationQuaternion(m_Quaternion);
+
+		Vector3 right = matrix.Right();
+		right.Y = 0.0f;
+		right.Normalize();
+
+		Vector3 front = matrix.Front();
+		front.Y = 0.0f;
+		front.Normalize();
+
+		m_DronePosition += right * inputManager->GetAxisLeft().X * 0.002f;
+		m_DronePosition += front * inputManager->GetAxisLeft().Y * 0.002f;
+
+		m_Position += ((playerPosition + m_DronePosition) - m_Position) * 0.005f;
+
+
+
+		//m_VirtualCameraVelocity -= m_VirtualCameraAcceleration * dt * 10.0f;
+		//m_Position += m_VirtualCameraVelocity * dt;
+
+		m_Position -= m_VirtualCameraAcceleration * dt;
+	}
 
 /*
 	if (changeViewMode)
@@ -339,7 +395,19 @@ void CarCamera::PreDraw()
 
 
 	m_OldViewMatrix = m_ViewMatrix;
-	m_ViewMatrix = Matrix44::LookAt(m_Position, m_Target, m_Up);
+
+	if (m_ViewMode == 6)
+	{
+		//Matrix44 rot = Matrix44::RotationXYZ(m_Rotation.X, m_Rotation.Y, m_Rotation.Z);
+		Matrix44 rot = Matrix44::RotationQuaternion(m_Quaternion);
+		Matrix44 trans = Matrix44::TranslateXYZ(m_Position.X, m_Position.Y, m_Position.Z);
+		Matrix44 world = rot * trans;
+		m_ViewMatrix = Matrix44::Inverse(world);
+	}
+	else
+	{
+		m_ViewMatrix = Matrix44::LookAt(m_Position, m_Target, m_Up);
+	}
 
 
 
@@ -446,7 +514,7 @@ void CarCamera::Draw()
 	constant.Vignette = m_Vignette;
 
 	constant.FocalLength = m_FocalLength / 1000.0f;
-	constant.FocalDistance = (playerPosition - m_Position).Length();
+	constant.FocalDistance = (playerPosition - m_Position).Length() - 1.0f;
 	constant.FocalBlur = m_FocalBlur;
 
 	constant.MotionBlur = m_MotionBlur;
@@ -478,6 +546,8 @@ void CarCamera::Draw()
 void CarCamera::DrawDebug()
 {
 	ImGui::Begin("Camera");
+
+	ImGui::LabelText("VirtualCameraIP", m_IpAdress.c_str());
 
 	//ImGui::DragFloat3("Rotation", (float*)&m_Rotation, 0.01f);
 	//ImGui::SliderFloat("Distance", &m_Distance, 1.0f, 10.0f, "%.1f m");
@@ -518,6 +588,133 @@ void CarCamera::SetLoacation(Field* CameraField)
 	{
 		m_Location.push_back(cameraPosition);
 	}
+
+}
+
+
+
+
+void CarCamera::VirtualCameraReceiveUDP()
+{
+	WSADATA wsaData;
+	SOCKET sock;
+	sockaddr_in serverAddr, clientAddr;
+	int clientAddrSize = sizeof(clientAddr);
+
+
+	// WinSockの初期化
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		assert(0);
+		return;
+	}
+
+	// ソケットの作成
+	sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (sock == INVALID_SOCKET) {
+		assert(0);
+		WSACleanup();
+		return;
+	}
+
+	// サーバーアドレスの設定
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(8888); // ポート番号
+	serverAddr.sin_addr.s_addr = INADDR_ANY;
+
+	// バインド
+	if (bind(sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+		assert(0);
+		closesocket(sock);
+		WSACleanup();
+		return;
+	}
+
+
+
+	// IPアドレスの取得
+	char hostname[256];
+	if (gethostname(hostname, sizeof(hostname)) == SOCKET_ERROR) {
+		assert(0);
+		return;
+	}
+
+	struct addrinfo hints, * res, * p;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+
+	if (getaddrinfo(hostname, NULL, &hints, &res) != 0) {
+		assert(0);
+		return;
+	}
+
+	std::vector<std::string> ipAddresses;
+	for (p = res; p != NULL; p = p->ai_next) {
+		struct sockaddr_in* addr = (struct sockaddr_in*)p->ai_addr;
+		char ip[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, &addr->sin_addr, ip, sizeof(ip));
+		ipAddresses.push_back(ip);
+	}
+
+	freeaddrinfo(res);
+
+	m_IpAdress = ipAddresses[0];
+
+
+
+
+	// タイムアウトの設定
+	int timeout = 1000;
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+
+	//// ソケットをノンブロッキングモードに設定
+	//u_long mode = 1;
+	//ioctlsocket(sock, FIONBIO, &mode);
+
+
+	// データの受信ループ
+	while (!m_VirtualCameraReceiveUDPThreadStop)
+	{
+		float buffer[7];
+
+		if (recvfrom(sock, (char*)buffer, sizeof(buffer), 0, (sockaddr*)&clientAddr, &clientAddrSize) == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() == WSAETIMEDOUT)
+			{
+				continue; // タイムアウト時はループを継続
+			}
+			//if (WSAGetLastError() == WSAEWOULDBLOCK)
+			//{
+			//	// データがない場合は少し待機して再試行
+			//	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			//	continue;
+			//}
+			else
+			{
+				assert(0);
+				closesocket(sock);
+				WSACleanup();
+				return;
+			}
+		}
+
+
+		m_VirtualCameraAcceleration.X = buffer[0];
+		m_VirtualCameraAcceleration.Y = buffer[1];
+		m_VirtualCameraAcceleration.Z = buffer[2];
+
+		m_VirtualCameraQuaternion.X = -buffer[3];
+		m_VirtualCameraQuaternion.Y = -buffer[5];
+		m_VirtualCameraQuaternion.Z = -buffer[4];
+		m_VirtualCameraQuaternion.W = buffer[6];
+	}
+
+
+
+	// ソケットのクローズ
+	closesocket(sock);
+	WSACleanup();
 
 }
 

@@ -24,7 +24,7 @@ EnvCamera::EnvCamera()
 
 
 
-void EnvCamera::Update()
+void EnvCamera::Update(float dt)
 {
 
 

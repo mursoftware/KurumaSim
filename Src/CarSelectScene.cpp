@@ -105,7 +105,7 @@ void CarSelectScene::Update()
 
 	float dt = 1.0f / 60.0f / 10.0f;
 
-	m_Car->Update(true, true, dt);
+	m_Car->Update(true, false, dt);
 
 
 
@@ -120,10 +120,10 @@ void CarSelectScene::Update()
 	m_ShadowCamera[2]->SetLightDirection(lightDirection);
 
 
-	m_CarCamera->Update();
-	m_ShadowCamera[0]->Update();
-	m_ShadowCamera[1]->Update();
-	m_ShadowCamera[2]->Update();
+	m_CarCamera->Update(dt);
+	m_ShadowCamera[0]->Update(dt);
+	m_ShadowCamera[1]->Update(dt);
+	m_ShadowCamera[2]->Update(dt);
 
 
 

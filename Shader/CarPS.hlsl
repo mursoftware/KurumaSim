@@ -120,6 +120,12 @@ PS_OUTPUT main(PS_INPUT input)
 			d0 = 1.0 / (1.0 + exp(-x0 * a));
 			d1 = 1.0 / (1.0 + exp(-x1 * a));
 			d = d1 - d0;
+			
+			
+			//Weaken specularity on surfaces with high curvature
+			float r = (length(ddx(normal) + ddy(normal))) * 300.0 + 1.0;
+			d /= r;
+
           
 			output.Color.rgb += light * 1000.0 * (1.0 - shadow) * fresnel * d * clearCoat;
 
@@ -150,6 +156,11 @@ PS_OUTPUT main(PS_INPUT input)
 			d0 = 1.0 / (1.0 + exp(-x0 * a));
 			d1 = 1.0 / (1.0 + exp(-x1 * a));
 			d = d1 - d0;
+			
+			//Weaken specularity on surfaces with high curvature
+			float r = (length(ddx(normal) + ddy(normal))) * 10.0 + 1.0;
+			d /= r;
+
 			
 			output.Color.rgb += light * 1000.0 * (1.0 - shadow) * fresnel * d;
 

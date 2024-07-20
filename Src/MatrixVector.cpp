@@ -850,6 +850,38 @@ Quaternion& Quaternion::operator/=(float f)
 	return *this;
 }
 
+
+
+Quaternion Quaternion::operator*(const Quaternion& q) const
+{
+	Quaternion oq;
+
+	oq.X = W * q.X + X * q.W + Y * q.Z - Z * q.Y;
+	oq.Y = W * q.Y + Y * q.W + Z * q.X - X * q.Z;
+	oq.Z = W * q.Z + Z * q.W + X * q.Y - Y * q.X;
+	oq.W = W * q.W - X * q.X - Y * q.Y - Z * q.Z;
+
+	return oq;
+}
+
+
+
+Quaternion& Quaternion::operator*=(const Quaternion& q)
+{
+	Quaternion oq;
+
+	oq.X = W * q.X + X * q.W + Y * q.Z - Z * q.Y;
+	oq.Y = W * q.Y + Y * q.W + Z * q.X - X * q.Z;
+	oq.Z = W * q.Z + Z * q.W + X * q.Y - Y * q.X;
+	oq.W = W * q.W - X * q.X - Y * q.Y - Z * q.Z;
+
+	*this = oq;
+
+	return *this;
+}
+
+
+
 float Quaternion::Length()
 {
 	return sqrtf(X * X + Y * Y + Z * Z + W * W);
@@ -924,7 +956,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
 {
 	float dot = Dot(q1, q2);
 
-	if (dot > 0.99f)
+	if (dot > 0.9999999f)
 	{
 		return q1;
 	}

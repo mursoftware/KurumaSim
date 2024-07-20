@@ -185,7 +185,13 @@ struct Quaternion
 	float Z{};
 	float W{};
 
-	Quaternion() {}
+	Quaternion()
+	{
+		this->X = 0.0f;
+		this->Y = 0.0f;
+		this->Z = 0.0f;
+		this->W = 1.0f;
+	}
 
 	Quaternion(float X, float Y, float Z, float W)
 	{
@@ -210,6 +216,10 @@ struct Quaternion
 
 	Quaternion operator/(float f) const;
 	Quaternion &operator/=(float f);
+
+	Quaternion operator*(const Quaternion& q) const;
+	Quaternion &operator*=(const Quaternion& q);
+
 
 	float Length();
 	void Normalize();

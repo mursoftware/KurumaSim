@@ -209,6 +209,7 @@ void Car::Update( bool Control, bool Input, float dt )
 	SoundManager* soundManager = SoundManager::GetInstance();
 	GameManager* gameManager = GameManager::GetInstance();
 	GameScene* scene = (GameScene*)gameManager->GetScene();
+	Camera* camera = scene->GetCurrentCamera();
 
 
 
@@ -300,6 +301,13 @@ void Car::Update( bool Control, bool Input, float dt )
 	}
 
 
+
+	if (camera->GetViewMode() == 6 || camera->GetViewMode() == 5)
+	{
+		Input = false;
+		m_Brake = 1.0f;
+		m_BodyRB.SetBrakeLamp(true);
+	}
 
 
 	if( Input )
@@ -610,7 +618,6 @@ void Car::Update( bool Control, bool Input, float dt )
 
 	if (m_SoundEnable)
 	{
-		Camera* camera = scene->GetCurrentCamera();
 		Vector3 cameraDirection = camera->GetPosition() - m_BodyRB.GetPosition();
 		float distance = cameraDirection.Length();
 		cameraDirection.Normalize();

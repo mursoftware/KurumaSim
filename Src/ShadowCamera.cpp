@@ -25,7 +25,7 @@ ShadowCamera::ShadowCamera()
 
 
 
-void ShadowCamera::Update()
+void ShadowCamera::Update(float dt)
 {
 
 	GameManager* gameManager = GameManager::GetInstance();

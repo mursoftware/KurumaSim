@@ -14,7 +14,7 @@ public:
 
 	EnvCamera();
 
-	void Update();
+	void Update(float dt);
 	void PreDraw();
 	void Draw();
 	void DrawDebug();

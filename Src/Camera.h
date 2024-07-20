@@ -54,7 +54,7 @@ public:
 	Camera() {}
 	virtual ~Camera() {}
 
-	virtual void Update() {}
+	virtual void Update(float dt) {}
 	virtual void PreDraw() {}
 	virtual void Draw() {}
 	virtual void DrawDebug() {}

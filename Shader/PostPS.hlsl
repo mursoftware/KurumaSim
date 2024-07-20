@@ -91,7 +91,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
     float blur = FocalLength * abs(z - FocalDistance) / (z * (FocalDistance - FocalLength)) * FocalBlur;
 
 
-	float offset = blur;//+log2(SSRatio) - 0.5;
+	float offset = log2(blur); //+log2(SSRatio) - 0.5;
 	//offset = 0.0;
 
 
@@ -109,16 +109,16 @@ float4 main(PS_INPUT input) : SV_TARGET0
 		for (int i = 0; i < MotionBlurCount-1; i++)
 		{
 			float a = saturate(1.0 - length(ov - velocity) * 100.0);
-			color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+			color.rgb += textureColor.SampleLevel(sampler1, blurPos, offset).rgb * a;
 			count += a;
             
 			blurPos += -velocity * MotionBlur / MotionBlurCount;
-			velocity = textureVelocity.SampleLevel(sampler3, blurPos, 0);
+			velocity = textureVelocity.SampleLevel(sampler1, blurPos, 0);
             
 		}
         
 		float a = saturate(1.0 - length(ov - velocity) * 100.0);
-		color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+		color.rgb += textureColor.SampleLevel(sampler1, blurPos, offset).rgb * a;
 		count += a;
         
   
@@ -212,7 +212,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
     //Exposure 
 	if (AutoExposure)
 	{
-		float3 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.5), 0);
+		float3 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.75), 0);
 		float lumi = exposure.r * 0.3 + exposure.g * 0.6 + exposure.g * 0.1;
 		lumi *= 10000.0; //Luminance unit in shader is 1/10000 nit
         
