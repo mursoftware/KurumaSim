@@ -210,7 +210,7 @@ void RenderManager::Initialize()
 	}
 
 
-	m_Device->SetStablePowerState(true);
+	//m_Device->SetStablePowerState(true);
 
 
 
@@ -2023,7 +2023,6 @@ void RenderManager::DrawUI(bool Debug)
 
 
 
-
 	m_ResourceCommandMutex.lock();
 
 	{
@@ -2031,7 +2030,7 @@ void RenderManager::DrawUI(bool Debug)
 		assert(SUCCEEDED(hr));
 
 
-		m_GraphicsCommandList->ResolveQueryData(m_QueryHeap.Get(), D3D12_QUERY_TYPE_TIMESTAMP, 0, m_QueryMax * 2, m_QueryBuffer.Get(), 0);
+		m_GraphicsCommandList->ResolveQueryData(m_QueryHeap.Get(), D3D12_QUERY_TYPE_TIMESTAMP, 0, (int)m_CommandTime.size() * 2, m_QueryBuffer.Get(), 0);
 
 		hr = m_GraphicsCommandList->Close();
 		assert(SUCCEEDED(hr));

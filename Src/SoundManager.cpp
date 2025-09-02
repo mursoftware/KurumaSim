@@ -38,7 +38,7 @@ SoundManager::SoundManager()
 	//m_MasteringVoice->SetVolume( 0.0f );
 
 
-
+/*
 	//CreateFX(__uuidof(::FXReverb), &m_Reverb);
 	XAudio2CreateReverb(&m_Reverb);
 	assert(m_Reverb);
@@ -81,7 +81,7 @@ SoundManager::SoundManager()
 	reverbParameters.WetDryMix = 30.0f;
 
 	m_MasteringVoice->SetEffectParameters(0, &reverbParameters, sizeof(XAUDIO2FX_REVERB_PARAMETERS));
-
+*/
 
 }
 
