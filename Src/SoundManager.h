@@ -45,6 +45,8 @@ class SoundManager
 		SoundManager();
 		~SoundManager();
 
+		IXAudio2* GetXAudio() { return m_Xaudio; }
+
 		void StopAll(){}
 		void SetMasterVolume( float volume ){}
 

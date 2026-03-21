@@ -131,23 +131,12 @@ Car::Car()
 	{			
 		SoundManager* soundManager = SoundManager::GetInstance();
 
-		//m_SoundIndexEngine2000 = soundManager->Play("sound\\2000.wav", true, 0.0f );
-		//m_SoundIndexEngine2000Ex = soundManager->Play("sound\\2000ex.wav", true, 0.0f);
-		//m_SoundIndexEngine4000 = soundManager->Play("sound\\4000.wav", true, 0.0f);
-		m_SoundIndexEngine4000Ex = soundManager->Play("sound\\4000ex.wav", true, 0.0f);
-		//m_SoundIndexEngine6000 = soundManager->Play("sound\\6000.wav", true, 0.0f);
-		//m_SoundIndexEngine6000Ex = soundManager->Play("sound\\6000ex.wav", true, 0.0f);
-
 		m_SoundIndexEngineNoise = soundManager->Play("sound\\noise.wav", true, 0.0f);
-
 		m_SoundIndexEngineRedNoise = soundManager->Play("sound\\rednoise.wav", true, 0.0f);
-
-
 		m_SoundIndexGear = soundManager->Play("sound\\gear.wav", true, 0.0f);
-
-
 		m_SoundIndexBrake = soundManager->Play( "sound\\brake.wav", true, 0.0f );
 
+		m_EngineSound.Initialize(soundManager->GetXAudio());
 	}
 
 }
@@ -160,21 +149,12 @@ Car::~Car()
 	{
 		SoundManager* soundManager = SoundManager::GetInstance();
 
-		//soundManager->Stop("sound\\2000.wav", m_SoundIndexEngine2000);
-		//soundManager->Stop("sound\\2000ex.wav", m_SoundIndexEngine2000Ex);
-		//soundManager->Stop("sound\\4000.wav", m_SoundIndexEngine4000);
-		soundManager->Stop("sound\\4000ex.wav", m_SoundIndexEngine4000Ex);
-		//soundManager->Stop("sound\\6000.wav", m_SoundIndexEngine6000);
-		//soundManager->Stop("sound\\6000ex.wav", m_SoundIndexEngine6000Ex);
-
-
 		soundManager->Stop("sound\\noise.wav", m_SoundIndexEngineNoise);
 		soundManager->Stop("sound\\rednoise.wav", m_SoundIndexEngineRedNoise);
-
 		soundManager->Stop("sound\\gear.wav", m_SoundIndexGear);
-
-
 		soundManager->Stop( "sound\\brake.wav", m_SoundIndexBrake);
+
+		m_EngineSound.Uninitialize();
 	}
 
 }
@@ -630,66 +610,29 @@ void Car::Update( bool Control, bool Input, float dt )
 
 		float rpm = m_Engine.GetOutputAngularSpeed1() * 60.0f / 2.0f / PI;
 
-		//if (rpm < 3000.0f)
-		//{
-		//	soundManager->SetPitch("sound\\2000.wav", m_SoundIndexEngine2000, rpm / 2000.0f * pitch);
-		//	soundManager->SetVolume("sound\\2000.wav", m_SoundIndexEngine2000, (m_Engine.GetOutputAngularSpeed1() * 0.0005f) * m_Throttle * 0.2f * volume);
+		
 
-		//	soundManager->SetPitch("sound\\2000ex.wav", m_SoundIndexEngine2000Ex, rpm / 2000.0f * pitch);
-		//	soundManager->SetVolume("sound\\2000ex.wav", m_SoundIndexEngine2000Ex, (m_Engine.GetOutputAngularSpeed1() * 0.0005f + 0.5f) * 0.1f * volume);
 
-		//	soundManager->SetVolume("sound\\4000.wav", m_SoundIndexEngine4000, 0.0f);
-		//	soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, 0.0f);
+		m_EngineSound.SetState(rpm, m_Throttle);
+		m_EngineSound.SetPitch(pitch);
+		m_EngineSound.SetVolume(volume*0.5f);
 
-		//	soundManager->SetVolume("sound\\6000.wav", m_SoundIndexEngine6000, 0.0f);
-		//	soundManager->SetVolume("sound\\6000ex.wav", m_SoundIndexEngine6000Ex, 0.0f);
-		//}
-		//else if(rpm < 5000.0f)
-		{
-			//soundManager->SetPitch("sound\\4000.wav", m_SoundIndexEngine4000, rpm / 4000.0f * pitch);
-			//soundManager->SetVolume("sound\\4000.wav", m_SoundIndexEngine4000, (m_Engine.GetOutputAngularSpeed1() * 0.0005f) * (1.0f - m_Engine.GetThrottle()) * 0.3f * volume);
-
-			soundManager->SetPitch("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, rpm / 4000.0f * pitch);
-			soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, rpm / 50000.0f * volume);
-
-			//soundManager->SetVolume("sound\\2000.wav", m_SoundIndexEngine2000, 0.0f);
-			//soundManager->SetVolume("sound\\2000ex.wav", m_SoundIndexEngine2000Ex, 0.0f);
-
-			//soundManager->SetVolume("sound\\6000.wav", m_SoundIndexEngine6000, 0.0f);
-			//soundManager->SetVolume("sound\\6000ex.wav", m_SoundIndexEngine6000Ex, 0.0f);
-		}
-		//else
-		//{
-		//	soundManager->SetPitch("sound\\6000.wav", m_SoundIndexEngine6000, rpm / 6000.0f * pitch);
-		//	soundManager->SetVolume("sound\\6000.wav", m_SoundIndexEngine6000, (m_Engine.GetOutputAngularSpeed1() * 0.0005f) * m_Throttle * 0.2f * volume);
-
-		//	soundManager->SetPitch("sound\\6000ex.wav", m_SoundIndexEngine6000Ex, rpm / 6000.0f * pitch);
-		//	soundManager->SetVolume("sound\\6000ex.wav", m_SoundIndexEngine6000Ex, (m_Engine.GetOutputAngularSpeed1() * 0.0005f + 0.5f) * 0.1f * volume);
-
-		//	soundManager->SetVolume("sound\\2000.wav", m_SoundIndexEngine2000, 0.0f);
-		//	soundManager->SetVolume("sound\\2000ex.wav", m_SoundIndexEngine2000Ex, 0.0f);
-
-		//	soundManager->SetVolume("sound\\4000.wav", m_SoundIndexEngine4000, 0.0f);
-		//	soundManager->SetVolume("sound\\4000ex.wav", m_SoundIndexEngine4000Ex, 0.0f);
-		//}
 
 		//soundManager->SetPitch("sound\\noise.wav", m_SoundIndexEngineNoise, 0.9f + rpm / 20000.0f);
-		soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, rpm * rpm / 200000000.0f * (0.5f + m_Engine.GetThrottle() * 0.5f) * volume);
+		soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, rpm * rpm / 500000000.0f * volume);
 
-		soundManager->SetVolume("sound\\rednoise.wav", m_SoundIndexEngineRedNoise, m_TireFLRB.GetInputAngularSpeed1() * 0.003f);
-
+		soundManager->SetVolume("sound\\rednoise.wav", m_SoundIndexEngineRedNoise, m_TireFLRB.GetInputAngularSpeed1() * 0.001f * volume);
 
 
 		soundManager->SetPitch("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.005f * pitch);
-		soundManager->SetVolume("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.0002f * volume);
-
+		soundManager->SetVolume("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.00015f * volume);
 
 
 		float sripL = (m_TireFLRB.GetSrip() + m_TireRLRB.GetSrip()) / 2.0f;
 		float sripR = (m_TireFRRB.GetSrip() + m_TireRRRB.GetSrip()) / 2.0f;
 
 		soundManager->SetPitch("sound\\brake.wav", m_SoundIndexBrake, 0.5f * pitch);
-		soundManager->SetVolume("sound\\brake.wav", m_SoundIndexBrake, (sripL + sripR) * 1.0f * volume);
+		soundManager->SetVolume("sound\\brake.wav", m_SoundIndexBrake, (sripL + sripR) * 0.5f * volume);
 
 	}
 
@@ -808,6 +751,10 @@ void Car::DrawDebug()
 		ImGui::ProgressBar(m_Brake, ImVec2(0, 0), buf);
 
 	ImGui::End();
+
+
+
+	m_EngineSound.DrawDebug();
 
 }
 

@@ -11,6 +11,7 @@
 #include "Brake.h"
 #include "Suspension.h"
 #include "Meter.h"
+#include "EngineSound.h"
 
 
 
@@ -39,6 +40,9 @@ class Car : public GameObject
 		BodyRB			m_BodyRB;
 
 		Engine			m_Engine;
+		EngineSound		m_EngineSound;
+
+
 		Clutch			m_Clutch;
 		Transmission	m_Transmission;
 		Differential	m_DifferentialCenter;
@@ -74,18 +78,9 @@ class Car : public GameObject
 
 
 		bool			m_SoundEnable{};
-
 		int				m_SoundIndexBrake{};
-		//int				m_SoundIndexEngine2000{};
-		//int				m_SoundIndexEngine2000Ex{};
-		int				m_SoundIndexEngine4000{};
-		int				m_SoundIndexEngine4000Ex{};
-		//int				m_SoundIndexEngine6000{};
-		//int				m_SoundIndexEngine6000Ex{};
 		int				m_SoundIndexEngineNoise{};
-
 		int				m_SoundIndexEngineRedNoise{};
-
 		int				m_SoundIndexGear{};
 
 

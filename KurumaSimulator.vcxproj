@@ -175,6 +175,7 @@
     <ClInclude Include="Src\Differential.h" />
     <ClInclude Include="Src\DriveTrain.h" />
     <ClInclude Include="Src\Engine.h" />
+    <ClInclude Include="Src\EngineSound.h" />
     <ClInclude Include="Src\EnvCamera.h" />
     <ClInclude Include="Src\Field.h" />
     <ClInclude Include="Src\GameManager.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="Src\DDSTextureLoader12.cpp" />
     <ClCompile Include="Src\Differential.cpp" />
     <ClCompile Include="Src\Engine.cpp" />
+    <ClCompile Include="Src\EngineSound.cpp" />
     <ClCompile Include="Src\EnvCamera.cpp" />
     <ClCompile Include="Src\Field.cpp" />
     <ClCompile Include="Src\GameManager.cpp" />
