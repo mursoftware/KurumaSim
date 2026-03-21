@@ -228,10 +228,11 @@ void GameScene::DrawDepth(int Index)
 	m_ShadowCamera[Index]->Draw();
 
 
-	m_Field->DrawDepth(m_ShadowCamera[Index]);
-
 	if(Index == 0)
 		m_Car->DrawDepth(m_ShadowCamera[Index], 4);
+	else
+		m_Field->DrawDepth(m_ShadowCamera[Index]);
+
 
 }
 

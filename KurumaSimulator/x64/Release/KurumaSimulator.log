@@ -1,0 +1,5 @@
+﻿C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\CarVS.hlsl(11,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\CarVS.cso
+  KurumaSimulator.vcxproj -> C:\Users\muras\Desktop\KurumaSim\KurumaSimulator.exe

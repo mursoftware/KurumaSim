@@ -28,8 +28,8 @@ PS_INPUT main(VS_INPUT input)
     //output.Occlusion = input.Occlusion;
 
     output.ShadowPosition[0] = mul(position, ShadowWVP[0]);
-    //output.ShadowPosition[1] = mul(position, ShadowWVP[1]);
-    //output.ShadowPosition[2] = mul(position, ShadowWVP[2]);
+    output.ShadowPosition[1] = mul(position, ShadowWVP[1]);
+    output.ShadowPosition[2] = mul(position, ShadowWVP[2]);
       
     
     

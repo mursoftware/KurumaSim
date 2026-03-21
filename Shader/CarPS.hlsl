@@ -86,21 +86,33 @@ PS_OUTPUT main(PS_INPUT input)
 		float shadow = 0.0;
 		
 		//Shadow
-		{
-			float2 shadowTexCoord;
-			shadowTexCoord.x = input.ShadowPosition[0].x * 0.5f + 0.5f;
-			shadowTexCoord.y = -input.ShadowPosition[0].y * 0.5f + 0.5f;
+		{			
+            for (int i = 0; i < 3; i++)
+            {
+				float2 shadowTexCoord;
+                shadowTexCoord.x = input.ShadowPosition[i].x * 0.5f + 0.5f;
+                shadowTexCoord.y = -input.ShadowPosition[i].y * 0.5f + 0.5f;
 
-			//for (int i = 0; i < 4; i++)
-			{
-				float2 offset = PoissonSamples[(int) (Random(float4(shadowTexCoord.xyy, TemporalFrame)) * 64)] * 0.001;
-				float shadowColorTex = textureShadow[0].SampleLevel(sampler1, shadowTexCoord + offset, 0).r;
-				if (shadowColorTex + 0.001 < input.ShadowPosition[0].z)
-					shadow += 1.0; // / 4.0;
-			}  
+                if (0.01 < shadowTexCoord.x && shadowTexCoord.x < 0.99 && 0.01 < shadowTexCoord.y && shadowTexCoord.y < 0.99)
+                {
+					//for (int j = 0; j < 4; j++)
+					{
+                        float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.002;
+                        float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
+						
+                        if (shadowColorTex + 0.001 * (i + 1) < input.ShadowPosition[i].z)
+                        {
+                            shadow += 1.0 / 1.0;
+                            break;
+                        }
+                    }
+            		//baseColor.rgb *= debugShadowColor[i];
+
+                }
+            }
 			
 			light -= light * shadow;
-		}
+        }
 		
 		
 		
