@@ -26,8 +26,6 @@ GameManager::GameManager()
 	//m_RenderManger.ResourceCommandEnd();
 
 	StartDraw();
-
-
 }
 
 
@@ -45,9 +43,7 @@ GameManager::~GameManager()
 
 void GameManager::StartDraw()
 {
-	std::thread thDraw(&GameManager::Draw, this);
-	thDraw.detach();
-
+	m_DrawThread = std::thread(&GameManager::Draw, this);
 }
 
 
@@ -63,6 +59,7 @@ void GameManager::WaitDraw()
 		m_RenderManger.WaitGPU();
 	}
 
+	m_DrawThread.join();
 }
 
 

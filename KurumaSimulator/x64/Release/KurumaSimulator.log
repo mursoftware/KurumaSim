@@ -1,5 +1,24 @@
-﻿C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
-C:\Users\muras\Desktop\KurumaSim\Shader\CarVS.hlsl(11,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
-  
-  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\CarVS.cso
+﻿  BodyRB.cpp
+  Brake.cpp
+  Car.cpp
+  CarCamera.cpp
+  CarSelectScene.cpp
+  EnvCamera.cpp
+  Field.cpp
+  GameManager.cpp
+  GameScene.cpp
+  Main.cpp
+  Meter.cpp
+  Model.cpp
+  RenderManager.cpp
+  Scene.cpp
+  ShadowCamera.cpp
+  Sky.cpp
+  SmokeManager.cpp
+  TireRB.cpp
+  コード生成しています。
+  27 of 3650 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    4 functions were new in current compilation
+    57 functions had inline decision re-evaluated but remain unchanged
+  コード生成が終了しました。
   KurumaSimulator.vcxproj -> C:\Users\muras\Desktop\KurumaSim\KurumaSimulator.exe

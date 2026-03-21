@@ -31,6 +31,7 @@ private:
 
 
 
+	std::thread m_DrawThread;
 
 	bool m_RunningDraw{};
 
