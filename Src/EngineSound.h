@@ -6,9 +6,9 @@
 static const int SAMPLE_RATE = 44100;
 static const int BUFFER_SAMPLES = 2048;
 static const int NUM_BUFFERS = 2;
-static const int MAX_EXHAUST = 4;
+static const int MAX_CYLINDER = 12;
 static const int SPEC_WIDTH = 256;   // 時間方向（横）
-static const int SPEC_HEIGHT = 256;  // 周波数方向（縦）
+//static const int SPEC_HEIGHT = 256;  // 周波数方向（縦）
 
 
 class Exhaust
@@ -41,27 +41,28 @@ class ExhaustPipe
 public:
     ExhaustPipe(float LengthMeters, float Reflection, float Cutoff, float Mix);
 
-    float Process(float Input);
+    float Process(float Input, float soundSpeed);
     void DrawDebugUI(const char* Name);
 };
 
 class EngineSound
 {
 	IXAudio2SourceVoice* m_PSourceVoice = nullptr;
-	Exhaust m_Exhaust[MAX_EXHAUST];
+	Exhaust m_Exhaust[MAX_CYLINDER];
 
 	float m_Rpm = 800.0f;
 	float m_Throttle = 0.1f;
 
 	int m_NumCylinders = 6;
 
-	float m_ValveOpenRatio = 1.1f;
-	float m_VvtRatio = 0.1f;
-	float m_PhaseOffset = 0.01f;
-	float m_PhaseNoise = 0.1f;
+	float m_ValveOpenRatio = 0.5f;
+	float m_VvtRatio = 0.0f;
+    float m_PhaseOffset[MAX_CYLINDER] = {0.3f, 0.25f, 0.1f, 0.35f, 0.2f, 0.15f};
+	float m_PhaseNoise = 0.0f;
 	float m_Gain = 2.0f;
 
 	float m_Phase = 0.0;
+	double m_CylTime = 0.0;
 	int m_CylStep = 0;
 	float m_Jitter = 0.0;
 	float m_PrevRpm = 800.0f;
@@ -71,9 +72,9 @@ class EngineSound
 	int m_BufferIndex = 0;
 	std::atomic<bool> m_Running = true;
 
-	ExhaustPipe m_P1{ 0.1f, -0.8f, 0.05f, 0.8f };
-	ExhaustPipe m_P2{ 0.8f, -0.8f, 0.05f, 0.8f };
-	ExhaustPipe m_P3{ 1.8f, -0.8f, 0.05f, 0.8f };
+	ExhaustPipe m_P1{ 0.9f, -0.8f, 0.05f, 0.8f };
+	ExhaustPipe m_P2{ 1.8f, -0.8f, 0.01f, 0.8f };
+    ExhaustPipe m_P3{ 0.6f, -0.8f, 0.05f, 0.8f };
 
 	std::vector<short> m_VisBuffer;
 	std::thread* m_AudioThread = nullptr;

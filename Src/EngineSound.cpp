@@ -322,7 +322,7 @@ void PerformFFT(std::vector<Complex>& Data)
 void Exhaust::Start(float OpenTime, float Throttle, float NoiseRatio)
 {
     m_Active = true;
-    m_OpenTime = OpenTime + OpenTime * ((float)rand() / RAND_MAX - 0.5f) * 0.0f;
+    m_OpenTime = OpenTime;
     m_Throttle = Throttle;
     m_NoiseRatio = NoiseRatio;
     m_Time = 0.0f;
@@ -336,7 +336,9 @@ float Exhaust::Compute()
         return 0.0f;
     }
     float t = m_Time / m_OpenTime;
-    float pressure = t * (1.0f - t) * (0.5f + m_Throttle*0.5f) / m_OpenTime * 0.01f;
+    //float pressure = t * (1.0f - t) * (0.5f + m_Throttle*0.5f) / m_OpenTime * 0.01f;
+    float pressure = 20.0f * t * std::exp(-8.0f * t) * (0.5f + m_Throttle*0.5f) / m_OpenTime * 0.02f;
+
     //pressure *= pressure;
     //float noise = GenerateRedNoise() * pressure * m_NoiseRatio * 0.0f;
     m_Time += 1.0f / SAMPLE_RATE;
@@ -358,14 +360,17 @@ ExhaustPipe::ExhaustPipe(float LengthMeters, float Reflection, float Cutoff, flo
     m_Mix = Mix;
 }
 
-float ExhaustPipe::Process(float Input)
+float ExhaustPipe::Process(float Input, float soundSpeed)
 {
     if (!m_Enabled) return Input;
     if (m_DelayLine.empty()) return Input;
 
+    m_SoundSpeed = soundSpeed;
+    m_LengthInSamples = (m_LengthMeters * 2.0f / soundSpeed) * SAMPLE_RATE;
+
     int readIndex = (m_WriteIndex - (int)m_LengthInSamples + (int)m_DelayLine.size()) % (int)m_DelayLine.size();
     float delayedSample = m_DelayLine[readIndex];
-    m_LpState = m_LpState + m_Cutoff * (delayedSample - m_LpState);
+    m_LpState = m_LpState + m_Cutoff * (1.0f + soundSpeed * 0.002f) * (delayedSample - m_LpState);
     float feedback = m_LpState * m_Reflection;
     if (!std::isfinite(feedback)) feedback = 0.0f;
     if (!std::isfinite(m_LpState)) m_LpState = 0.0f;
@@ -408,7 +413,9 @@ void ExhaustPipe::DrawDebugUI(const char* Name)
 EngineSound::EngineSound()
 {
     m_VisBuffer.resize(BUFFER_SAMPLES, 0);
-    m_Spectrogram.resize(SPEC_WIDTH * SPEC_HEIGHT, 0.0f);
+
+    float dB = 20.0f * log10f(0.0f + 1e-12f);
+    m_Spectrogram.resize(SPEC_WIDTH * BUFFER_SAMPLES, dB);
 }
 
 bool EngineSound::Initialize(IXAudio2* XAudio2)
@@ -444,49 +451,58 @@ void EngineSound::Run()
 
         XAUDIO2_VOICE_STATE state;
         m_PSourceVoice->GetState(&state);
+
         while (state.BuffersQueued < NUM_BUFFERS && m_Running)
         {
             float rpmStep = (m_Rpm - m_PrevRpm) / BUFFER_SAMPLES;
             float processingRpm = m_PrevRpm;
 
+
             for (int i = 0; i < BUFFER_SAMPLES; i++)
             {
                 processingRpm += rpmStep;
-                float phaseStep = (processingRpm / 120.0f) / SAMPLE_RATE;
-                m_Phase += phaseStep;
+
                 float sample = 0.0f;
 
-                if (m_Phase > 1.0 * m_CylStep / m_NumCylinders + m_Jitter)
+                m_CylTime += 1.0 / SAMPLE_RATE;
+
+                if (m_CylTime > 1.0 / (processingRpm / 60.0) * 2.0 / m_NumCylinders + m_PhaseOffset[m_CylStep] / (200.0 + processingRpm * 0.1f))
                 {
                     for (auto& e : m_Exhaust)
                     {
                         if (!e.IsActive())
                         {
-                            float valveOpenTime = 1.0f / (processingRpm / 60.0f) / m_NumCylinders / 2.0f * (m_ValveOpenRatio + processingRpm * m_VvtRatio * 0.0001f);
-                            e.Start(valveOpenTime, m_Throttle, m_NoiseRatio);
+                            float valveOpenTime = 1.0f / (processingRpm / 60.0f) * 2.0f / 4.0f * (m_ValveOpenRatio + processingRpm * m_VvtRatio * 0.0001f);
+                            e.Start(valveOpenTime, m_Throttle * (1.0f + (rand() / (float)RAND_MAX - 0.5f) * 0.1f), m_NoiseRatio);
                             break;
                         }
                     }
+
+                    m_CylTime -= 1.0 / (processingRpm / 60.0) * 2.0 / m_NumCylinders;
 
                     m_CylStep++;
 
                     if (m_CylStep >= m_NumCylinders)
                     {
                         m_CylStep = 0;
-                        m_Phase -= 1.0f;
                     }
-
-                    m_Jitter = ((float)rand() / RAND_MAX - 0.5f) * m_PhaseNoise * 0.1f;
-                    m_Jitter += 1.0f / m_NumCylinders * m_CylStep * m_PhaseOffset;
                 }
 
                 for (auto& e : m_Exhaust)
                     if (e.IsActive()) sample += e.Compute();
 
-                sample = m_P3.Process(m_P2.Process(m_P1.Process(sample)));
+                sample += (rand() / (float)RAND_MAX - 0.5f) * processingRpm * (0.5f + 0.5f * m_Throttle) * m_NoiseRatio * 0.001f;
+
+				float soundSpeed = 343.0f + m_Rpm * 0.01f;
+                sample = m_P2.Process(sample, soundSpeed);
+                sample = m_P3.Process(sample, soundSpeed);
+                sample = m_P1.Process(sample, soundSpeed);
 
                 m_AudioMemory[m_BufferIndex][i] = (short)(std::tanh(sample * m_Gain) * 32767.0f);
             }
+
+
+
             m_PrevRpm = processingRpm;
             m_VisBuffer = m_AudioMemory[m_BufferIndex];
 
@@ -507,12 +523,20 @@ void EngineSound::DrawDebug()
 
     ImGui::SliderFloat("Gain", &m_Gain, 0.0f, 10.0f);
 
-    ImGui::SliderInt("Cylinders", &m_NumCylinders, 1, 12);
+    ImGui::SliderInt("Cylinders", &m_NumCylinders, 1, MAX_CYLINDER);
     ImGui::SliderFloat("ValveOpenRatio", &m_ValveOpenRatio, 0.0f, 2.0f);
     ImGui::SliderFloat("VVT", &m_VvtRatio, 0.0f, 1.0f);
     ImGui::SliderFloat("Noise", &m_NoiseRatio, 0.0f, 1.0f);
-    ImGui::SliderFloat("PhaseOffset", &m_PhaseOffset, -1.0f, 1.0f);
+
+
     ImGui::SliderFloat("PhaseNoise", &m_PhaseNoise, 0.0f, 1.0f);
+
+
+    if (ImGui::CollapsingHeader("Exhaust Manifold"))
+    {
+        for(int i = 0; i < m_NumCylinders; i++)
+            ImGui::SliderFloat(("Length" + std::to_string(i)).c_str(), &m_PhaseOffset[i], 0.0f, 1.0f);
+    }
 
     m_P1.DrawDebugUI("Pipe1");
     m_P2.DrawDebugUI("Pipe2");
@@ -527,7 +551,7 @@ void EngineSound::DrawDebug()
     if (localBuf.size() == BUFFER_SAMPLES)
     {
         static float wave[BUFFER_SAMPLES];
-        static float spec[256];
+        static float spec[BUFFER_SAMPLES];
         std::vector<Complex> fftD(BUFFER_SAMPLES);
 
         for (int i = 0; i < BUFFER_SAMPLES; i++)
@@ -538,15 +562,11 @@ void EngineSound::DrawDebug()
 
         PerformFFT(fftD);
 
-        for (int i = 0; i < 256; i++)
-        spec[i] = sqrtf(std::abs(fftD[i]));
+        for (int i = 0; i < BUFFER_SAMPLES / 2; i++)
+            spec[i] = sqrtf(std::abs(fftD[i]));
 
-        for (int y = 0; y < SPEC_HEIGHT; y++)
+        for (int y = 0; y < BUFFER_SAMPLES; y++)
         {
-            //float v = spec[y];
-            //v = logf(1.0f + v);
-            //m_Spectrogram[y * SPEC_WIDTH + m_SpecWritePos] = v;
-
             float amp = spec[y];
             float dB = 20.0f * log10f(amp + 1e-12f);
 			m_Spectrogram[y * SPEC_WIDTH + m_SpecWritePos] = dB;
@@ -555,8 +575,8 @@ void EngineSound::DrawDebug()
         m_SpecWritePos = (m_SpecWritePos + 1) % SPEC_WIDTH;
 
 
-        ImGui::PlotLines("Waveform", wave, BUFFER_SAMPLES, 0, NULL, -1.0f, 1.0f, ImVec2(0, 100));
-        ImGui::PlotHistogram("Spectrum", spec, 256, 0, NULL, 0.0f, 10.0f, ImVec2(0, 100));
+        ImGui::PlotLines("Waveform", wave, BUFFER_SAMPLES / 4, 0, NULL, -1.0f, 1.0f, ImVec2(0, 100));
+        ImGui::PlotHistogram("Spectrum", spec, BUFFER_SAMPLES / 2 / 4, 0, NULL, 0.0f, 10.0f, ImVec2(0, 100));
     }
     else
     {
@@ -582,11 +602,11 @@ void EngineSound::DrawDebug()
     for (float fTarget : freqsToLabel)
     {
         float mel = hzToMel(fTarget);
-        float displayRowF = mel / melMax * (float)(SPEC_HEIGHT - 1);
+        float displayRowF = mel / melMax * (float)(256 - 1);
 
-        if (displayRowF >= 0.0f && displayRowF < SPEC_HEIGHT)
+        if (displayRowF >= 0.0f && displayRowF < 256)
         {
-            float py = p.y + (float)(SPEC_HEIGHT - 1 - displayRowF) * (size.y / SPEC_HEIGHT);
+            float py = p.y + (float)(256 - 1 - displayRowF) * (size.y / 256);
 
             // 目盛り線
             dl->AddLine(ImVec2(p.x, py), ImVec2(p.x + size.x, py), ImColor(255, 255, 255, 100));
@@ -606,15 +626,15 @@ void EngineSound::DrawDebug()
     for (int x = 0; x < SPEC_WIDTH; x++)
     {
         int xx = (m_SpecWritePos + x) % SPEC_WIDTH;
-        for (int y = 0; y < SPEC_HEIGHT; y++)
+        for (int y = 0; y < 256; y++)
         {
             // map display row (mel-space) to source FFT bin (linear freq)
-            float mel = (float)y / (float)(SPEC_HEIGHT - 1) * melMax;
+            float mel = (float)y / (float)(256 - 1) * melMax;
             float hz = melToHz(mel);
             float binF = hz * (float)BUFFER_SAMPLES / (float)SAMPLE_RATE;
             int srcY = (int)roundf(binF);
             if (srcY < 0) srcY = 0;
-            if (srcY >= SPEC_HEIGHT) srcY = SPEC_HEIGHT - 1;
+            if (srcY >= BUFFER_SAMPLES) srcY = BUFFER_SAMPLES - 1;
 
             float v = (m_Spectrogram[srcY * SPEC_WIDTH + xx] + 20.0f) / 40.0f;
             v = max(0.0f, min(v, 1.0f));
@@ -626,11 +646,11 @@ void EngineSound::DrawDebug()
             ImU32 col = ImColor(r, g, b);
 
             float px = p.x + (float)x * (size.x / SPEC_WIDTH);
-            float py = p.y + (float)(SPEC_HEIGHT - 1 - y) * (size.y / SPEC_HEIGHT);
+            float py = p.y + (float)(256 - 1 - y) * (size.y / 256);
 
             dl->AddRectFilled(
                 ImVec2(px, py),
-                ImVec2(px + size.x / SPEC_WIDTH, py + size.y / SPEC_HEIGHT),
+                ImVec2(px + size.x / SPEC_WIDTH, py + size.y / 256),
                 col
             );
         }

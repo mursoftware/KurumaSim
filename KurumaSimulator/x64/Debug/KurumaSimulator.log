@@ -1,0 +1,188 @@
+﻿C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\CarPS.hlsl(191,10-62): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\CarPS.hlsl(210,4-37): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\CarPS.hlsl(238,9-59): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\CarPS.hlsl(101,48-63): warning X3550: sampler array index must be a literal expression, forcing loop to unroll
+C:\Users\muras\Desktop\KurumaSim\Shader\CarPS.hlsl(22,14-30): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\CarPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\CarVS.hlsl(11,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\CarVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\DepthPS.hlsl(20,26-68): warning X3206: 'Sample': implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\DepthPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\DepthVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\DepthVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\DepthVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\FieldPS.hlsl(29,21-63): warning X3206: 'Sample': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\FieldPS.hlsl(33,23-65): warning X3206: 'Sample': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\FieldPS.hlsl(106,48-63): warning X3550: sampler array index must be a literal expression, forcing loop to unroll
+C:\Users\muras\Desktop\KurumaSim\Shader\FieldPS.hlsl(23,14-30): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\FieldPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\FieldVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\FieldVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\FieldVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\IblPS.hlsl(19,12-36): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\IblPS.hlsl(49,4-42): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\IblPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\IblVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\IblVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\IblVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\PostPS.hlsl(72,12-36): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\PostPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\PostVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\PostVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\PostVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(43,18-62): warning X3206: 'Sample': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(45,48-94): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(46,48-93): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(47,48-94): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(48,48-93): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(50,48-108): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(51,48-107): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(52,48-107): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.hlsl(53,48-106): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkBlurVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkPS.hlsl(19,17-61): warning X3206: 'Sample': implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\ShrinkVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SkyPS.hlsl(19,14-30): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\SkyPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SkyVS.hlsl(11,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SkyVS.hlsl(6,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\SkyVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SmokePS.hlsl(26,50-92): warning X3206: 'Sample': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SmokePS.hlsl(49,28-43): warning X3550: sampler array index must be a literal expression, forcing loop to unroll
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\SmokePS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SmokeVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\SmokeVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\SmokeVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(48,9-33): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(97,11-63): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(142,11-63): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(173,9-34): warning X3556: integer modulus may be much slower, try using uints if possible.
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(173,41-57): warning X3556: integer modulus may be much slower, try using uints if possible.
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(173,64-89): warning X3556: integer modulus may be much slower, try using uints if possible.
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(173,102-118): warning X3556: integer divides may be much slower, try using uints if possible.
+C:\Users\muras\Desktop\KurumaSim\Shader\FXAA.hlsl(956,25): warning X4000: use of potentially uninitialized variable (FxaaPixelShader)
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.hlsl(189,2): warning X4000: use of potentially uninitialized variable (color)
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\AntiAliasingVS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\UiPS.hlsl(20,13-57): warning X3206: 'Sample': implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\UiPS.cso
+C:\Users\muras\Desktop\KurumaSim\Shader\Common.hlsl(132,2-17): warning X3206: implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\UiVS.hlsl(9,20-49): warning X3206: 'DecodePosition': implicit truncation of vector type
+C:\Users\muras\Desktop\KurumaSim\Shader\UiVS.hlsl(4,13-29): warning X3578: Output value 'main' is not completely initialized
+  
+  compilation object save succeeded; see C:\Users\muras\Desktop\KurumaSim\Shader\UiVS.cso
+  Pch.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_dx12.cpp
+  imgui_impl_win32.cpp
+  imgui_widgets.cpp
+  BodyRB.cpp
+  Brake.cpp
+  Car.cpp
+  CarCamera.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/Car.cpp' をコンパイルしています)
+  
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/CarCamera.cpp' をコンパイルしています)
+  
+  CarSelectScene.cpp
+  Clutch.cpp
+  DDSTextureLoader12.cpp
+  Differential.cpp
+  Engine.cpp
+  EngineSound.cpp
+  EnvCamera.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/EngineSound.cpp' をコンパイルしています)
+  
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/EngineSound.cpp' をコンパイルしています)
+  
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/CarSelectScene.cpp' をコンパイルしています)
+  
+  Field.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/EnvCamera.cpp' をコンパイルしています)
+  
+  GameManager.cpp
+  GameScene.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/Field.cpp' をコンパイルしています)
+  
+  InputManager.cpp
+  Main.cpp
+  MatrixVector.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/GameScene.cpp' をコンパイルしています)
+  
+  Meter.cpp
+  Model.cpp
+  RenderManager.cpp
+  RigidBody.cpp
+  Scene.cpp
+  Setting.cpp
+  ShadowCamera.cpp
+  Sky.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/ShadowCamera.cpp' をコンパイルしています)
+  
+  SmokeManager.cpp
+  SoundManager.cpp
+  Suspension.cpp
+  TireRB.cpp
+  Transmission.cpp
+  KurumaSimulator.vcxproj -> C:\Users\muras\Desktop\KurumaSim\KurumaSimulator.exe

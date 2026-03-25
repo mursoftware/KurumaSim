@@ -342,7 +342,7 @@ void Car::Update( bool Control, bool Input, float dt )
 		if (inputState.ShiftDown && m_Transmission.GetGear() > 1)
 		{
 			m_ClutchRatio -= 15.0f * dt;
-			m_Throttle = 1.0f - m_ClutchRatio;
+			m_Throttle = (1.0f - m_ClutchRatio) * 1.0f;
 		}
 		else if (inputState.ShiftUp && m_Transmission.GetGear() < m_Transmission.GetGearCount())
 		{
@@ -595,9 +595,7 @@ void Car::Update( bool Control, bool Input, float dt )
 		float distance = cameraDirection.Length();
 		cameraDirection.Normalize();
 
-		float volume = 50.0f / distance;
-		volume = min(volume, 4.0f);
-
+		float volume = 1.0f;
 		float pitch = 1.0f;
 
 		if (camera->GetViewMode() == 4)
@@ -605,8 +603,15 @@ void Car::Update( bool Control, bool Input, float dt )
 			Vector3 carVelocity = m_BodyRB.GetVelocity();
 			float cvd = Vector3::Dot(carVelocity, cameraDirection);
 			pitch = 340.29f / (340.29f - cvd);
-		}
 
+			volume = 50.0f / distance;
+			volume = min(volume, 4.0f);
+		}
+		else
+		{
+			pitch = 1.0f;
+			volume = 1.0f;
+		}
 
 		float rpm = m_Engine.GetOutputAngularSpeed1() * 60.0f / 2.0f / PI;
 
@@ -615,24 +620,24 @@ void Car::Update( bool Control, bool Input, float dt )
 
 		m_EngineSound.SetState(rpm, m_Throttle);
 		m_EngineSound.SetPitch(pitch);
-		m_EngineSound.SetVolume(volume*0.5f);
+		m_EngineSound.SetVolume(volume);
 
 
 		//soundManager->SetPitch("sound\\noise.wav", m_SoundIndexEngineNoise, 0.9f + rpm / 20000.0f);
-		soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, rpm * rpm / 500000000.0f * volume);
+		//soundManager->SetVolume("sound\\noise.wav", m_SoundIndexEngineNoise, rpm * rpm / 300000000.0f * volume);
 
-		soundManager->SetVolume("sound\\rednoise.wav", m_SoundIndexEngineRedNoise, m_TireFLRB.GetInputAngularSpeed1() * 0.001f * volume);
+		soundManager->SetVolume("sound\\rednoise.wav", m_SoundIndexEngineRedNoise, m_TireFLRB.GetInputAngularSpeed1() * 0.003f * volume);
 
 
 		soundManager->SetPitch("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.005f * pitch);
-		soundManager->SetVolume("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.00015f * volume);
+		soundManager->SetVolume("sound\\gear.wav", m_SoundIndexGear, m_TireRLRB.GetInputAngularSpeed1() * 0.0003f * volume);
 
 
 		float sripL = (m_TireFLRB.GetSrip() + m_TireRLRB.GetSrip()) / 2.0f;
 		float sripR = (m_TireFRRB.GetSrip() + m_TireRRRB.GetSrip()) / 2.0f;
 
 		soundManager->SetPitch("sound\\brake.wav", m_SoundIndexBrake, 0.5f * pitch);
-		soundManager->SetVolume("sound\\brake.wav", m_SoundIndexBrake, (sripL + sripR) * 0.5f * volume);
+		soundManager->SetVolume("sound\\brake.wav", m_SoundIndexBrake, (sripL + sripR) * 2.0f * volume);
 
 	}
 

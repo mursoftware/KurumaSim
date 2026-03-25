@@ -1,34 +1,41 @@
 ﻿  Car.cpp
   CarCamera.cpp
   CarSelectScene.cpp
-  EnvCamera.cpp
-C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル '/Src/CarCamera.cpp' をコンパイルしています)
+  EngineSound.cpp
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.cpp(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/EngineSound.cpp' をコンパイルしています)
   
 C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル '/Src/EnvCamera.cpp' をコンパイルしています)
+  (ソース ファイル '/Src/EngineSound.cpp' をコンパイルしています)
   
 C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
   (ソース ファイル '/Src/Car.cpp' をコンパイルしています)
   
 C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/CarCamera.cpp' をコンパイルしています)
+  
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
   (ソース ファイル '/Src/CarSelectScene.cpp' をコンパイルしています)
   
+  EnvCamera.cpp
   Field.cpp
   GameScene.cpp
   ShadowCamera.cpp
 C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル '/Src/GameScene.cpp' をコンパイルしています)
+  (ソース ファイル '/Src/Field.cpp' をコンパイルしています)
   
 C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-  (ソース ファイル '/Src/Field.cpp' をコンパイルしています)
+  (ソース ファイル '/Src/EnvCamera.cpp' をコンパイルしています)
+  
+C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  (ソース ファイル '/Src/GameScene.cpp' をコンパイルしています)
   
 C:\Users\muras\Desktop\KurumaSim\Src\EngineSound.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
   (ソース ファイル '/Src/ShadowCamera.cpp' をコンパイルしています)
   
   コード生成しています。
-  21 of 3943 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+  1 of 3956 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    60 functions had inline decision re-evaluated but remain unchanged
+    58 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   KurumaSimulator.vcxproj -> C:\Users\muras\Desktop\KurumaSim\KurumaSimulator.exe
