@@ -294,8 +294,6 @@ void Car::Update( bool Control, bool Input, float dt )
 			m_BodyRB.SetBrakeLamp(false);
 
 
-		if (m_Throttle < 0.05f)
-			m_Throttle = 0.05f;
 
 
 
@@ -328,9 +326,11 @@ void Car::Update( bool Control, bool Input, float dt )
 
 		float rpm = m_Engine.GetOutputAngularSpeed1() * 60.0f / 2.0f / PI;
 
-		if (rpm < 1000.0f)
+		if (rpm < 750.0f)
 			gear = 0;
 
+		if (m_Throttle < 0.1f && rpm < 750.0f)
+			m_Throttle = (750.0f - rpm) / 750.0f;
 
 		m_Transmission.SetGear(gear);
 
@@ -621,6 +621,16 @@ void Car::Update( bool Control, bool Input, float dt )
 		m_EngineSound.SetState(rpm, m_Throttle);
 		m_EngineSound.SetPitch(pitch);
 		m_EngineSound.SetVolume(volume);
+
+
+		if (camera->GetViewMode() == 1)
+		{
+			m_EngineSound.SetPipeEnabled(2, true);
+		}
+		else
+		{
+			m_EngineSound.SetPipeEnabled(2, false);
+		}
 
 
 		//soundManager->SetPitch("sound\\noise.wav", m_SoundIndexEngineNoise, 0.9f + rpm / 20000.0f);

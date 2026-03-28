@@ -341,16 +341,18 @@ float Exhaust::Compute()
 
     //pressure *= pressure;
     //float noise = GenerateRedNoise() * pressure * m_NoiseRatio * 0.0f;
+	float noise = (rand() / (float)RAND_MAX - 0.5f) * pressure * m_NoiseRatio * 1.0f;
     m_Time += 1.0f / SAMPLE_RATE;
-    return pressure;// + noise;
+    return pressure + noise;
 }
 
 
 
 
 
-ExhaustPipe::ExhaustPipe(float LengthMeters, float Reflection, float Cutoff, float Mix)
+ExhaustPipe::ExhaustPipe(bool enabled, float LengthMeters, float Reflection, float Cutoff, float Mix)
 {
+	m_Enabled = enabled;
     m_LengthMeters = LengthMeters;
     m_LengthInSamples = (LengthMeters * 2.0f / m_SoundSpeed) * SAMPLE_RATE;
     m_DelayLine.resize((size_t)m_LengthInSamples + 1, 0.0f);
@@ -466,13 +468,13 @@ void EngineSound::Run()
 
                 m_CylTime += 1.0 / SAMPLE_RATE;
 
-                if (m_CylTime > 1.0 / (processingRpm / 60.0) * 2.0 / m_NumCylinders + m_PhaseOffset[m_CylStep] / (200.0 + processingRpm * 0.1f))
+                if (m_CylTime > 1.0 / (processingRpm / 60.0) * 2.0 / m_NumCylinders + m_PhaseOffset[m_CylStep] / (800.0 + processingRpm * 0.0f))
                 {
                     for (auto& e : m_Exhaust)
                     {
                         if (!e.IsActive())
                         {
-                            float valveOpenTime = 1.0f / (processingRpm / 60.0f) * 2.0f / 4.0f * (m_ValveOpenRatio + processingRpm * m_VvtRatio * 0.0001f);
+                            float valveOpenTime = 1.0f / (processingRpm / 60.0f) * 2.0f / 4.0f * (m_ValveOpenRatio + processingRpm * m_VvtRatio * 0.0000f);
                             e.Start(valveOpenTime, m_Throttle * (1.0f + (rand() / (float)RAND_MAX - 0.5f) * 0.1f), m_NoiseRatio);
                             break;
                         }
@@ -491,9 +493,9 @@ void EngineSound::Run()
                 for (auto& e : m_Exhaust)
                     if (e.IsActive()) sample += e.Compute();
 
-                sample += (rand() / (float)RAND_MAX - 0.5f) * processingRpm * (0.5f + 0.5f * m_Throttle) * m_NoiseRatio * 0.001f;
+                //sample += (rand() / (float)RAND_MAX - 0.5f) * processingRpm * (0.5f + 0.5f * m_Throttle) * m_NoiseRatio * 0.001f;
 
-				float soundSpeed = 343.0f + m_Rpm * 0.01f;
+				float soundSpeed = 343.0f;// + m_Rpm * 0.01f;
                 sample = m_P2.Process(sample, soundSpeed);
                 sample = m_P3.Process(sample, soundSpeed);
                 sample = m_P1.Process(sample, soundSpeed);
@@ -608,10 +610,8 @@ void EngineSound::DrawDebug()
         {
             float py = p.y + (float)(256 - 1 - displayRowF) * (size.y / 256);
 
-            // 目盛り線
             dl->AddLine(ImVec2(p.x, py), ImVec2(p.x + size.x, py), ImColor(255, 255, 255, 100));
 
-            // ラベルテキスト
             char buf[32];
             if (fTarget >= 1000.0f) sprintf(buf, "%.1fkHz", fTarget / 1000.0f);
             else sprintf(buf, "%.0fHz", fTarget);
@@ -622,13 +622,11 @@ void EngineSound::DrawDebug()
 
 
 
-    // ピクセル描画
     for (int x = 0; x < SPEC_WIDTH; x++)
     {
         int xx = (m_SpecWritePos + x) % SPEC_WIDTH;
         for (int y = 0; y < 256; y++)
         {
-            // map display row (mel-space) to source FFT bin (linear freq)
             float mel = (float)y / (float)(256 - 1) * melMax;
             float hz = melToHz(mel);
             float binF = hz * (float)BUFFER_SAMPLES / (float)SAMPLE_RATE;

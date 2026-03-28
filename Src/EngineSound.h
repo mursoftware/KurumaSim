@@ -39,10 +39,11 @@ class ExhaustPipe
     float m_SoundSpeed = 343.0f;
 
 public:
-    ExhaustPipe(float LengthMeters, float Reflection, float Cutoff, float Mix);
+    ExhaustPipe(bool enabled, float LengthMeters, float Reflection, float Cutoff, float Mix);
 
     float Process(float Input, float soundSpeed);
     void DrawDebugUI(const char* Name);
+	void SetEnabled(bool Enabled) { m_Enabled = Enabled; }
 };
 
 class EngineSound
@@ -72,9 +73,9 @@ class EngineSound
 	int m_BufferIndex = 0;
 	std::atomic<bool> m_Running = true;
 
-	ExhaustPipe m_P1{ 0.9f, -0.8f, 0.05f, 0.8f };
-	ExhaustPipe m_P2{ 1.8f, -0.8f, 0.01f, 0.8f };
-    ExhaustPipe m_P3{ 0.6f, -0.8f, 0.05f, 0.8f };
+	ExhaustPipe m_P1{ true, 0.9f, -0.6f, 0.08f, 0.8f };
+    ExhaustPipe m_P2{ true,0.6f, -0.6f, 0.08f, 0.8f };
+	ExhaustPipe m_P3{ false,1.8f, -0.8f, 0.02f, 0.8f };
 
 	std::vector<short> m_VisBuffer;
 	std::thread* m_AudioThread = nullptr;
@@ -93,4 +94,11 @@ public:
     void SetPitch(float Pitch);
     void DrawDebug();
     void Uninitialize();
+
+    void SetPipeEnabled(int PipeIndex, bool Enabled)
+    {
+        if (PipeIndex == 0) m_P1.SetEnabled(Enabled);
+        else if (PipeIndex == 1) m_P2.SetEnabled(Enabled);
+		else if (PipeIndex == 2) m_P3.SetEnabled(Enabled);
+    }
 };
