@@ -33,13 +33,14 @@ void TireRB::Load(const char* FileName, const char* PartName, float ScaleX)
 
 
 	m_Radius = GetPrivateProfileFloat(PartName, "RADIUS", FileName);
-	float width = GetPrivateProfileFloat(PartName, "WIDTH", FileName);
-	float mass = GetPrivateProfileFloat(PartName, "MASS", FileName);
+	//float width = GetPrivateProfileFloat(PartName, "WIDTH", FileName);
+	m_Mass = GetPrivateProfileFloat(PartName, "MASS", FileName);
 
 	Init(Vector3(0.0f, 0.0f, 0.0f), Quaternion::Identity());
-	CalcInertiaCylinderX(mass, width, m_Radius);
+	//CalcInertiaCylinderX(mass, width, m_Radius);
 
-	m_Inertia *= GetPrivateProfileVector3(PartName, "INERTIA_RATIO", FileName);;
+	//m_Inertia *= GetPrivateProfileVector3(PartName, "INERTIA_RATIO", FileName);;
+	m_Inertia = GetPrivateProfileVector3(PartName, "INERTIA", FileName) * 2.0f;
 
 
 	m_BrushStaticFrictionRatio = GetPrivateProfileFloat(PartName, "STATIC_FRICTION", FileName);

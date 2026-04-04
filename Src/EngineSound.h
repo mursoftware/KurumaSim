@@ -18,10 +18,12 @@ class Exhaust
     float m_OpenTime = 0.0f;
     float m_Throttle = 0.0f;
     float m_NoiseRatio = 0.2f;
+    float m_Gass = 0.0f;
+	float m_ValveRift = 1.0f;
 
 public:
     bool IsActive() const { return m_Active; }
-    void Start(float OpenTime, float Throttle, float NoiseRatio);
+    void Start(float OpenTime, float Throttle, float NoiseRatio, float ValbeRift);
     float Compute();
 };
 
@@ -56,11 +58,11 @@ class EngineSound
 
 	int m_NumCylinders = 6;
 
-	float m_ValveOpenRatio = 0.5f;
+	float m_ValveOpenRatio = 1.0f;
 	float m_VvtRatio = 0.0f;
     float m_PhaseOffset[MAX_CYLINDER] = {0.3f, 0.25f, 0.1f, 0.35f, 0.2f, 0.15f};
 	float m_PhaseNoise = 0.0f;
-	float m_Gain = 2.0f;
+	float m_Gain = 20.0f;
 
 	float m_Phase = 0.0;
 	double m_CylTime = 0.0;
@@ -68,6 +70,9 @@ class EngineSound
 	float m_Jitter = 0.0;
 	float m_PrevRpm = 800.0f;
 	float m_NoiseRatio = 0.2f;
+    float m_Boost = 0.0f;
+	float m_ValveRift = 0.5f;
+
 
 	std::vector<short> m_AudioMemory[NUM_BUFFERS];
 	int m_BufferIndex = 0;

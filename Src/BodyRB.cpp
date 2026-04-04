@@ -25,10 +25,15 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 		m_Offset = GetPrivateProfileVector3(PartName, "OFFSET", FileName);
 		m_Size = GetPrivateProfileVector3(PartName, "SIZE", FileName);
 
-		float bodyMass = GetPrivateProfileFloat(PartName, "MASS", FileName);
-		CalcInertiaBox(bodyMass, m_Size);
+		//float bodyMass = GetPrivateProfileFloat(PartName, "MASS", FileName);
+		//CalcInertiaBox(bodyMass, m_Size);
 
-		m_Inertia *= GetPrivateProfileVector3(PartName, "INERTIA_RATIO", FileName);;
+		//m_Inertia *= GetPrivateProfileVector3(PartName, "INERTIA_RATIO", FileName);
+
+		m_Mass = GetPrivateProfileFloat(PartName, "MASS", FileName);
+
+		m_Inertia = GetPrivateProfileVector3(PartName, "INERTIA", FileName) * 2.0f;
+
 
 
 		m_CD = GetPrivateProfileFloat(PartName, "CD", FileName);

@@ -319,13 +319,16 @@ void PerformFFT(std::vector<Complex>& Data)
 
 
 
-void Exhaust::Start(float OpenTime, float Throttle, float NoiseRatio)
+void Exhaust::Start(float OpenTime, float Throttle, float NoiseRatio, float ValbeRift)
 {
     m_Active = true;
     m_OpenTime = OpenTime;
     m_Throttle = Throttle;
     m_NoiseRatio = NoiseRatio;
     m_Time = 0.0f;
+    m_ValveRift = ValbeRift;
+
+	m_Gass = 3.0f + 5.0f * Throttle;
 }
 
 float Exhaust::Compute()
@@ -335,15 +338,21 @@ float Exhaust::Compute()
         m_Active = false;
         return 0.0f;
     }
-    float t = m_Time / m_OpenTime;
-    //float pressure = t * (1.0f - t) * (0.5f + m_Throttle*0.5f) / m_OpenTime * 0.01f;
-    float pressure = 20.0f * t * std::exp(-8.0f * t) * (0.5f + m_Throttle*0.5f) / m_OpenTime * 0.02f;
 
-    //pressure *= pressure;
-    //float noise = GenerateRedNoise() * pressure * m_NoiseRatio * 0.0f;
-	float noise = (rand() / (float)RAND_MAX - 0.5f) * pressure * m_NoiseRatio * 1.0f;
+	float valveOpen = (1.0f - std::cos(PI * 2.0f * m_Time / m_OpenTime)) * 0.5f;
+	float pistonPosition = (1.0f + std::cos(PI * m_Time / m_OpenTime)) * 0.45f + 0.1f;
+	float pressure = m_Gass / pistonPosition;
+	float exhaustFlow = valveOpen * (pressure - 1.0f) * m_ValveRift;
+
+	m_Gass -= exhaustFlow;
+
     m_Time += 1.0f / SAMPLE_RATE;
-    return pressure + noise;
+
+
+    float noise = (rand() / (float)RAND_MAX - 0.5f) * exhaustFlow * m_NoiseRatio * 1.0f;
+
+
+    return (exhaustFlow + noise) * 1.0f;
 }
 
 
@@ -439,6 +448,9 @@ void EngineSound::SetState(float Rpm, float Throttle)
 {
     m_Rpm = Rpm;
     m_Throttle = Throttle;
+
+
+	m_Boost = m_Rpm * m_Throttle * 0.0003f - 1.0f;
 }
 
 void EngineSound::Run()
@@ -475,7 +487,10 @@ void EngineSound::Run()
                         if (!e.IsActive())
                         {
                             float valveOpenTime = 1.0f / (processingRpm / 60.0f) * 2.0f / 4.0f * (m_ValveOpenRatio + processingRpm * m_VvtRatio * 0.0000f);
-                            e.Start(valveOpenTime, m_Throttle * (1.0f + (rand() / (float)RAND_MAX - 0.5f) * 0.1f), m_NoiseRatio);
+							//float throttle = (0.5f + 0.5f * m_Throttle * (1.0f + (rand() / (float)RAND_MAX - 0.5f) * 0.0f));
+                            //throttle *= (1.0f + processingRpm * 0.0001f);
+                            //e.Start(valveOpenTime, m_Throttle, m_NoiseRatio);
+                            e.Start(valveOpenTime, m_Boost + 1.0f, m_NoiseRatio, m_ValveRift);
                             break;
                         }
                     }
@@ -523,16 +538,20 @@ void EngineSound::DrawDebug()
 {
     ImGui::Begin("Engine Sound Parameter");
 
-    ImGui::SliderFloat("Gain", &m_Gain, 0.0f, 10.0f);
+    ImGui::SliderFloat("Gain", &m_Gain, 0.0f, 50.0f);
 
     ImGui::SliderInt("Cylinders", &m_NumCylinders, 1, MAX_CYLINDER);
     ImGui::SliderFloat("ValveOpenRatio", &m_ValveOpenRatio, 0.0f, 2.0f);
     ImGui::SliderFloat("VVT", &m_VvtRatio, 0.0f, 1.0f);
     ImGui::SliderFloat("Noise", &m_NoiseRatio, 0.0f, 1.0f);
+    ImGui::SliderFloat("ValbeRift", &m_ValveRift, 0.0f, 1.0f);
 
 
     ImGui::SliderFloat("PhaseNoise", &m_PhaseNoise, 0.0f, 1.0f);
 
+    char buf[32]{};
+    sprintf(buf, "Boost %.2f Bar", m_Boost);
+    ImGui::ProgressBar((m_Boost + 1.0f) / 3.0f, ImVec2(0, 16), buf);
 
     if (ImGui::CollapsingHeader("Exhaust Manifold"))
     {
@@ -577,7 +596,7 @@ void EngineSound::DrawDebug()
         m_SpecWritePos = (m_SpecWritePos + 1) % SPEC_WIDTH;
 
 
-        ImGui::PlotLines("Waveform", wave, BUFFER_SAMPLES / 4, 0, NULL, -1.0f, 1.0f, ImVec2(0, 100));
+        ImGui::PlotLines("Waveform", wave, BUFFER_SAMPLES / 2, 0, NULL, -1.0f, 1.0f, ImVec2(0, 100));
         ImGui::PlotHistogram("Spectrum", spec, BUFFER_SAMPLES / 2 / 4, 0, NULL, 0.0f, 10.0f, ImVec2(0, 100));
     }
     else

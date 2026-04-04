@@ -282,10 +282,13 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
+	float throttle = 0.0f;
+
+
 	if( Input )
 	{
 		//Accelerator/Brake
-		m_Throttle = inputState.Accel;
+		throttle = inputState.Accel;
 		m_Brake = inputState.Brake;
 
 		if(m_Brake > 0.0f)
@@ -329,8 +332,8 @@ void Car::Update( bool Control, bool Input, float dt )
 		if (rpm < 750.0f)
 			gear = 0;
 
-		if (m_Throttle < 0.1f && rpm < 750.0f)
-			m_Throttle = (750.0f - rpm) / 750.0f;
+		if (throttle < 0.1f && rpm < 750.0f)
+			throttle = (750.0f - rpm) / 750.0f;
 
 		m_Transmission.SetGear(gear);
 
@@ -342,25 +345,25 @@ void Car::Update( bool Control, bool Input, float dt )
 		if (inputState.ShiftDown && m_Transmission.GetGear() > 1)
 		{
 			m_ClutchRatio -= 15.0f * dt;
-			m_Throttle = (1.0f - m_ClutchRatio) * 1.0f;
+			throttle = (1.0f - m_ClutchRatio) * 1.0f;
 		}
 		else if (inputState.ShiftUp && m_Transmission.GetGear() < m_Transmission.GetGearCount())
 		{
 			m_ClutchRatio -= 15.0f * dt;
-			m_Throttle = m_ClutchRatio;
+			throttle = m_ClutchRatio;
 
-			if (m_Throttle < 0.1f)
-				m_Throttle = 0.1f;
+			if (throttle < 0.1f)
+				throttle = 0.1f;
 		}
 		else
 		{
 			m_ClutchRatio += 15.0f * dt;
 
 			if (m_ShitDown)
-				m_Throttle = 1.0f - m_ClutchRatio;
+				throttle = 1.0f - m_ClutchRatio;
 
 			if (m_ShitUp)
-				m_Throttle = m_ClutchRatio;
+				throttle = m_ClutchRatio;
 		}
 
 
@@ -382,7 +385,7 @@ void Car::Update( bool Control, bool Input, float dt )
 
 
 
-
+	m_Throttle += (throttle - m_Throttle) * 0.03f;
 
 
 	//drive train

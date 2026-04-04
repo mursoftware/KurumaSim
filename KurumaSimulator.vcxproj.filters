@@ -151,6 +151,9 @@
     <ClInclude Include="Src\Model.h">
       <Filter>Resouce</Filter>
     </ClInclude>
+    <ClInclude Include="Src\EngineSound.h">
+      <Filter>Car</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGUI\imgui_impl_win32.cpp">
@@ -260,6 +263,9 @@
     </ClCompile>
     <ClCompile Include="Src\Model.cpp">
       <Filter>Resouce</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EngineSound.cpp">
+      <Filter>Car</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
