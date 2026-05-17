@@ -44,6 +44,7 @@ cbuffer CameraConstantBuffer : register(b1)
 	int         MotionBlurCount;
 	int         TemporalFrame;
 	int         EnvBufferMipLevel;
+    int         TonemapMode;
 };
 
 

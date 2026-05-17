@@ -7,8 +7,8 @@ static const int SAMPLE_RATE = 44100;
 static const int BUFFER_SAMPLES = 2048;
 static const int NUM_BUFFERS = 2;
 static const int MAX_CYLINDER = 12;
-static const int SPEC_WIDTH = 256;   // 時間方向（横）
-//static const int SPEC_HEIGHT = 256;  // 周波数方向（縦）
+static const int SPEC_WIDTH = 256;
+//static const int SPEC_HEIGHT = 256;
 
 
 class Exhaust

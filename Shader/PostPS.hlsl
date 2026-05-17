@@ -224,28 +224,39 @@ float4 main(PS_INPUT input) : SV_TARGET0
 	}
     
     
-
-
-    //tone mapping
-    {
-        //if (ACESFilmEnable)
-		//	color.rgb = ACESFilm(color.rgb);
-        //else
-         //   color = saturate(color);
-        
-		//color.rgb = color.rgb / (1.0 + color.rgb);
-        
-		color.rgb = 1.0 - exp(-color.rgb);
-
-	}
     
-
-
+ 
     //white balance
     {
 		color.rgb *= ColorTemperatureToRGB(WhiteBalance);// / ColorTemperatureToRGB(IBLWhiteBalance);
 	}
   
+   
+
+
+    //tone mapping
+    {
+        switch (TonemapMode)
+        {
+            case 1: //ACES
+                color.rgb = ACESFilm(color.rgb);
+                break;
+            case 2: //Reinhard
+                color.rgb = color.rgb / (1.0 + color.rgb);
+                break;
+            case 3: //exp
+                color.rgb = 1.0 - exp(-color.rgb);
+                break;
+            //case 4: //tanh(overflows with large values)
+            //    color.rgb = tanh(color.rgb);
+            //    break;
+            default:
+                color.rgb = saturate(color.rgb);
+                break;
+        }
+	}
+    
+
 
 
     //gamma correction

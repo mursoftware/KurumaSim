@@ -26,6 +26,7 @@ protected:
 	float		m_Vignette = 0.0f;
 	float       m_TemporalRatio = 0.9f;
 	int         m_MotionBlurCount = 5;
+	int         m_TonemapMode = 3;
 
 	int         m_TaaFrame = 0;
 

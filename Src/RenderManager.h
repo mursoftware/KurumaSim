@@ -219,7 +219,7 @@ struct CAMERA_CONSTANT
 	int         MotionBlurCount;
 	int         TemporalFrame;
 	int         EnvBufferMipLevel;
-
+	int         TonemapMode;
 };
 
 

@@ -455,6 +455,7 @@ void CarCamera::Draw()
 	constant.AntiAliasing = m_AntiAliasng;
 	constant.TemporalRatio = m_TemporalRatio;
 	constant.TemporalFrame = m_TaaFrame;
+	constant.TonemapMode = m_TonemapMode;
 
 	constant.SSBufferSize.X = (float)RenderManager::GetInstance()->GetSSBufferWidth();
 	constant.SSBufferSize.Y = (float)RenderManager::GetInstance()->GetSSBufferHeight();
@@ -479,10 +480,17 @@ void CarCamera::DrawDebug()
 {
 	ImGui::Begin("Camera");
 
-	//ImGui::DragFloat3("Rotation", (float*)&m_Rotation, 0.01f);
-	//ImGui::SliderFloat("Distance", &m_Distance, 1.0f, 10.0f, "%.1f m");
+
 	ImGui::SliderFloat("FocalLength", &m_FocalLength, 10.0f, 200.0f, "%.0f mm");
 	ImGui::SliderFloat("FocalBlur", &m_FocalBlur, 0.0f, 1000.0f, "%.0f");
+	ImGui::SliderFloat("LensFlare", &m_LensFlare, 0.0f, 1.0f, "%.1f");
+	ImGui::SliderFloat("MotionBlur", &m_MotionBlur, 0.0f, 2.0f, "%.1f");
+	ImGui::SliderInt("MotionBlurCount", &m_MotionBlurCount, 1, 10);
+	ImGui::SliderFloat("Vignette", &m_Vignette, 0.0f, 1.0f, "%.2f");
+
+
+	ImGui::Separator();
+
 
 	ImGui::Checkbox("AutoExposure", &m_AutoExposure);
 	if(m_AutoExposure)
@@ -491,18 +499,21 @@ void CarCamera::DrawDebug()
 		ImGui::SliderFloat("Exposure", &m_Exposure, 1.0f, 20.0f, "%.2f EV");
 
 	ImGui::SliderFloat("WhiteBalance", &m_WhiteBalance, 1000.0f, 10000.0f, "%.0f K");
+	{
+		const char* items[] = { "None", "ACES", "Reinhard", "exp" };
+		ImGui::Combo("TonemapMode", &m_TonemapMode, items, IM_ARRAYSIZE(items));
+	}
 	ImGui::SliderFloat("Gamma", &m_Gamma, 1.0f, 3.0f, "%.2f");
-	ImGui::SliderFloat("LensFlare", &m_LensFlare, 0.0f, 1.0f, "%.1f");
-	ImGui::SliderFloat("MotionBlur", &m_MotionBlur, 0.0f, 2.0f, "%.1f");
-	ImGui::SliderInt("MotionBlurCount", &m_MotionBlurCount, 1, 10);
-	ImGui::SliderFloat("Vignette", &m_Vignette, 0.0f, 1.0f, "%.2f");
-	//ImGui::Checkbox("ACES Film", &m_ACESFilmEnable);
-	//ImGui::Checkbox("FXAA", &m_FXAAEnable);
 
-	const char* items[] = { "None", "FXAA", "TAA", "TSR" };
-	ImGui::Combo("AntiAliasing", &m_AntiAliasng, items, IM_ARRAYSIZE(items));
+
+	ImGui::Separator();
+
+
+	{
+		const char* items[] = { "None", "FXAA", "TAA", "TSR" };
+		ImGui::Combo("AntiAliasing", &m_AntiAliasng, items, IM_ARRAYSIZE(items));
+	}
 	ImGui::SliderFloat("TemporalRatio", &m_TemporalRatio, 0.0f, 1.0f, "%.2f");
-
 
 
 	ImGui::End();
