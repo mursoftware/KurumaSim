@@ -13,7 +13,7 @@ https://github.com/mursoftware/KurumaSim/assets/135035096/17aec63a-1d88-4e7d-84e
 - Intel UHD
 
 ## Download
-KurumaSim v0.1.0 [Download](https://github.com/mursoftware/KurumaSim/releases/download/v0.1.0/KurumaSim_0_1_0.zip)
+KurumaSim v0.1.4 [Download](https://github.com/mursoftware/KurumaSim/releases/download/v0.1.4/KurumaSim_0_1_4.zip)
 
 ## Installation
 1. Download the .zip
