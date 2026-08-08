@@ -31,7 +31,7 @@ InputManager::InputManager()
 #endif // USE_LOGITECH_STEERING_WHEEL_LIB
 
 
-	m_TorqureRatio = 0.1f;
+	m_TorqureRatio = 0.05f;
 }
 
 
@@ -239,35 +239,35 @@ void InputManager::Update()
 void InputManager::DrawDebug()
 {
 
-	//ImGui::Begin("Controller");
+	ImGui::Begin("Controller");
 
-	//char buf[32]{};
-	//sprintf(buf, "SterlingAngle %.1f", m_AxisLeft.X * 450.0f);
-	//ImGui::ProgressBar(m_AxisLeft.X / 2.0f + 0.5f, ImVec2(0, 0), buf);
-	//sprintf(buf, "Torque %.0f Nm", -m_TorqueAverage);
-	//ImGui::ProgressBar(-m_TorqueAverage / 100.0f + 0.5f, ImVec2(0, 0), buf);
+	char buf[32]{};
+	sprintf(buf, "SterlingAngle %.1f", m_AxisLeft.X * 450.0f);
+	ImGui::ProgressBar(m_AxisLeft.X / 2.0f + 0.5f, ImVec2(0, 0), buf);
+	sprintf(buf, "Torque %.0f Nm", -m_TorqueAverage);
+	ImGui::ProgressBar(-m_TorqueAverage / 100.0f + 0.5f, ImVec2(0, 0), buf);
 
-	//ImGui::SliderFloat("TorqueRatio", &m_TorqureRatio, 0.0f, 1.0f, "%.2f");
+	ImGui::SliderFloat("TorqueRatio", &m_TorqureRatio, 0.0f, 1.0f, "%.2f");
 
 
-	//float throttle{}, brake{};
-	//if (m_AxisRight.Y > 0.0f)
-	//{
-	//	throttle = m_AxisRight.Y;
-	//	brake = 0.0f;
-	//}
-	//else
-	//{
-	//	throttle = 0.0f;
-	//	brake = -m_AxisRight.Y;
-	//}
+	float throttle{}, brake{};
+	if (m_AxisRight.Y > 0.0f)
+	{
+		throttle = m_AxisRight.Y;
+		brake = 0.0f;
+	}
+	else
+	{
+		throttle = 0.0f;
+		brake = -m_AxisRight.Y;
+	}
 
-	//sprintf(buf, "Throttle %.2f", throttle);
-	//ImGui::ProgressBar(throttle, ImVec2(0, 0), buf);
-	//sprintf(buf, "Brake %.2f", brake);
-	//ImGui::ProgressBar(brake, ImVec2(0, 0), buf);
+	sprintf(buf, "Throttle %.2f", throttle);
+	ImGui::ProgressBar(throttle, ImVec2(0, 0), buf);
+	sprintf(buf, "Brake %.2f", brake);
+	ImGui::ProgressBar(brake, ImVec2(0, 0), buf);
 
-	//ImGui::End();
+	ImGui::End();
 
 
 }

@@ -322,12 +322,7 @@ Vector3 Vector3::TransformNormal( const Matrix44& Matrix, const Vector3& Vector 
 			+ Vector.Y * Matrix.M[1][2]
 			+ Vector.Z * Matrix.M[2][2];
 
-	vec4.W =  Vector.X * Matrix.M[0][3]
-			+ Vector.Y * Matrix.M[1][3]
-			+ Vector.Z * Matrix.M[2][3]
-			+			 Matrix.M[3][3];
-
-	return Vector3( vec4.X, vec4.Y, vec4.Z ) / vec4.W;
+	return Vector3( vec4.X, vec4.Y, vec4.Z );
 }
 
 
@@ -680,12 +675,7 @@ Vector3D Vector3D::TransformNormal(const Matrix44& Matrix, const Vector3D& Vecto
 					+ Vector.Y * Matrix.M[1][2]
 					+ Vector.Z * Matrix.M[2][2]);
 
-	vec4.W = (float)(Vector.X * Matrix.M[0][3]
-					+ Vector.Y * Matrix.M[1][3]
-					+ Vector.Z * Matrix.M[2][3]
-					+ Matrix.M[3][3]);
-
-	return Vector3D(vec4.X, vec4.Y, vec4.Z) / vec4.W;
+	return Vector3D(vec4.X, vec4.Y, vec4.Z);
 }
 
 
@@ -850,7 +840,7 @@ Quaternion& Quaternion::operator/=(float f)
 	return *this;
 }
 
-float Quaternion::Length()
+float Quaternion::Length() const
 {
 	return sqrtf(X * X + Y * Y + Z * Z + W * W);
 }
@@ -863,12 +853,15 @@ void Quaternion::Normalize()
 
 void Quaternion::Inverse()
 {
-	float len = Length();
+	float lenSq = X * X + Y * Y + Z * Z + W * W;
 
-	X /= -len;
-	Y /= -len;
-	Z /= -len;
-	W /= len;
+	if (lenSq > 0.000001f)
+	{
+		X /= -lenSq;
+		Y /= -lenSq;
+		Z /= -lenSq;
+		W /= lenSq;
+	}
 }
 
 
@@ -887,7 +880,7 @@ Quaternion Quaternion::Identity()
 }
 
 
-Quaternion Quaternion::Multiply(const Quaternion& q2, const Quaternion& q1)
+Quaternion Quaternion::Multiply(const Quaternion& q1, const Quaternion& q2)
 {
 	Quaternion oq;
 
@@ -920,46 +913,58 @@ Quaternion Quaternion::RotationAxis(const Vector3& v)
 	return oq;
 }
 
+
+
 Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t)
 {
 	float dot = Dot(q1, q2);
+	Quaternion q3 = q2;
 
-	if (dot > 0.99f)
+	if (dot < 0.0f)
 	{
-		return q1;
+		dot = -dot;
+		q3.X = -q3.X; q3.Y = -q3.Y; q3.Z = -q3.Z; q3.W = -q3.W;
 	}
 
+	if (dot > 0.999f)
+	{
+		Quaternion result;
+		result.X = q1.X + (q3.X - q1.X) * t;
+		result.Y = q1.Y + (q3.Y - q1.Y) * t;
+		result.Z = q1.Z + (q3.Z - q1.Z) * t;
+		result.W = q1.W + (q3.W - q1.W) * t;
+		result.Normalize();
+		return result;
+	}
 
 	float theta = acosf(dot);
-
-	if (theta < 0.0)
-	{
-		theta = -theta;
-	}
-
-
 	float st = sinf(theta);
-
 	float sut = sinf(theta * t);
 	float sout = sinf(theta * (1.0f - t));
 
 	float coeff1 = sout / st;
 	float coeff2 = sut / st;
 
-
 	Quaternion oq;
-	oq.X = coeff1 * q1.X + coeff2 * q2.X;
-	oq.Y = coeff1 * q1.Y + coeff2 * q2.Y;
-	oq.Z = coeff1 * q1.Z + coeff2 * q2.Z;
-	oq.W = coeff1 * q1.W + coeff2 * q2.W;
+	oq.X = coeff1 * q1.X + coeff2 * q3.X;
+	oq.Y = coeff1 * q1.Y + coeff2 * q3.Y;
+	oq.Z = coeff1 * q1.Z + coeff2 * q3.Z;
+	oq.W = coeff1 * q1.W + coeff2 * q3.W;
 
 	return oq;
 }
+
+
 
 float Quaternion::Dot(const Quaternion& q1, const Quaternion& q2)
 {
 	return q1.X * q2.X + q1.Y * q2.Y + q1.Z * q2.Z + q1.W * q2.W;
 }
+
+
+
+
+
 
 
 Matrix33 Matrix33::Identity()

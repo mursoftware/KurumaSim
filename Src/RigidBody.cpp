@@ -78,42 +78,22 @@ void RigidBody::AddTorqueWorld(Vector3 Torque, float dt)
 
 void RigidBody::AddTorqueWorld(Vector3 Position, Vector3 Torque, float dt)
 {
-	Matrix44 world = GetMatrix();
-	Vector3 vy, vz, vc, nt;
-	float lt{};
+	Vector3 r = Position - m_Position;
 
-	lt = Torque.Length();
+	Matrix44 mtx = GetMatrix();
+	Matrix44 im = Matrix44::Inverse(mtx);
+	Vector3 lt = Vector3::TransformNormal(im, Torque);
 
-	if (lt == 0.0f)
-		return;
+	float r2 = r.LengthSq();
+	Vector3 inertia = m_Inertia;
+	inertia.X += m_Mass * (r2 - r.X * r.X);
+	inertia.Y += m_Mass * (r2 - r.Y * r.Y);
+	inertia.Z += m_Mass * (r2 - r.Z * r.Z);
 
-
-	nt = Torque / lt;
-	vy = world.Up();
-	if (Vector3::Dot(vy, nt) < 1.0f)
-	{
-		vc = Vector3::Cross(nt, vy);
-		vc.Normalize();
-		vy = Vector3::Cross(vc, nt);
-		vy.Normalize();
-
-		AddForceWorld(Position + vc, -vy * lt * 0.5f, dt);
-		AddForceWorld(Position - vc, vy * lt * 0.5f, dt);
-	}
-	else
-	{
-		vz = world.Front();
-		vc = Vector3::Cross(nt, vz);
-		vc.Normalize();
-		vz = Vector3::Cross(vc, nt);
-		vz.Normalize();
-
-		AddForceWorld(Position + vc, -vz * lt * 0.5f, dt);
-		AddForceWorld(Position - vc, vz * lt * 0.5f, dt);
-	}
-
-
+	m_AngularVelocity += lt / inertia * dt;
 }
+
+
 
 void RigidBody::AddTorqueLocal(Vector3 Torque, float dt)
 {
@@ -144,7 +124,7 @@ void RigidBody::AddForceWorld(Vector3 Position, Vector3 Force, float dt)
 void RigidBody::RotateAxisWorld(Vector3 Axis)
 {
 	Quaternion dr = Quaternion::RotationAxis(Axis);
-	m_Rotation = Quaternion::Multiply(m_Rotation, dr);
+	m_Rotation = Quaternion::Multiply(dr, m_Rotation);
 }
 
 
@@ -170,7 +150,7 @@ void RigidBody::UpdatePositionRotation(float dt)
 	}
 
 	Quaternion dr = Quaternion::RotationAxis(m_AngularVelocity * dt);
-	m_Rotation = Quaternion::Multiply(dr, m_Rotation);
+	m_Rotation = Quaternion::Multiply(m_Rotation, dr);
 	m_Rotation.Normalize();
 
 }
@@ -188,7 +168,7 @@ void RigidBody::CalcVelocity(float dt, Vector3* Force, Vector3* Torque)
 
 	Quaternion iq = m_OldRotation;
 	iq.Inverse();
-	Quaternion dr = Quaternion::Multiply(m_Rotation, iq);
+	Quaternion dr = Quaternion::Multiply(iq, m_Rotation);
 	Vector3 angularVelocity = Vector3::RotationQuaternion(dr) / dt;
 
 	Vector3 d = Vector3::Cross(angularVelocity, angularVelocity * m_Inertia);

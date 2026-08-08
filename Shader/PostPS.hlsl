@@ -29,7 +29,7 @@ float3 ACESFilm(float3 x)
 
 float3 gammacorrect(float3 x, float gamma)
 {
-	return pow(abs(x), 1.0 / gamma);
+    return pow(abs(x), 1.0 / gamma);
 }
 
 
@@ -47,7 +47,7 @@ float3 ColorTemperatureToRGB(float temperatureInKelvins)
     }
     else
     {
-		float t = abs(temperatureInKelvins - 60.0);
+        float t = abs(temperatureInKelvins - 60.0);
         retColor.r = saturate(1.29293618606274509804 * pow(t, -0.1332047592));
         retColor.g = saturate(1.12989086089529411765 * pow(t, -0.0755148492));
     }
@@ -72,26 +72,26 @@ float4 main(PS_INPUT input) : SV_TARGET0
     float2 texcoord = input.TexCoord;
    
     
-    float4 color;  
+    float4 color;
     color.rgb = 0.0;
     color.a = 1.0;
 
-	float depth = textureDepth.SampleLevel(sampler3, texcoord, 0).r;
+    float depth = textureDepth.SampleLevel(sampler3, texcoord, 0).r;
     float n = 0.5; // camera z near
     float f = 400.0; // camera z far
     float z = (2.0 * n) / (f + n - depth * (f - n)) * f * 0.5;
 
 
-	float4 projectionPosition = float4(texcoord * 2.0 - 1.0, depth, 1.0);
-	projectionPosition.y = -projectionPosition.y;
-	float4 worldPosition = mul(projectionPosition, InvVP);
-	worldPosition /= worldPosition.w;
+    float4 projectionPosition = float4(texcoord * 2.0 - 1.0, depth, 1.0);
+    projectionPosition.y = -projectionPosition.y;
+    float4 worldPosition = mul(projectionPosition, InvVP);
+    worldPosition /= worldPosition.w;
     
     
     float blur = FocalLength * abs(z - FocalDistance) / (z * (FocalDistance - FocalLength)) * FocalBlur;
 
 
-	float offset = blur;//+log2(SSRatio) - 0.5;
+    float offset = blur; //+log2(SSRatio) - 0.5;
 	//offset = 0.0;
 
 
@@ -101,29 +101,29 @@ float4 main(PS_INPUT input) : SV_TARGET0
   
     //Motion blur for rotation
     {
-		float count = 0.0;
-		float2 blurPos = texcoord;
-		float2 velocity = textureVelocity.SampleLevel(sampler3, blurPos, 0);      
-      	float2 ov = velocity;
+        float count = 0.0;
+        float2 blurPos = texcoord;
+        float2 velocity = textureVelocity.SampleLevel(sampler3, blurPos, 0);
+        float2 ov = velocity;
 
-		for (int i = 0; i < MotionBlurCount-1; i++)
-		{
-			float a = saturate(1.0 - length(ov - velocity) * 100.0);
-			color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
-			count += a;
+        for (int i = 0; i < MotionBlurCount - 1; i++)
+        {
+            float a = saturate(1.0 - length(ov - velocity) * 100.0);
+            color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+            count += a;
             
-			blurPos += -velocity * MotionBlur / MotionBlurCount;
-			velocity = textureVelocity.SampleLevel(sampler3, blurPos, 0);
+            blurPos += -velocity * MotionBlur / MotionBlurCount;
+            velocity = textureVelocity.SampleLevel(sampler3, blurPos, 0);
             
-		}
+        }
         
-		float a = saturate(1.0 - length(ov - velocity) * 100.0);
-		color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
-		count += a;
+        float a = saturate(1.0 - length(ov - velocity) * 100.0);
+        color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+        count += a;
         
   
-		color.rgb /= count;
-	}
+        color.rgb /= count;
+    }
 
  
     
@@ -131,7 +131,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
     //flare
     {
-        float r = LensFlare * 2.0;
+        float3 r = float3(1.2, 1.0, 0.8) * LensFlare * 2.0;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 0 + offset).rgb * 1.0;
         color.rgb += textureColor.SampleLevel(sampler1, texcoord, 1.5 + offset).rgb / 8 * r;
         //color.rgb += textureColor.SampleLevel(sampler1, texcoord, 2 + offset).rgb * pow(r, 2);
@@ -149,7 +149,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
 
     //Smoke Reduction Buffer Composition
     {
-		float4 shrinkColor = textureShrink.SampleLevel(sampler1, texcoord, 0);
+        float4 shrinkColor = textureShrink.SampleLevel(sampler1, texcoord, 0);
         
         //float2 pixelSize = 1.0 / SSBufferSize;
 		//float shrinkAlpah = 0.0;
@@ -159,9 +159,9 @@ float4 main(PS_INPUT input) : SV_TARGET0
 		//	float2 offset = PoissonSamples[(int) (Random(float4(texcoord, 1, z)) * 64)] * pixelSize * 8.0;
 		//	shrinkAlpah += textureShrink.SampleLevel(sampler1, texcoord + offset, 0).a;
 		//}
-		color.rgb = lerp(color.rgb, shrinkColor.rgb, shrinkColor.a);
+        color.rgb = lerp(color.rgb, shrinkColor.rgb, shrinkColor.a);
 		//color.rgb = lerp(color.rgb, shrinkColor.rgb, saturate(shrinkColor.r)); //Alpha not available in DXGI_FORMAT_R11G11B10_FLOAT
-	}
+    }
 
     
     
@@ -169,22 +169,22 @@ float4 main(PS_INPUT input) : SV_TARGET0
    
     //fog
     {
-		float3 eyeVector = worldPosition.xyz - CameraPosition.xyz;
-		float len = length(eyeVector);
-		eyeVector /= len;
+        float3 eyeVector = worldPosition.xyz - CameraPosition.xyz;
+        float len = length(eyeVector);
+        eyeVector /= len;
         
 		//if (len > 400.0)
 		//	len = 1000.0;
         
-		float3 dirLight;
-		dirLight = ScatteringLight / PI;
+        float3 dirLight;
+        dirLight = ScatteringLight / PI;
 
 
-		float3 fogColor = float3(0.9, 0.9, 0.9);
-		float fog = (1.0 - exp(-len * Fog)) * saturate(1.0 - eyeVector.y / (Fog * 1000.0));
+        float3 fogColor = float3(0.9, 0.9, 0.9);
+        float fog = (1.0 - exp(-len * Fog)) * saturate(1.0 - eyeVector.y / (Fog * 1000.0));
 
-		color.rgb = color.rgb * (1.0 - fog) + fogColor * dirLight * fog;
-	}
+        color.rgb = color.rgb * (1.0 - fog) + fogColor * dirLight * fog;
+    }
     
     
 
@@ -192,46 +192,56 @@ float4 main(PS_INPUT input) : SV_TARGET0
     
     //vignette
     {
-		float2 pos;
-		pos.x = texcoord.x * 2.0f - 1.0f;
-		pos.y = texcoord.y * 2.0f - 1.0f;
+        float2 pos;
+        pos.x = texcoord.x * 2.0f - 1.0f;
+        pos.y = texcoord.y * 2.0f - 1.0f;
 
-		pos.x *= SSBufferSize.x / SSBufferSize.y;
-
-
-		float len = length(pos);
+        pos.x *= SSBufferSize.x / SSBufferSize.y;
 
 
-		color.rgb *= saturate(1.0 - len * Vignette);
-	}
+        float len = length(pos);
+
+
+        color.rgb *= saturate(1.0 - len * Vignette);
+    }
 
 
 
 
 
     //Exposure 
-	if (AutoExposure)
-	{
-		float3 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.5), 0);
-		float lumi = exposure.r * 0.3 + exposure.g * 0.6 + exposure.g * 0.1;
-		lumi *= 10000.0; //Luminance unit in shader is 1/10000 nit
+    if (AutoExposure)
+    {
+        float3 exposure = textureExposure.SampleLevel(sampler1, float2(0.5, 0.5), 0);
+        float lumi = exposure.r * 0.3 + exposure.g * 0.6 + exposure.g * 0.1;
+        lumi *= 10000.0; //Luminance unit in shader is 1/10000 nit
         
-		color.rgb *= Exposure / lumi;
-	}
+        color.rgb *= Exposure / lumi;
+    }
     else
-	{
-  		color.rgb *= Exposure;      
-	}
+    {
+        color.rgb *= Exposure;
+    }
     
     
     
  
     //white balance
     {
-		color.rgb *= ColorTemperatureToRGB(WhiteBalance);// / ColorTemperatureToRGB(IBLWhiteBalance);
-	}
+        color.rgb *= ColorTemperatureToRGB(WhiteBalance); // / ColorTemperatureToRGB(IBLWhiteBalance);
+    }
   
    
+    //spectral sensitivity
+    {
+        float3x3 sensitivity = float3x3(
+            0.90, 0.06, 0.04,
+            0.05, 0.90, 0.05,
+            0.04, 0.06, 0.90
+        );
+        
+        color.rgb = mul(sensitivity, color.rgb);
+    }
 
 
     //tone mapping
@@ -254,20 +264,20 @@ float4 main(PS_INPUT input) : SV_TARGET0
                 color.rgb = saturate(color.rgb);
                 break;
         }
-	}
+    }
     
 
 
 
     //gamma correction
     {
-		color.rgb = gammacorrect(color.rgb, Gamma);
-	}
+        color.rgb = gammacorrect(color.rgb, Gamma);
+    }
 
     
     
 
 
-	return color;
+    return color;
 
 }

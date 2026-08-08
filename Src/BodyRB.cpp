@@ -86,7 +86,7 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 	m_Material.ClearRoughness = 0.01f;
 	m_Material.ClearSpecular = 0.05f;
 
-	m_Material.BaseColor = Vector4(0.8f, 0.05f, 0.05f, 1.0f);
+	m_Material.BaseColor = Vector4(0.5f, 0.04f, 0.02f, 1.0f);
 	m_Material.BaseRoughness = 1.0f;
 	m_Material.BaseMetallic = 0.0f;
 	m_Material.BaseSpecular = 0.0f;

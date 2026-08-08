@@ -211,7 +211,7 @@ struct Quaternion
 	Quaternion operator/(float f) const;
 	Quaternion &operator/=(float f);
 
-	float Length();
+	float Length() const;
 	void Normalize();
 	void Inverse();
 

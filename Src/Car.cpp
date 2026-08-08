@@ -529,7 +529,10 @@ void Car::Update( bool Control, bool Input, float dt )
 		m_BodyRB.AddTorqueWorld(m_TireFRRB.GetPosition(), -torque, dt);
 
 
-		inputManager->SetTorque((steeringTorqueL + steeringTorqueR) / m_SteeringGearRatio);
+		if(m_Replay)
+			inputManager->SetTorque(0.0f);
+		else
+			inputManager->SetTorque((steeringTorqueL + steeringTorqueR) / m_SteeringGearRatio);
 
 
 		Vector3 torqueL, torqueR;

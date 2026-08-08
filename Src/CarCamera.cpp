@@ -483,7 +483,7 @@ void CarCamera::DrawDebug()
 
 	ImGui::SliderFloat("FocalLength", &m_FocalLength, 10.0f, 200.0f, "%.0f mm");
 	ImGui::SliderFloat("FocalBlur", &m_FocalBlur, 0.0f, 1000.0f, "%.0f");
-	ImGui::SliderFloat("LensFlare", &m_LensFlare, 0.0f, 1.0f, "%.1f");
+	ImGui::SliderFloat("LensFlare", &m_LensFlare, 0.0f, 10.0f, "%.1f");
 	ImGui::SliderFloat("MotionBlur", &m_MotionBlur, 0.0f, 2.0f, "%.1f");
 	ImGui::SliderInt("MotionBlurCount", &m_MotionBlurCount, 1, 10);
 	ImGui::SliderFloat("Vignette", &m_Vignette, 0.0f, 1.0f, "%.2f");
