@@ -345,6 +345,7 @@ private:
 	HWND								m_WindowHandle{};
 
 
+	int									m_GpuIndex{};
 	bool								m_WindowMode{};
 	int									m_SSBufferWidth{};
 	int									m_SSBufferHeight{};
