@@ -87,7 +87,7 @@ void GameScene::Load()
 
 
 	m_Car = AddGameObject<Car>();
-	m_Car->InitPositionRotation(Vector3(0.0f, 2.35f, 0.0f), -PI * 0.5f);
+	m_Car->InitPositionRotation(Vector3(0.0f, 0.45f, 0.0f), -PI * 0.5f);
 
 
 

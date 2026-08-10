@@ -110,7 +110,7 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 
 
 
-	m_PointModel.Load("Asset\\sphere.obj", THREAD_PRIORITY_ABOVE_NORMAL, false, true);
+	//m_PointModel.Load("Asset\\sphere.obj", THREAD_PRIORITY_ABOVE_NORMAL, false, true);
 
 }
 
@@ -473,7 +473,7 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 	//m_Model[LodLevel].Draw(false, &overridMaterial);
 
 
-	
+/*
 	for (HITPOSITION& hitPos : m_HitPositions)
 	{
 		Matrix44 worldMatrix, transMatrix, rotMatrix;
@@ -495,6 +495,6 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 		m_PointModel.Draw();
 	}
-	
+*/
 }
 
