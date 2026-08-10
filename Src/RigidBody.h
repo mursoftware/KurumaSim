@@ -17,7 +17,7 @@ protected:
 	Vector3			m_AngularVelocity;	//(rad/s) LocalSpace
 	Vector3			m_Inertia;			//(kgm2)
 
-
+	bool			m_Lock{ false };
 
 public:
 
@@ -53,5 +53,5 @@ public:
 	Vector3 GetAngularVelocityLocal() { return m_AngularVelocity; }
 	Vector3 GetAngularVelocityWorld();
 
-
+	void SetLock(bool Lock) { m_Lock = Lock; }
 };

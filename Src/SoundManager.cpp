@@ -279,6 +279,7 @@ void SoundManager::SetPitch( const char *FileName, int Index, float Pitch )
 {
 	SOUND *sound = m_BufferList[FileName];
 
+	Pitch = min(Pitch, 2.0f);
 	sound->SourceVoice[Index]->SetFrequencyRatio( Pitch );
 
 }

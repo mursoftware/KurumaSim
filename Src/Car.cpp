@@ -799,12 +799,12 @@ void Car::PreDraw()
 	m_BrakeRL.PreDraw();
 	m_BrakeRR.PreDraw();
 
-/*
+
 	m_SuspensionFL.PreDraw();
 	m_SuspensionFR.PreDraw();
 	m_SuspensionRL.PreDraw();
 	m_SuspensionRR.PreDraw();
-*/
+
 }
 
 
@@ -822,12 +822,6 @@ void Car::DrawDepth(Camera* DrawCamera, int LodLevel)
 	m_TireFRRB.Draw(DrawCamera, LodLevel);
 	m_TireRLRB.Draw(DrawCamera, LodLevel);
 	m_TireRRRB.Draw(DrawCamera, LodLevel);
-/*
-	m_SuspensionFL.Draw();
-	m_SuspensionFR.Draw();
-	m_SuspensionRL.Draw();
-	m_SuspensionRR.Draw();
-*/
 }
 
 
@@ -855,12 +849,12 @@ void Car::Draw(Camera* DrawCamera, int LodLevel)
 	m_BrakeRL.Draw(DrawCamera, LodLevel);
 	m_BrakeRR.Draw(DrawCamera, LodLevel);
 
-/*	
-	m_SuspensionFL.Draw();
-	m_SuspensionFR.Draw();
-	m_SuspensionRL.Draw();
-	m_SuspensionRR.Draw();
-*/
+
+	m_SuspensionFL.Draw(DrawCamera);
+	m_SuspensionFR.Draw(DrawCamera);
+	m_SuspensionRL.Draw(DrawCamera);
+	m_SuspensionRR.Draw(DrawCamera);
+
 }
 
 

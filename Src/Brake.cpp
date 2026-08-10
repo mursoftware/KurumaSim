@@ -5,6 +5,8 @@
 #include "Setting.h"
 #include "Brake.h"
 #include "RigidBody.h"
+#include "BodyRB.h"
+#include "TireRB.h"
 #include "Camera.h"
 #include "ShadowCamera.h"
 
@@ -41,13 +43,24 @@ void Brake::Update(float dt)
 
 	m_TorqueLen = m_Tire->GetAngularVelocityLocal().X * brakeRatio * m_Ratio;
 
-	//if (m_TorqueLen != 0.0f)
+
+	m_Tire->SetLock(false);
+
+	if (m_TorqueLen != 0.0f)
 	{
 		if (m_TorqueLen > m_MaxTorque * m_Ratio)
+		{
 			m_TorqueLen = m_MaxTorque * m_Ratio;
-
-		if (m_TorqueLen < -m_MaxTorque * m_Ratio)
+		}
+		else if (m_TorqueLen < -m_MaxTorque * m_Ratio)
+		{
 			m_TorqueLen = -m_MaxTorque * m_Ratio;
+		}
+		else
+		{
+			//m_TorqueLen = 0.0f;
+			m_Tire->SetLock(true);
+		}
 
 		torque = m_Tire->GetMatrix().Right() * -m_TorqueLen;
 
@@ -55,8 +68,6 @@ void Brake::Update(float dt)
 		m_Body->AddTorqueWorld(m_Tire->GetPosition(), -torque, dt);
 
 	}
-
-
 
 }
 

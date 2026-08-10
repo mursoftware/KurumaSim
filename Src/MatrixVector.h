@@ -214,12 +214,15 @@ struct Quaternion
 	float Length() const;
 	void Normalize();
 	void Inverse();
+	Vector3 ToEuler() const;
+
 
 	static Quaternion Identity();
 	static Quaternion Multiply(const Quaternion& q1, const Quaternion& q2);
 	static Quaternion RotationAxis(const Vector3& q1);
 	static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
 	static float Dot(const Quaternion& q1, const Quaternion& q2);
+	static Quaternion FromEuler(const Vector3& Euler);
 
 };
 

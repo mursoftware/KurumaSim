@@ -963,6 +963,66 @@ float Quaternion::Dot(const Quaternion& q1, const Quaternion& q2)
 
 
 
+Vector3 Quaternion::ToEuler() const
+{
+	Quaternion q = *this;
+	q.Normalize();
+
+	const float sinr_cosp = 2.0f * (q.W * q.X + q.Y * q.Z);
+	const float cosr_cosp = 1.0f - 2.0f * (q.X * q.X + q.Y * q.Y);
+	const float X = atan2f(sinr_cosp, cosr_cosp);
+
+	const float sinp = 2.0f * (q.W * q.Y - q.Z * q.X);
+
+	float Y;
+
+	if (fabs(sinp) >= 1.0f)
+	{
+		Y = copysign(PI * 0.5f, sinp);
+	}
+	else
+	{
+		Y = asinf(sinp);
+	}
+
+	const float siny_cosp = 2.0f * (q.W * q.Z + q.X * q.Y);
+	const float cosy_cosp = 1.0f - 2.0f * (q.Y * q.Y + q.Z * q.Z);
+	const float Z = atan2f(siny_cosp, cosy_cosp);
+
+
+	return Vector3(X, Y, Z);
+}
+
+
+
+Quaternion Quaternion::FromEuler(const Vector3& Euler)
+{
+	const float hx = Euler.X * 0.5f;
+	const float hy = Euler.Y * 0.5f;
+	const float hz = Euler.Z * 0.5f;
+
+	const float cx = cosf(hx);
+	const float sx = sinf(hx);
+
+	const float cy = cosf(hy);
+	const float sy = sinf(hy);
+
+	const float cz = cosf(hz);
+	const float sz = sinf(hz);
+
+	Quaternion q;
+
+	q.X = sx * cy * cz - cx * sy * sz;
+	q.Y = cx * sy * cz + sx * cy * sz;
+	q.Z = cx * cy * sz - sx * sy * cz;
+	q.W = cx * cy * cz + sx * sy * sz;
+
+	q.Normalize();
+
+	return q;
+}
+
+
 
 
 

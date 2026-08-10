@@ -85,13 +85,13 @@ void InputManager::Update()
 
 		if (m_AxisLeft.X < gammastea)
 		{
-			m_AxisLeft.X += 0.008f;
+			m_AxisLeft.X += 0.005f;
 			if (m_AxisLeft.X > gammastea)
 				m_AxisLeft.X = gammastea;
 		}
 		else if (m_AxisLeft.X > gammastea)
 		{
-			m_AxisLeft.X -= 0.008f;
+			m_AxisLeft.X -= 0.005f;
 			if (m_AxisLeft.X < gammastea)
 				m_AxisLeft.X = gammastea;
 		}

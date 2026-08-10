@@ -61,6 +61,8 @@ void Engine::Update(float dt)
 
 	//Torque Map -> Torque
 	int emi = (int)(rpm / 500.0f);
+	emi = max(0, min(emi, 20));
+
 	float et = m_TorqueMap[emi] + (m_TorqueMap[emi + 1] - m_TorqueMap[emi]) * (rpm / 500.0f - emi);
 
 	float mt = 0.0f;

@@ -40,7 +40,7 @@ private:
 	float		m_SpringLength{};
 
 
-	//Model*		m_Model;
+	Model		m_PointModel;
 
 public:
 
@@ -55,7 +55,7 @@ public:
 	void UpdateGeometry(float dt);
 	void DrawDebug(const char* DebugName);
 	void PreDraw();
-	void Draw();
+	void Draw(Camera* DrawCamera);
 
 	void SetSteeringAngle(float SteeringAngle) { m_SteeringAngle = SteeringAngle; }
 

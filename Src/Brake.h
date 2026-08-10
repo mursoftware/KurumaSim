@@ -11,8 +11,8 @@ private:
 	float m_Ratio{};
 	float m_TorqueLen{};
 
-	class RigidBody* m_Body{};
-	class RigidBody* m_Tire{};
+	class BodyRB* m_Body{};
+	class TireRB* m_Tire{};
 
 
 	Model		m_Model[5];
@@ -20,9 +20,11 @@ private:
 	Matrix44	m_WorldMatrix;
 	Matrix44	m_OldWorldMatrix;
 
+	float		m_LockRotation{};
+
 public:
 
-	void SetRigidBody(RigidBody* Body, RigidBody* Tire)
+	void SetRigidBody(BodyRB* Body, TireRB* Tire)
 	{
 		m_Body = Body;
 		m_Tire = Tire;

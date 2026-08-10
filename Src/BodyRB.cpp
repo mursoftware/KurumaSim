@@ -4,6 +4,7 @@
 
 #include "GameManager.h"
 #include "RenderManager.h"
+#include "Model.h"
 #include "GameScene.h"
 #include "Field.h"
 
@@ -91,6 +92,26 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 	m_Material.BaseMetallic = 0.0f;
 	m_Material.BaseSpecular = 0.0f;
 
+
+	m_HitPositions[0].Position = Vector3(-m_Size.X * 0.5f, -m_Size.Y * 0.2f, m_Size.Z * 0.4f);
+	m_HitPositions[1].Position = Vector3(m_Size.X * 0.5f, -m_Size.Y * 0.2f, m_Size.Z * 0.4f);
+	m_HitPositions[2].Position = Vector3(-m_Size.X * 0.5f, -m_Size.Y * 0.2f, -m_Size.Z * 0.4f);
+	m_HitPositions[3].Position = Vector3(m_Size.X * 0.5f, -m_Size.Y * 0.2f, -m_Size.Z * 0.4f);
+
+	m_HitPositions[4].Position = Vector3(-m_Size.X * 0.5f, m_Size.Y * 0.1f, m_Size.Z * 0.5f);
+	m_HitPositions[5].Position = Vector3(m_Size.X * 0.5f, m_Size.Y * 0.1f, m_Size.Z * 0.5f);
+	m_HitPositions[6].Position = Vector3(-m_Size.X * 0.5f, m_Size.Y * 0.2f, -m_Size.Z * 0.5f);
+	m_HitPositions[7].Position = Vector3(m_Size.X * 0.5f, m_Size.Y * 0.2f, -m_Size.Z * 0.5f);
+
+	m_HitPositions[8].Position = Vector3(-m_Size.X * 0.3f, m_Size.Y * 0.7f, m_Size.Z * 0.0f);
+	m_HitPositions[9].Position = Vector3(m_Size.X * 0.3f, m_Size.Y * 0.7f, m_Size.Z * 0.0f);
+	m_HitPositions[10].Position = Vector3(-m_Size.X * 0.3f, m_Size.Y * 0.7f, -m_Size.Z * 0.25f);
+	m_HitPositions[11].Position = Vector3(m_Size.X * 0.3f, m_Size.Y * 0.7f, -m_Size.Z * 0.25f);
+
+
+
+	m_PointModel.Load("Asset\\sphere.obj", THREAD_PRIORITY_ABOVE_NORMAL, false, true);
+
 }
 
 
@@ -141,11 +162,10 @@ void BodyRB::Update(float dt)
 
 
 
-	StorePositionRotation();
-	UpdatePositionRotation(dt);
 
 
 
+/*
 
 
 	//if(false)
@@ -163,7 +183,7 @@ void BodyRB::Update(float dt)
 		//pointArray[5] = Vector3(m_Size.X / 2.0f, m_Size.Y / 2.0f, m_Size.Z / 2.0f);
 		//pointArray[6] = Vector3(-m_Size.X / 2.0f, m_Size.Y / 2.0f, -m_Size.Z / 2.0f);
 		//pointArray[7] = Vector3(m_Size.X / 2.0f, m_Size.Y / 2.0f, -m_Size.Z / 2.0f);
-		
+
 		Vector3 pointArray[4];
 		pointArray[0] = Vector3(-m_Size.X / 2.0f, 0.0f, m_Size.Z / 2.0f);
 		pointArray[1] = Vector3(m_Size.X / 2.0f, 0.0f, m_Size.Z / 2.0f);
@@ -213,6 +233,68 @@ void BodyRB::Update(float dt)
 
 	}
 
+
+*/
+
+	//if(false)
+	{
+		Matrix44 bodyMatrix = GetMatrix();
+		Vector3 bodyPos = GetPosition();
+
+
+
+		bool hit{};
+		Vector3 hitPosition;
+		Vector3 hitNormal;
+		Vector3 hitDirection;
+		float hitLength{};
+		Vector3 direction;
+		Vector3 offset;
+		Vector3 offsetPosition = bodyPos;
+		Vector3 force;
+		Vector3 rotateAxis;
+
+
+		for (HITPOSITION& hitPos : m_HitPositions)
+		{
+			Vector3 worldPos = Vector3::TransformCoord(bodyMatrix, hitPos.Position);
+
+			direction = worldPos - bodyPos;
+			hit = field->RayHitCheck(bodyPos, direction, &hitPosition, &hitNormal);
+
+			if (hit)
+			{
+				Vector3 hitVelocity = (worldPos - hitPos.OldPosition) / dt;
+
+				if (Vector3::Dot(hitVelocity, hitNormal) < 0.0f)
+				{
+					hitDirection = hitPosition - worldPos;
+					hitLength = Vector3::Dot(hitDirection, hitNormal);
+					offset = hitNormal * hitLength;
+
+					AddForceWorld(worldPos, offset * 1000000.0f, dt);
+
+
+					float hitVelocityLen = hitVelocity.Length();
+					hitVelocity.Normalize();
+
+					hitVelocityLen *= 10000.0f;
+
+					if (hitVelocityLen > 100000.0f)
+						hitVelocityLen = 100000.0f;
+
+					AddForceWorld(worldPos, hitVelocity * -hitVelocityLen, dt);
+				}
+
+				hitPos.OldPosition = worldPos;
+			}
+
+		}
+
+	}
+
+	StorePositionRotation();
+	UpdatePositionRotation(dt);
 
 }
 
@@ -390,5 +472,29 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 	//m_Model[LodLevel].Draw(false, &overridMaterial);
 
+
+	
+	for (HITPOSITION& hitPos : m_HitPositions)
+	{
+		Matrix44 worldMatrix, transMatrix, rotMatrix;
+
+		worldMatrix = Matrix44::Identity();
+		worldMatrix *= Matrix44::Scale(0.02f, 0.02f, 0.02f);
+		worldMatrix *= Matrix44::TranslateXYZ(hitPos.Position.X, hitPos.Position.Y, hitPos.Position.Z);
+		worldMatrix *= GetMatrix();
+
+		OBJECT_CONSTANT constant;
+		constant.WVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.OldWVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.World = Matrix44::Transpose(worldMatrix);
+		constant.ShadowWVP[0] = Matrix44::Transpose(scale * worldMatrix * shadowView0 * shadowProjection0);
+		constant.ShadowWVP[1] = Matrix44::Transpose(scale * worldMatrix * shadowView1 * shadowProjection1);
+		constant.ShadowWVP[2] = Matrix44::Transpose(scale * worldMatrix * shadowView2 * shadowProjection2);
+		constant.Param = { 0.0f, 0.0f, 0.1f, 1.0f };
+		render->SetConstant(2, &constant, sizeof(constant));
+
+		m_PointModel.Draw();
+	}
+	
 }
 

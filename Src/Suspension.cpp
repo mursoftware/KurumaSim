@@ -3,6 +3,7 @@
 #include "Pch.h"
 //#include "Common.h"
 #include "Setting.h"
+#include "Camera.h"
 #include "RigidBody.h"
 #include "BodyRB.h"
 #include "TireRB.h"
@@ -13,8 +14,6 @@
 
 void Suspension::Load(const char * FileName, const char * PartName, float ScaleX)
 {
-	//ModelManager* modelManager = Manager::GetModelManager();
-	//m_Model = modelManager->Load("sphere.obj");
 
 	m_ScaleX = ScaleX;
 
@@ -44,6 +43,7 @@ void Suspension::Load(const char * FileName, const char * PartName, float ScaleX
 
 
 
+	m_PointModel.Load("Asset\\sphere.obj", THREAD_PRIORITY_ABOVE_NORMAL, false, true);
 
 
 
@@ -63,8 +63,7 @@ void Suspension::Update(float dt)
 
 
 	Matrix44 matrix;
-	matrix = bodyMatrix;
-	matrix = Matrix44::Multiply(Matrix44::TranslateXYZ(m_UpperMountOffset.X, m_UpperMountOffset.Y, m_UpperMountOffset.Z), matrix);
+	matrix = Matrix44::TranslateXYZ(m_UpperMountOffset.X, m_UpperMountOffset.Y, m_UpperMountOffset.Z) * bodyMatrix;
 	m_UpperMountPos = matrix.Position();
 
 	Vector3 tirePos = m_Tire->GetPosition();
@@ -74,27 +73,24 @@ void Suspension::Update(float dt)
 	direction.Normalize();
 
 
+	if (springLength > 0.1f)
+	{
+		springLength = 0.1f;
+	}
+	if (springLength < -0.15f)
+	{
+		springLength = -0.15f;
+	}
+
+	float speed = (springLength - m_SpringLength) / dt;
 
 	float springForce = springLength * m_SpringRatio;
 
-
-	float speed = (springLength - m_SpringLength) / dt;
 	if (speed < 0.0f)
 		springForce += speed * m_DampingRatioExt;
 	else
 		springForce += speed * m_DampingRatioRet;
 
-
-	if (springLength < -0.1f)
-	{
-		springForce += (springLength + 0.1f) * m_SpringRatio * 20.0f;
-		//springForce += speed * m_DampingRatioRet * 5.0f;
-	}
-	if (springLength > 0.1f)
-	{
-		springForce += (springLength - 0.1f) * m_SpringRatio * 20.0f;
-		//springForce += speed * m_DampingRatioRet * 5.0f;
-	}
 
 
 	m_SpringLength = springLength;
@@ -116,6 +112,8 @@ void Suspension::Update(float dt)
 
 void Suspension::UpdateGeometry(float dt)
 {
+	Matrix44 matrix;
+	Vector3 dir;
 	Matrix44 bodyMatrix = m_Body->GetMatrix();
 	Vector3 bodyPos = m_Body->GetPosition();
 	Vector3 bodyRight = bodyMatrix.Right();
@@ -125,7 +123,26 @@ void Suspension::UpdateGeometry(float dt)
 	Vector3 tirePos = m_Tire->GetPosition();
 	Vector3 tireRight = m_Tire->GetMatrix().Right();
 	m_TireAxisBodyPos = tirePos - tireRight * m_TireAxisLength * m_ScaleX;
-	Vector3 dir = m_TireAxisBodyPos - bodyPos;
+
+	matrix = Matrix44::TranslateXYZ(m_UpperMountOffset.X, m_UpperMountOffset.Y, m_UpperMountOffset.Z) * bodyMatrix;
+	m_UpperMountPos = matrix.Position();
+
+	dir = m_TireAxisBodyPos - m_UpperMountPos;
+	float springLength = (dir.Length() - m_SpringNaturalLength);
+
+	if (springLength > 0.1f)
+	{
+		dir.Normalize();
+		m_TireAxisBodyPos -= dir * (springLength - 0.1f);
+	}
+	if (springLength < -0.15f)
+	{
+		dir.Normalize();
+		m_TireAxisBodyPos -= dir * (springLength + 0.15f);
+	}
+
+
+	dir = m_TireAxisBodyPos - bodyPos;
 
 	float z = Vector3::Dot(dir, bodyFront) - m_LowerMountOffset.Z;
 	m_TireAxisBodyPos -= bodyFront * z;
@@ -136,9 +153,7 @@ void Suspension::UpdateGeometry(float dt)
 	m_LowerArmTirePos = m_TireAxisBodyPos + strutDir * m_StrutLength;
 
 
-	Matrix44 matrix;
-	matrix = bodyMatrix;
-	matrix = Matrix44::Multiply(Matrix44::TranslateXYZ(m_LowerMountOffset.X, m_LowerMountOffset.Y, m_LowerMountOffset.Z), matrix);
+	matrix = Matrix44::TranslateXYZ(m_LowerMountOffset.X, m_LowerMountOffset.Y, m_LowerMountOffset.Z) * bodyMatrix;
 	m_LowerArmBodyPos = matrix.Position();
 
 	Vector3 lowerArmDir = m_LowerArmTirePos - m_LowerArmBodyPos;
@@ -218,43 +233,80 @@ void Suspension::PreDraw()
 
 }
 
-void Suspension::Draw()
-{/*
-	RenderManager* renderManager = Manager::GetRenderer();
+void Suspension::Draw(Camera* DrawCamera)
+{
+	RenderManager* render = RenderManager::GetInstance();
+
+	Matrix44 view = DrawCamera->GetViewMatrix();
+	Matrix44 projection = DrawCamera->GetProjectionMatrix();
 
 
+	{
+		Matrix44 worldMatrix, transMatrix, rotMatrix;
 
+		worldMatrix = Matrix44::Identity();
+		worldMatrix *= Matrix44::Scale(0.02f, 0.02f, 0.02f);
+		worldMatrix *= Matrix44::TranslateXYZ(m_UpperMountPos.X, m_UpperMountPos.Y, m_UpperMountPos.Z);
 
-	Matrix44 worldMatrix, transMatrix, rotMatrix;
+		OBJECT_CONSTANT constant;
+		constant.WVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.OldWVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.World = Matrix44::Transpose(worldMatrix);
+		constant.Param = { 0.0f, 0.0f, 0.1f, 1.0f };
+		render->SetConstant(2, &constant, sizeof(constant));
 
-	worldMatrix = Matrix44::Identity();
-	worldMatrix = Matrix44::Scale(0.0002f, 0.0002f, 0.0002f);
-	transMatrix = Matrix44::TranslateXYZ(m_UpperMountPos.X, m_UpperMountPos.Y, m_UpperMountPos.Z);
-	worldMatrix = Matrix44::Multiply(worldMatrix, transMatrix);
-	renderManager->SetWorldMatrix(worldMatrix);
-	m_Model->Draw();
+		m_PointModel.Draw();
+	}
 
-	worldMatrix = Matrix44::Identity();
-	worldMatrix = Matrix44::Scale(0.0002f, 0.0002f, 0.0002f);
-	transMatrix = Matrix44::TranslateXYZ(m_LowerArmBodyPos.X, m_LowerArmBodyPos.Y, m_LowerArmBodyPos.Z);
-	worldMatrix = Matrix44::Multiply(worldMatrix, transMatrix);
-	renderManager->SetWorldMatrix(worldMatrix);
-	m_Model->Draw();
+	{
+		Matrix44 worldMatrix, transMatrix, rotMatrix;
 
-	worldMatrix = Matrix44::Identity();
-	worldMatrix = Matrix44::Scale(0.0002f, 0.0002f, 0.0002f);
-	transMatrix = Matrix44::TranslateXYZ(m_LowerArmTirePos.X, m_LowerArmTirePos.Y, m_LowerArmTirePos.Z);
-	worldMatrix = Matrix44::Multiply(worldMatrix, transMatrix);
-	renderManager->SetWorldMatrix(worldMatrix);
-	m_Model->Draw();
+		worldMatrix = Matrix44::Identity();
+		worldMatrix *= Matrix44::Scale(0.02f, 0.02f, 0.02f);
+		worldMatrix *= Matrix44::TranslateXYZ(m_LowerArmBodyPos.X, m_LowerArmBodyPos.Y, m_LowerArmBodyPos.Z);
 
-	worldMatrix = Matrix44::Identity();
-	worldMatrix = Matrix44::Scale(0.0002f, 0.0002f, 0.0002f);
-	transMatrix = Matrix44::TranslateXYZ(m_TireAxisBodyPos.X, m_TireAxisBodyPos.Y, m_TireAxisBodyPos.Z);
-	worldMatrix = Matrix44::Multiply(worldMatrix, transMatrix);
-	renderManager->SetWorldMatrix(worldMatrix);
-	m_Model->Draw();
+		OBJECT_CONSTANT constant;
+		constant.WVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.OldWVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.World = Matrix44::Transpose(worldMatrix);
+		constant.Param = { 0.0f, 0.0f, 0.1f, 1.0f };
+		render->SetConstant(2, &constant, sizeof(constant));
 
-*/
+		m_PointModel.Draw();
+	}
+
+	{
+		Matrix44 worldMatrix, transMatrix, rotMatrix;
+
+		worldMatrix = Matrix44::Identity();
+		worldMatrix *= Matrix44::Scale(0.02f, 0.02f, 0.02f);
+		worldMatrix *= Matrix44::TranslateXYZ(m_LowerArmTirePos.X, m_LowerArmTirePos.Y, m_LowerArmTirePos.Z);
+
+		OBJECT_CONSTANT constant;
+		constant.WVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.OldWVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.World = Matrix44::Transpose(worldMatrix);
+		constant.Param = { 0.0f, 0.0f, 0.1f, 1.0f };
+		render->SetConstant(2, &constant, sizeof(constant));
+
+		m_PointModel.Draw();
+	}
+
+	{
+		Matrix44 worldMatrix, transMatrix, rotMatrix;
+
+		worldMatrix = Matrix44::Identity();
+		worldMatrix *= Matrix44::Scale(0.02f, 0.02f, 0.02f);
+		worldMatrix *= Matrix44::TranslateXYZ(m_TireAxisBodyPos.X, m_TireAxisBodyPos.Y, m_TireAxisBodyPos.Z);
+
+		OBJECT_CONSTANT constant;
+		constant.WVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.OldWVP = Matrix44::Transpose(worldMatrix * view * projection);
+		constant.World = Matrix44::Transpose(worldMatrix);
+		constant.Param = { 0.0f, 0.0f, 0.1f, 1.0f };
+		render->SetConstant(2, &constant, sizeof(constant));
+
+		m_PointModel.Draw();
+	}
 
 }

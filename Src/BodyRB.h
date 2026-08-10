@@ -2,6 +2,11 @@
 #include "RigidBody.h"
 #include "Model.h"
 
+struct HITPOSITION
+{
+	Vector3 Position;
+	Vector3 OldPosition;
+};
 
 
 class BodyRB : public RigidBody
@@ -22,6 +27,7 @@ private:
 
 	bool		m_Visible{};
 	Model		m_Model[5];
+	Model		m_PointModel;
 
 	Matrix44	m_WorldMatrix;
 	Matrix44	m_OldWorldMatrix;
@@ -31,6 +37,8 @@ private:
 
 	MATERIAL	m_Material{};
 
+
+	HITPOSITION m_HitPositions[12];
 
 
 public:

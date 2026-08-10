@@ -142,17 +142,18 @@ void RigidBody::UpdatePositionRotation(float dt)
 {
 	m_Position += m_Velocity * dt;
 
-
-	for (int i = 0; i < 10; i++)
+	if (!m_Lock)
 	{
-		Vector3 d = Vector3::Cross(m_AngularVelocity, m_AngularVelocity * m_Inertia);
-		m_AngularVelocity += -d / m_Inertia * (dt / 10.0f);
+		for (int i = 0; i < 10; i++)
+		{
+			Vector3 d = Vector3::Cross(m_AngularVelocity, m_AngularVelocity * m_Inertia);
+			m_AngularVelocity += -d / m_Inertia * (dt / 10.0f);
+		}
+
+		Quaternion dr = Quaternion::RotationAxis(m_AngularVelocity * dt);
+		m_Rotation = Quaternion::Multiply(m_Rotation, dr);
+		m_Rotation.Normalize();
 	}
-
-	Quaternion dr = Quaternion::RotationAxis(m_AngularVelocity * dt);
-	m_Rotation = Quaternion::Multiply(m_Rotation, dr);
-	m_Rotation.Normalize();
-
 }
 
 
