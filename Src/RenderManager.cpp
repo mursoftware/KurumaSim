@@ -71,6 +71,8 @@ void RenderManager::Initialize()
 		path = ".\\Setting.ini";
 
 
+		m_GpuIndex = GetPrivateProfileInt("RENDER", "GPU_INDEX", 0, path.c_str());
+
 		m_WindowMode = GetPrivateProfileInt("RENDER", "WINDOW_MODE", 0, path.c_str());
 
 		m_SSBufferWidth = GetPrivateProfileInt("RENDER", "SS_BUFFER_WIDTH", 0, path.c_str());
@@ -198,7 +200,7 @@ void RenderManager::Initialize()
 		hr = CreateDXGIFactory2(flag, IID_PPV_ARGS(&m_Factory));
 		assert(SUCCEEDED(hr));
 
-		hr = m_Factory->EnumAdapters(0, (IDXGIAdapter**)m_Adapter.GetAddressOf());
+		hr = m_Factory->EnumAdapters(m_GpuIndex, (IDXGIAdapter**)m_Adapter.GetAddressOf());
 		assert(SUCCEEDED(hr));
 
 		DXGI_ADAPTER_DESC desc;
