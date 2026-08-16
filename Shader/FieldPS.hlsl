@@ -94,27 +94,31 @@ PS_OUTPUT main(PS_INPUT input)
 
 			for (int i = 0; i < 3; i++)
 			{
-				float2 shadowTexCoord;
-				shadowTexCoord.x = input.ShadowPosition[i].x * 0.5f + 0.5f;
-				shadowTexCoord.y = -input.ShadowPosition[i].y * 0.5f + 0.5f;
+                if (input.ShadowPosition[i].z < 1.0)
+                {
+				
+                    float2 shadowTexCoord;
+                    shadowTexCoord.x = input.ShadowPosition[i].x * 0.5f + 0.5f;
+                    shadowTexCoord.y = -input.ShadowPosition[i].y * 0.5f + 0.5f;
 
-				if (0.01 < shadowTexCoord.x && shadowTexCoord.x < 0.99 && 0.01 < shadowTexCoord.y && shadowTexCoord.y < 0.99)
-				{
+                    if (0.01 < shadowTexCoord.x && shadowTexCoord.x < 0.99 && 0.01 < shadowTexCoord.y && shadowTexCoord.y < 0.99)
+                    {
 					//for (int j = 0; j < 4; j++)
 					{
-                        float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.002;
-                        float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
+                            float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.001;
+                            float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
 						
-                        if (shadowColorTex + 0.001 * (i + 1) < input.ShadowPosition[i].z)
-                        {
-                            shadow += 1.0 / 1.0;
-							break;
+                            if (shadowColorTex + 0.0005 < input.ShadowPosition[i].z)
+                            {
+                                shadow += 1.0 / 1.0;
+                                break;
+                            }
                         }
-                    }
             		//baseColor.rgb *= debugShadowColor[i];
 
-				}
-			}
+                    }
+                }
+            }
         
 			light -= light * shadow;
 		}
@@ -187,8 +191,8 @@ PS_OUTPUT main(PS_INPUT input)
 			iblTexCoord.x = atan2(normal.x, normal.z) / (PI * 2);
 			iblTexCoord.y = acos(normal.y) / PI;
 
-			output.Color.rgb += textureIBL.Sample(sampler2, iblTexCoord).rgb * lightRatio * baseColor.rgb; //Normalized during IBL texture generation
-		}
+            output.Color.rgb += textureIBLStatic.Sample(sampler2, iblTexCoord).rgb * lightRatio * baseColor.rgb; //Normalized during IBL texture generation
+        }
        
 	}
  

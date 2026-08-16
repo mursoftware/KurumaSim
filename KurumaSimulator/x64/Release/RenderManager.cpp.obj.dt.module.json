@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "KurumaSimulator\\x64\\Release\\RenderManager.obj",
+            "outputs": [
+                "KurumaSimulator\\x64\\Release\\RenderManager.cpp.obj.dt.module.json",
+                "KurumaSimulator\\x64\\Release\\RenderManager.cpp.obj.dt.d.json",
+                "KurumaSimulator\\x64\\Release\\KurumaSimulator.pch"
+            ],
+            "requires": []
+        }
+    ]
+}

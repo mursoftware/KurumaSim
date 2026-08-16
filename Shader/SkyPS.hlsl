@@ -42,13 +42,13 @@ PS_OUTPUT main(PS_INPUT input)
     
     
     //Rayleigh scattering
-	float atomThicknessRatio = 0.05;
-	float atomDensityEye = atomThicknessRatio + pow(1.0 - eyeVector.y, 10) * (1.0 - atomThicknessRatio);
-	float atomDensityLight = atomThicknessRatio + pow(1.0 - LightDirection.y, 10) * (1.0 - atomThicknessRatio);
+	float atomThicknessRatio = 0.1;
+	float atomDensityEye = atomThicknessRatio + pow(1.0 - eyeVector.y, 30) * (1.0 - atomThicknessRatio);
+    float atomDensityLight = atomThicknessRatio + pow(1.0 - LightDirection.y, 10) * (1.0 - atomThicknessRatio);
 	float3 scatteringLight = sunLight * exp(-atomDensityLight * atomDensityEye * wavelength4inv * 0.5);
 	float rayleighPhase = (0.5 + dle * dle);
       
-	output.Color.rgb = scatteringLight * atomDensityEye * wavelength4inv * rayleighPhase * 0.03;
+	output.Color.rgb = scatteringLight * atomDensityEye * wavelength4inv * rayleighPhase * 0.05;
     
     
     
@@ -72,7 +72,7 @@ PS_OUTPUT main(PS_INPUT input)
     
     
     //Mie scattering
-	float g = 0.990f;
+	float g = 0.999f;
 	float g2 = g * g;
 	float miePhase = 1.5 * ((1.0 - g2) / (2.0 + g2)) * (1.0 + dle * dle) / pow((1.0 + g2 - 2.0 * g * dle), 0.5); 
 	//miePhase = pow(saturate(dle), 1000);

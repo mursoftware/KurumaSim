@@ -230,25 +230,26 @@ void GameManager::Draw()
 
 
 
-				////if(m_FrameIndex < 60)
-				//{
-				//	m_RenderManger.StartCommandTime("EnvMapStatic");
-				//	for (int i = 0; i < 6; i++)
-				//	{
-				//		if (m_FrameIndex % 2 == i % 2)
-				//		{
-				//			m_RenderManger.DrawEnvStaticBegin(i);
-				//			m_Scene->DrawEnvStatic(i);
-				//			m_RenderManger.DrawEnvStaticEnd(i);
-				//		}
-				//	}
-				//	m_RenderManger.EndCommandTime("EnvMapStatic");
+				//if(m_FrameIndex < 60)
+				{
+					m_RenderManger.StartCommandTime("EnvMapStatic");
+					//for (int i = 0; i < 6; i++)
+					{
+						//if (m_FrameIndex % 2 == i % 2)
+						{
+							int i = m_FrameIndex % 6;
+							m_RenderManger.DrawEnvStaticBegin(i);
+							m_Scene->DrawEnvStatic(i);
+							m_RenderManger.DrawEnvStaticEnd(i);
+						}
+					}
+					m_RenderManger.EndCommandTime("EnvMapStatic");
 
 
-				//	m_RenderManger.StartCommandTime("IBLStatic");
-				//	m_RenderManger.DrawIBLStatic();
-				//	m_RenderManger.EndCommandTime("IBLStatic");
-				//}
+					m_RenderManger.StartCommandTime("IBLStatic");
+					m_RenderManger.DrawIBLStatic();
+					m_RenderManger.EndCommandTime("IBLStatic");
+				}
 
 
 
@@ -274,7 +275,7 @@ void GameManager::Draw()
 				}
 
 				
-				m_RenderManger.DrawIBLStatic();
+				//m_RenderManger.DrawIBLStatic();
 
 
 #if 1

@@ -38,7 +38,7 @@ void Field::Load(int Index)
 	m_CloudDensity = 0.3f;
 	m_CloudHeight = 0.1f;
 
-	m_Fog = 0.0003f;
+	m_Fog = 0.0001f;
 
 }
 
@@ -158,7 +158,7 @@ void Field::Draw(Camera* DrawCamera)
 		wavelength4inv.Z = 1.0f / powf(wavelength.Z, 4.0f);
 		wavelength4inv.Y = 1.0f / powf(wavelength.Y, 4.0f);
 
-		float atomThicknessRatio = 0.05f;
+		float atomThicknessRatio = 0.1f;
 		float atomDensityLight = atomThicknessRatio + pow(1.0f - constant.LightDirection.Y, 10.0f) * (1.0f - atomThicknessRatio);
 		float attenuation = atomDensityLight * atomDensityLight * 0.5f;
 

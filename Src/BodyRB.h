@@ -41,6 +41,10 @@ private:
 	HITPOSITION m_HitPositions[12];
 
 
+	std::unordered_map<std::string, MATERIAL> m_OverridMaterial;
+
+
+
 public:
 
 	void Load(const char* FileName, const char* PartName);

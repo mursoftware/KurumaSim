@@ -97,7 +97,7 @@ PS_OUTPUT main(PS_INPUT input)
                 {
 					//for (int j = 0; j < 4; j++)
 					{
-                        float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.002;
+                        float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.001;
                         float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
 						
                         if (shadowColorTex + 0.001 * (i + 1) < input.ShadowPosition[i].z)

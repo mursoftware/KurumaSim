@@ -84,11 +84,11 @@ void BodyRB::Load(const char * FileName, const char * PartName)
 
 	m_Material.ClearCoat = 1.0f;
 	m_Material.ClearColor = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_Material.ClearRoughness = 0.01f;
-	m_Material.ClearSpecular = 0.05f;
+	m_Material.ClearRoughness = 0.0f;
+	m_Material.ClearSpecular = 0.07f;
 
-	m_Material.BaseColor = Vector4(0.5f, 0.04f, 0.02f, 1.0f);
-	m_Material.BaseRoughness = 1.0f;
+	m_Material.BaseColor = Vector4(0.35f, 0.0f, 0.02f, 1.0f);
+	m_Material.BaseRoughness = 0.9f;
 	m_Material.BaseMetallic = 0.0f;
 	m_Material.BaseSpecular = 0.0f;
 
@@ -440,34 +440,47 @@ void BodyRB::Draw(Camera* DrawCamera, int LodLevel)
 
 
 
-	std::unordered_map<std::string, MATERIAL> overridMaterial;
 	MATERIAL material{};
+
+	material.BaseColor = Vector4(0.0f, 0.0f, 0.0f, 0.2f);
+	material.BaseSpecular = 0.08f;
+	m_OverridMaterial["Object_Glass_|_Colored"] = material;
+
+	material.BaseColor = Vector4(0.0f, 0.0f, 0.0f, 0.3f);
+	m_OverridMaterial["camd"] = material;
+
+	
 	material.BaseSpecular = 0.05f;
 	material.BaseMetallic= 0.0f;
 	material.BaseRoughness = 0.0f;
 
 	material.BaseColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 	material.EmissionColor = Vector4(10.0f, 10.0f, 10.0f, 1.0f);
-	overridMaterial["camc"] = material;
+	m_OverridMaterial["camc"] = material;
 
 	material.BaseColor = Vector4(0.5f, 0.0f, 0.0f, 1.0f);
-	material.EmissionColor = Vector4(1.0f, 0.1f, 0.1f, 1.0f);
-	overridMaterial["tail"] = material;
-	overridMaterial["stop_side"] = material;
+	material.EmissionColor = Vector4(10.0f, 0.1f, 0.1f, 1.0f);
+	m_OverridMaterial["tail"] = material;
+	m_OverridMaterial["stop_side"] = material;
+	m_OverridMaterial["Material_#256"] = m_Material;
 
 	if (m_BrakeLamp)
 	{
 		material.BaseColor = Vector4(0.5f, 0.0f, 0.0f, 1.0f);
 		material.EmissionColor = Vector4(50.0f, 1.0f, 1.0f, 1.0f);
-		overridMaterial["stop_side"] = material;
-		overridMaterial["stop_top"] = material;
+		m_OverridMaterial["stop_side"] = material;
+	}
+	else
+	{
+		material.BaseColor = Vector4(0.5f, 0.0f, 0.0f, 1.0f);
+		material.EmissionColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
+	m_OverridMaterial["stop_top"] = material;
 
-	overridMaterial["Material_#256"] = m_Material;
 
 
-	m_Model[level].Draw(false, &overridMaterial);
+	m_Model[level].Draw(false, &m_OverridMaterial);
 	//m_Model[level].DrawNonIndex(false, &overridMaterial);
 
 	//m_Model[LodLevel].Draw(false, &overridMaterial);

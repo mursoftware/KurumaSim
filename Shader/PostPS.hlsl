@@ -109,7 +109,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
         for (int i = 0; i < MotionBlurCount - 1; i++)
         {
             float a = saturate(1.0 - length(ov - velocity) * 100.0);
-            color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+            color.rgb += textureColor.SampleLevel(sampler1, blurPos, offset).rgb * a;
             count += a;
             
             blurPos += -velocity * MotionBlur / MotionBlurCount;
@@ -118,7 +118,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
         }
         
         float a = saturate(1.0 - length(ov - velocity) * 100.0);
-        color.rgb += textureColor.SampleLevel(sampler3, blurPos, offset).rgb * a;
+        color.rgb += textureColor.SampleLevel(sampler1, blurPos, offset).rgb * a;
         count += a;
         
   

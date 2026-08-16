@@ -122,7 +122,7 @@ float4 main(PS_INPUT input) : SV_TARGET0
 			//float vd = length(velocity - oldVelocity);
 		
 	
-				float a = saturate(TemporalRatio
+			float a = saturate(TemporalRatio
 			//- vd * 100.0
 			- length(velocity) * 100.0
 			- dl * 0.1

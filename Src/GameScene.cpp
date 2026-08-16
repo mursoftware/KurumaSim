@@ -221,7 +221,6 @@ void GameScene::DrawEnv(int Index)
 }
 
 
-
 void GameScene::DrawDepth(int Index)
 {
 
