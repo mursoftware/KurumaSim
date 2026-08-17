@@ -3,8 +3,8 @@
 
 #include "Common.hlsl"
 
-TextureCube<float4> textureEnv : register(t0);
-Texture2D<float4> textureIBL : register(t1);
+//TextureCube<float4> textureEnv : register(t0);
+//Texture2D<float4> textureIBL : register(t1);
 Texture2D<float4> textureDif : register(t2);
 Texture2D<float4> textureIBLStatic : register(t3);
 Texture2D<float4> textureSub : register(t4);
@@ -108,7 +108,7 @@ PS_OUTPUT main(PS_INPUT input)
                             float2 offset = PoissonSamples[(int) (Random(float4(position, TemporalFrame)) * 64)] * 0.001;
                             float shadowColorTex = textureShadow[i].Sample(sampler1, shadowTexCoord + offset).r;
 						
-                            if (shadowColorTex + 0.0005 < input.ShadowPosition[i].z)
+                            if (shadowColorTex + 0.001 < input.ShadowPosition[i].z)
                             {
                                 shadow += 1.0 / 1.0;
                                 break;

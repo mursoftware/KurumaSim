@@ -30,7 +30,7 @@ CarCamera::CarCamera()
 	//m_Gamma = 2.2f;
 	m_Gamma = 1.2f;
 	m_Vignette = 0.3f;
-	m_LensFlare = 2.0f;
+	m_LensFlare = 1.0f;
 	m_TemporalRatio = 0.8f;
 	m_MotionBlurCount = 4;
 	m_MotionBlur = 0.5f;

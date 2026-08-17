@@ -278,7 +278,7 @@ void GameManager::Draw()
 				//m_RenderManger.DrawIBLStatic();
 
 
-#if 1
+#if 0
 				m_RenderManger.StartCommandTime("ZPrePass");
 				m_RenderManger.DrawZPrePassBegin();
 				m_Scene->DrawZPrePass();

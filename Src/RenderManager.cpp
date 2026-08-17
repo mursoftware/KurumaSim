@@ -1246,8 +1246,8 @@ void RenderManager::DrawEnvBegin(int Index)
 
 
 
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_IBLBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, 0);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, 0);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_IBLStaticBuffer.SRVIndex);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 5, m_ShadowDepthBufferSRVIndex[0]);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 6, m_ShadowDepthBufferSRVIndex[1]);
@@ -1396,9 +1396,9 @@ void RenderManager::DrawEnvStaticBegin(int Index)
 
 
 
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, m_EnvBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 0, 0);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 1, m_IBLBuffer.SRVIndex);
-		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, m_IBLStaticBuffer.SRVIndex);
+		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 2, 0);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 5, m_ShadowDepthBufferSRVIndex[0]);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 6, m_ShadowDepthBufferSRVIndex[1]);
 		SetGraphicsRootDescriptorTable(RenderManager::CBV_REGISTER_MAX + 7, m_ShadowDepthBufferSRVIndex[2]);
@@ -1545,7 +1545,7 @@ void RenderManager::DrawBegin()
 
 
 		FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		//m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+		m_GraphicsCommandList->ClearDepthStencilView(m_DepthBufferHandle[m_RTIndex], D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		m_GraphicsCommandList->ClearRenderTargetView(m_HDRBuffer.RTVHandle, clearColor, 0, nullptr);
 		m_GraphicsCommandList->ClearRenderTargetView(m_VelocityBuffer.RTVHandle, clearColor, 0, nullptr);
 
@@ -2057,6 +2057,7 @@ void RenderManager::DrawUI(bool Debug)
 
 
 	hr = m_SwapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
+	//hr = m_SwapChain->Present(1, 0);
 	assert(SUCCEEDED(hr));
 
 

@@ -4,7 +4,7 @@
 TextureCube<float4> textureEnv : register(t0);
 Texture2D<float4> textureIBL : register(t1);
 Texture2D<float4> textureDif : register(t2);
-Texture2D<float4> textureIBLStatic : register(t3);
+//Texture2D<float4> textureIBLStatic : register(t3);
 
 //Texture2D<float4> textureARM : register(t3);
 //Texture2D<float4> textureNor : register(t4);

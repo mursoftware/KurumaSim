@@ -4,14 +4,14 @@
 
 
 
-Texture2D<float4> textureEnv : register(t0);
-Texture2D<float4> textureIBL : register(t1);
-Texture2D<float4> textureDif : register(t2);
-Texture2D<float4> textureIBLStatic : register(t3);
+//Texture2D<float4> textureEnv : register(t0);
+//Texture2D<float4> textureIBL : register(t1);
+//Texture2D<float4> textureDif : register(t2);
+//Texture2D<float4> textureIBLStatic : register(t3);
 
-SamplerState sampler0 : register(s0);
-SamplerState sampler1 : register(s1);
-SamplerState sampler2 : register(s2);
+//SamplerState sampler0 : register(s0);
+//SamplerState sampler1 : register(s1);
+//SamplerState sampler2 : register(s2);
 
 
 [earlydepthstencil]

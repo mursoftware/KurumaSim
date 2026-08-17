@@ -3,11 +3,11 @@
 
 
 
-Texture2D<float4> textureEnv : register(t0);
-Texture2D<float4> textureIBL : register(t1);
+//Texture2D<float4> textureEnv : register(t0);
+//Texture2D<float4> textureIBL : register(t1);
 Texture2D<float4> textureDif : register(t2);
 SamplerState sampler0 : register(s0);
-SamplerState sampler1 : register(s1);
+//SamplerState sampler1 : register(s1);
 
 
 //[earlydepthstencil]
